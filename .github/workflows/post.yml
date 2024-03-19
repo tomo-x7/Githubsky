@@ -4,10 +4,6 @@ on:
   # schedule:
   #   - cron: "30 14 * * *"
   workflow_dispatch:
-defaults:
-  run:
-    shell: bash
-    working-directory: .github/workflows/
 jobs:
   build:
     name: post
@@ -20,7 +16,6 @@ jobs:
         with:
           node-version: "18"
           cache: npm
-          cache-dependency-path: .github/workflows/package-lock.json
       - name: Install Dependencies
         run: npm ci
       - name: Create Sitemap
