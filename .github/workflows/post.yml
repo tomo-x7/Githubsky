@@ -17,4 +17,7 @@ jobs:
       - name: Install Dependencies
         run: npm ci
       - name: Create Sitemap
-        run: npm run add
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{secrets.SUPABASE_SERVICE_ROLE_KEY}}
+        run: npm run post $SUPABASE_URL SUPABASE_SERVICE_ROLE_KEY

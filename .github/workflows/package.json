@@ -2,14 +2,16 @@
   "name": "workflows",
   "version": "1.0.0",
   "description": "",
-  "main": "post.yml",
+  "main": "post.ts",
   "scripts": {
+    "post":"./node_modules/.bin/ts-node --files -r tsconfig-paths/register post.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.4.2"
   }
 }
