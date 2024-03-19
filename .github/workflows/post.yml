@@ -13,8 +13,8 @@ jobs:
     name: post
     runs-on: ubuntu-latest
     steps:
-      - name: ls
-        run: ls -l
+      # - name: ls
+      #   run: ls -l
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
