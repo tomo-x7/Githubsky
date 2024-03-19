@@ -1,0 +1,2 @@
+# Githubsky
+毎日Githubのコミット数をBlueskyに投稿します
