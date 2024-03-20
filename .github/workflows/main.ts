@@ -11,7 +11,7 @@ const main = async () => {
 	// const testdata=require("./testdata.json")
 	//const userslist = getUsersList(process.argv[2], process.argv[3]);
 	//post(testdata.bskyhandle, testdata.bskypassword);
-	getUserData(testdata.githubname)
+	getUserData('tomo-x7')
 };
 
 main();
