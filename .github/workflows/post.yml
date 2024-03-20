@@ -20,6 +20,8 @@ jobs:
           cache: npm
       - name: Install Dependencies
         run: npm ci
+      - name: checkversion
+        run: node --version
       - name: post
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
