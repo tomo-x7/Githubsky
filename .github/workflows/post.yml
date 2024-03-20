@@ -1,8 +1,8 @@
 name: post
 
 on:
-  # schedule:
-  #   - cron: "30 14 * * *"
+  schedule:
+    - cron: "0 15 * * *"
   workflow_dispatch:
 jobs:
   build:

@@ -15,7 +15,7 @@ export type week = {
 	6: number;
 	[key: number]: number;
 };
-export const getUserData = async (username: string): Promise<number> => {
+export const getUserData = async (username: string): Promise<{count:number,lastweek:week}> => {
 	const alldata: Array<apires> = [];
 	const lastgetday = new Date();
 	lastgetday.setDate(new Date().getDate() - 7);
@@ -30,7 +30,7 @@ export const getUserData = async (username: string): Promise<number> => {
 	}
 
 	const lastweek: week = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
-	let commitsnum = 0;
+	let commitcount = 0;
 	const yesterday = new Date();
 	yesterday.setDate(yesterday.getDate() - 1);
 	const pushdata = alldata
@@ -41,14 +41,11 @@ export const getUserData = async (username: string): Promise<number> => {
 				jst.setHours(day.getHours() + 9);
 				lastweek[jst.getDay()] += data.payload.commits.length;
 				if (day > yesterday) {
-					commitsnum += data.payload.commits.length;
+					commitcount += data.payload.commits.length;
 				}
 				return data;
 			}
 		})
 		.filter((item) => item !== undefined);
-	console.log(commitsnum);
-	console.log(lastweek);
-	console.log(pushdata.slice(0, 10));
-	return 0;
+	return {count:commitcount,lastweek:lastweek};
 };
