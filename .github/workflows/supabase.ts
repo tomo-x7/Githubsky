@@ -1,3 +1,4 @@
+import { jsonStringToLex } from "@atproto/api";
 import { type SupabaseClient, createClient } from "@supabase/supabase-js";
 
 export type UserData = {
@@ -51,16 +52,31 @@ export const deleteuser = async (id: number) => {
 			}
 		});
 };
+export const success = async (id: number) => {
+	if (supabase === undefined)
+		throw new Error("Please run supabase settings before");
+	supabase
+		.from("userdata")
+		.update({ fail_count: 0 })
+		.eq("id", id)
+		.then((data) => {
+			console.log(id)
+			if (!/2\d{2}/.test(data.status.toString())) {
+				throw new Error(`エラー:${JSON.stringify(data)}`);
+			}
+		});
+};
 export const fail = async (id: number, fail_count: number) => {
 	if (supabase === undefined)
 		throw new Error("Please run supabase settings before");
 	supabase
 		.from("userdata")
-		.upsert({ fail_count: fail_count + 1 })
+		.update({ fail_count: fail_count + 1 })
 		.eq("id", id)
 		.then((data) => {
+			console.log(id)
 			if (!/2\d{2}/.test(data.status.toString())) {
-				throw new Error("エラー");
+				throw new Error(`エラー:${JSON.stringify(data)}`);
 			}
 		});
 };
@@ -68,5 +84,5 @@ export const fail = async (id: number, fail_count: number) => {
 export const writelog = (log: string|number|Error|unknown) => {
 	if (supabase === undefined)
 		throw new Error("Please run supabase settings before");
-	supabase.from("errorlog").insert({ errorlog: log });
+	supabase.from("errorlog").insert({ errorlog: log }).then((data)=>{});
 };

@@ -1,6 +1,6 @@
 import { type AtpSessionData, type AtpSessionEvent, BskyAgent, RichText } from "@atproto/api";
 import type { week } from "./github";
-import { fail, writelog } from "./supabase";
+import { fail, success, writelog } from "./supabase";
 
 
 
@@ -25,6 +25,7 @@ export const post=async (bsky_handle:string,bsky_password:string,github_name:str
 		facets:message.facets,
 		createdAt: new Date().toISOString(),
 	});
+	success(id)
 }catch(e){
 	writelog(`${bsky_handle}の投稿時エラー\n${e}`)
 	fail(id,fail_count)
