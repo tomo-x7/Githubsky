@@ -9,7 +9,7 @@ export const cryptosetting = (paramcrypto_key: string) => {
 
 export const decrypt = (crypted_text: string,paramiv:string): string => {
 	if (!crypto_key) throw new Error("Please run settings before");
-	const iv = Buffer.from(paramiv)
+	const iv = Buffer.from(paramiv,"hex")
 	const encryptedText = Buffer.from(crypted_text, "hex")
 	const decipher = crypto.createDecipheriv("aes-256-cbc", Buffer.from(crypto_key), iv)
 	let decrypted = decipher.update(encryptedText)

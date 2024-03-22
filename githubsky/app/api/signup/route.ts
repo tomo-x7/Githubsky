@@ -8,15 +8,15 @@ export const POST=(rawreq:NextRequest)=>{
     return NextResponse.json({},{status:200})
 }
 
-const encrypt = (raw_text: string,paramiv:string): string|false => {
+const encrypt = (raw_text: string): {encrypted:string,iv:string}|false => {
     try{
-	const iv = Buffer.from(paramiv)
-	const cipher = crypto.createCipheriv("aes-256-cbc", Buffer.from(process.env.BLUESKY_PASSWORD_KEY??''), iv)
+	const iv = crypto.randomBytes(16)
+	const cipher = crypto.createCipheriv("aes-256-cbc", Buffer.from(process.env.BLUESKY_PASSWORD_KEY??''), Buffer.from(iv))
 	let encrypted = cipher.update(raw_text)
   
 	encrypted = Buffer.concat([encrypted, cipher.final()])
   
-	return encrypted.toString("hex")
+	return {encrypted:encrypted.toString("hex"),iv:iv.toString("hex")}
     }catch(e){
         console.warn(e)
         return false
