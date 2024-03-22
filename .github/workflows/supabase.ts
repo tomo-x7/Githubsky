@@ -1,5 +1,6 @@
 import { jsonStringToLex } from "@atproto/api";
 import { type SupabaseClient, createClient } from "@supabase/supabase-js";
+import crypto from 'node:crypto'
 
 export type UserData = {
 	id: number;
@@ -10,12 +11,23 @@ export type UserData = {
 	fail_count: number;
 };
 let supabase: SupabaseClient | undefined;
+let crypto_key: string | undefined;
 export const supabasesetting = (
 	supabase_url: string,
 	supabase_token: string,
+	paramcrypto_key: string,
 ) => {
 	supabase = createClient(supabase_url, supabase_token);
+	crypto_key = paramcrypto_key;
 };
+const decrypted = (crypted_text: string): string => {
+	if (!crypto_key)
+		throw new Error("Please run supabase settings before");
+	const decipher = crypto.createDecipher('aes-256-cbc', crypto_key)
+	const decrypted = decipher.update(crypted_text, 'hex', 'utf-8')
+	const decrypted_text = decrypted + decipher.final('utf-8')
+	return decrypted_text
+}
 export const getUsersList = async (): Promise<Array<UserData>> => {
 	if (supabase === undefined)
 		throw new Error("Please run supabase settings before");
@@ -81,8 +93,8 @@ export const fail = async (id: number, fail_count: number) => {
 		});
 };
 
-export const writelog = (log: string|number|Error|unknown) => {
+export const writelog = (log: string | number | Error | unknown) => {
 	if (supabase === undefined)
 		throw new Error("Please run supabase settings before");
-	supabase.from("errorlog").insert({ errorlog: log }).then((data)=>{});
+	supabase.from("errorlog").insert({ errorlog: log }).then((data) => { });
 };
