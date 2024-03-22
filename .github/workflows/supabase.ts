@@ -1,6 +1,7 @@
 import { jsonStringToLex } from "@atproto/api";
 import { type SupabaseClient, createClient } from "@supabase/supabase-js";
-import crypto from 'node:crypto'
+import crypto from "node:crypto";
+import { decrypt } from "./mycrypto";
 
 export type UserData = {
 	id: number;
@@ -9,30 +10,21 @@ export type UserData = {
 	bsky_password: string;
 	github_name: string;
 	fail_count: number;
+	iv: string;
 };
 let supabase: SupabaseClient | undefined;
-let crypto_key: string | undefined;
 export const supabasesetting = (
 	supabase_url: string,
 	supabase_token: string,
-	paramcrypto_key: string,
 ) => {
 	supabase = createClient(supabase_url, supabase_token);
-	crypto_key = paramcrypto_key;
 };
-const decrypted = (crypted_text: string): string => {
-	if (!crypto_key)
-		throw new Error("Please run supabase settings before");
-	const decipher = crypto.createDecipher('aes-256-cbc', crypto_key)
-	const decrypted = decipher.update(crypted_text, 'hex', 'utf-8')
-	const decrypted_text = decrypted + decipher.final('utf-8')
-	return decrypted_text
-}
+
 export const getUsersList = async (): Promise<Array<UserData>> => {
 	if (supabase === undefined)
 		throw new Error("Please run supabase settings before");
 	const ret: Array<UserData> = [];
-	const data: Array<UserData> = await supabase
+	const rawdata: Array<UserData> = await supabase
 		.from("userdata")
 		.select()
 		.then((data) => {
@@ -45,8 +37,9 @@ export const getUsersList = async (): Promise<Array<UserData>> => {
 			}
 			throw new Error("エラー");
 		});
-	for (const i in data) {
-		ret.push(data[i]);
+	for (const i in rawdata) {
+		rawdata[i].bsky_password=decrypt(rawdata[i].bsky_password,rawdata[i].iv)
+		ret.push(rawdata[i]);
 	}
 	return ret;
 };
@@ -72,7 +65,7 @@ export const success = async (id: number) => {
 		.update({ fail_count: 0 })
 		.eq("id", id)
 		.then((data) => {
-			console.log(id)
+			console.log(id);
 			if (!/2\d{2}/.test(data.status.toString())) {
 				throw new Error(`エラー:${JSON.stringify(data)}`);
 			}
@@ -86,7 +79,7 @@ export const fail = async (id: number, fail_count: number) => {
 		.update({ fail_count: fail_count + 1 })
 		.eq("id", id)
 		.then((data) => {
-			console.log(id)
+			console.log(id);
 			if (!/2\d{2}/.test(data.status.toString())) {
 				throw new Error(`エラー:${JSON.stringify(data)}`);
 			}
@@ -96,5 +89,8 @@ export const fail = async (id: number, fail_count: number) => {
 export const writelog = (log: string | number | Error | unknown) => {
 	if (supabase === undefined)
 		throw new Error("Please run supabase settings before");
-	supabase.from("errorlog").insert({ errorlog: log }).then((data) => { });
+	supabase
+		.from("errorlog")
+		.insert({ errorlog: log })
+		.then((data) => {});
 };

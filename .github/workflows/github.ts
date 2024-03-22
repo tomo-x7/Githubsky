@@ -15,7 +15,7 @@ export type week = {
 	6: number;
 	[key: number]: number;
 };
-export const getUserData = async (username: string): Promise<{count:number,lastweek:week}> => {
+export const getUsersGithubData = async (username: string): Promise<{count:number,lastweek:week}> => {
 	const alldata: Array<apires> = [];
 	const lastgetday = new Date();
 	lastgetday.setDate(new Date().getDate() - 7);
