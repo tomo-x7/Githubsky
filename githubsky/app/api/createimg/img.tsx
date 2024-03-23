@@ -11,25 +11,44 @@ type week = {
 	5: number;
 	6: number;
 };
+let graphmaxscale=20;
 export type params = { count: number; lastweek: week };
 export const elem = (params: params) => {
+	const lastweekarray=[
+		params.lastweek[0],
+		params.lastweek[1],
+		params.lastweek[2],
+		params.lastweek[3],
+		params.lastweek[4],
+		params.lastweek[5],
+		params.lastweek[6],
+	]
+	const lastweekmax=Math.max(...lastweekarray)
+	graphmaxscale=Math.max(20,Math.ceil(lastweekmax/10)*10)
 	return (
 		<>
 			<div style={style.wrapper}>
 				<div style={style.countwrapper}>
 					昨日のコミット数:<div style={style.count}>{params.count}</div>
 				</div>
-				<div style={style.graphwrapper}>
-					{graphelem(0, params.lastweek[0])}
-					{graphelem(1, params.lastweek[1])}
-					{graphelem(2, params.lastweek[2])}
-					{graphelem(3, params.lastweek[3])}
-					{graphelem(4, params.lastweek[4])}
-					{graphelem(5, params.lastweek[5])}
-					{graphelem(6, params.lastweek[6])}
-					<div style={style.border1} />
-					<div style={style.border2} />
-					<div style={style.border3} />
+				<div style={{display:"flex",flexDirection:"row"}}>
+					<div style={style.graphscale}>
+						<div style={style.scale}>0</div>
+						<div style={style.scale}>{graphmaxscale/2}</div>
+						<div style={style.scale}>{graphmaxscale}</div>
+					</div>
+					<div style={style.graphwrapper}>
+						{graphelem(0, lastweekarray[0])}
+						{graphelem(1, lastweekarray[1])}
+						{graphelem(2, lastweekarray[2])}
+						{graphelem(3, lastweekarray[3])}
+						{graphelem(4, lastweekarray[4])}
+						{graphelem(5, lastweekarray[5])}
+						{graphelem(6, lastweekarray[6])}
+						<div style={style.border1} />
+						<div style={style.border2} />
+						<div style={style.border3} />
+					</div>
 				</div>
 			</div>
 		</>
@@ -47,7 +66,6 @@ const style: { [key: string]: React.CSSProperties } = {
 		justifyContent: "space-between",
 		height: "430px",
 		width: "92vw",
-		marginLeft: "6vw",
 		alignItems: "flex-end",
 		overflow: "hidden",
 		position: "relative",
@@ -95,6 +113,20 @@ const style: { [key: string]: React.CSSProperties } = {
 		left: "0px",
 		borderLeft: "1px solid black",
 	},
+	graphscale: {
+		display: "flex",
+		marginTop:"-8px",
+		marginBottom:"22px",
+		marginLeft:"3vw",
+		marginRight:"5px",
+		flexDirection:"column-reverse",
+		justifyContent:"space-between",
+		alignItems:"flex-end"
+	},
+	scale: {
+		display: "flex",
+		textAlign:"right",
+	},
 };
 const graphelem = (
 	day: number /*曜日、0が日曜日*/,
@@ -108,13 +140,13 @@ const graphelem = (
 		display: "flex",
 		backgroundColor: "green",
 		width: "40px",
-		height: `${count * 20}px`,
+		height: `${count * (400/graphmaxscale)}px`,
 		borderStyle: "solid",
 		borderWidth: "1px",
 		borderColor: "black",
 	};
-	if (day===today.getDay()-1) {
-		localstyle.backgroundColor='red'
+	if (day === today.getDay() - 1) {
+		localstyle.backgroundColor = "red";
 	}
 	return (
 		<div style={style.graphelemwrapper}>
