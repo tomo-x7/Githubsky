@@ -11,10 +11,10 @@ type week = {
 	5: number;
 	6: number;
 };
-let graphmaxscale=20;
+let graphmaxscale = 20;
 export type params = { count: number; lastweek: week };
 export const elem = (params: params) => {
-	const lastweekarray=[
+	const lastweekarray = [
 		params.lastweek[0],
 		params.lastweek[1],
 		params.lastweek[2],
@@ -22,22 +22,32 @@ export const elem = (params: params) => {
 		params.lastweek[4],
 		params.lastweek[5],
 		params.lastweek[6],
-	]
-	const lastweekmax=Math.max(...lastweekarray)
-	graphmaxscale=Math.max(20,Math.ceil(lastweekmax/10)*10)
+	];
+	const lastweekmax = Math.max(...lastweekarray);
+	graphmaxscale = Math.max(20, Math.ceil(lastweekmax / 8.8) * 10);
 	return (
 		<>
 			<div style={style.wrapper}>
 				<div style={style.countwrapper}>
-					昨日のコミット数:<div style={style.count}>{params.count}</div>
+					<div style={{ display: "flex" }}>
+						昨日のコミット数:<div style={style.count}>{params.count}</div>
+					</div>
+					<div style={{ display: "flex" }}>
+						直近一週間のコミット数:
+						<div style={style.count}>
+							{lastweekarray.reduce((sum, element) => sum + element, 0)}
+						</div>
+					</div>
 				</div>
-				<div style={{display:"flex",flexDirection:"row"}}>
+				<div style={{ display: "flex", flexDirection: "row" }}>
 					<div style={style.graphscale}>
 						<div style={style.scale}>0</div>
-						<div style={style.scale}>{graphmaxscale/2}</div>
+						<div style={style.scale}>{graphmaxscale / 2}</div>
 						<div style={style.scale}>{graphmaxscale}</div>
 					</div>
 					<div style={style.graphwrapper}>
+						<div style={style.border2} />
+						<div style={style.border3} />
 						{graphelem(0, lastweekarray[0])}
 						{graphelem(1, lastweekarray[1])}
 						{graphelem(2, lastweekarray[2])}
@@ -46,8 +56,6 @@ export const elem = (params: params) => {
 						{graphelem(5, lastweekarray[5])}
 						{graphelem(6, lastweekarray[6])}
 						<div style={style.border1} />
-						<div style={style.border2} />
-						<div style={style.border3} />
 					</div>
 				</div>
 			</div>
@@ -60,6 +68,8 @@ const style: { [key: string]: React.CSSProperties } = {
 		flexDirection: "column",
 		justifyContent: "space-between",
 		height: "100vh",
+		backgroundColor: "white",
+		width: "100vw",
 	},
 	graphwrapper: {
 		display: "flex",
@@ -69,7 +79,7 @@ const style: { [key: string]: React.CSSProperties } = {
 		alignItems: "flex-end",
 		overflow: "hidden",
 		position: "relative",
-		paddingLeft: "2vw",
+		padding: "0px 30px",
 		borderTop: "1px solid black",
 	},
 	graphelemwrapper: {
@@ -84,7 +94,7 @@ const style: { [key: string]: React.CSSProperties } = {
 	countwrapper: {
 		display: "flex",
 		fontSize: "30px",
-		height: "40px",
+		flexDirection: "column",
 	},
 	count: {
 		display: "flex",
@@ -104,6 +114,7 @@ const style: { [key: string]: React.CSSProperties } = {
 		width: "98vw",
 		bottom: "230px",
 		borderTop: "1px solid black",
+		zIndex: "-1000",
 	},
 	border3: {
 		display: "flex",
@@ -112,20 +123,21 @@ const style: { [key: string]: React.CSSProperties } = {
 		bottom: "30px",
 		left: "0px",
 		borderLeft: "1px solid black",
+		zIndex: "-1000",
 	},
 	graphscale: {
 		display: "flex",
-		marginTop:"-8px",
-		marginBottom:"22px",
-		marginLeft:"3vw",
-		marginRight:"5px",
-		flexDirection:"column-reverse",
-		justifyContent:"space-between",
-		alignItems:"flex-end"
+		marginTop: "-8px",
+		marginBottom: "22px",
+		marginLeft: "3vw",
+		marginRight: "5px",
+		flexDirection: "column-reverse",
+		justifyContent: "space-between",
+		alignItems: "flex-end",
 	},
 	scale: {
 		display: "flex",
-		textAlign:"right",
+		textAlign: "right",
 	},
 };
 const graphelem = (
@@ -138,19 +150,37 @@ const graphelem = (
 	const days = ["日", "月", "火", "水", "木", "金", "土"];
 	const localstyle: React.CSSProperties = {
 		display: "flex",
-		backgroundColor: "green",
-		width: "40px",
-		height: `${count * (400/graphmaxscale)}px`,
-		borderStyle: "solid",
-		borderWidth: "1px",
-		borderColor: "black",
+		backgroundColor: "lightgreen",
+		width: "90px",
+		height: `${count * (400 / graphmaxscale)}px`,
+		// borderStyle: "solid",
+		// borderWidth: "1px",
+		// borderColor: "black",
+		borderBottomWidth: "0px",
+		color: "green",
+		fontSize: "35px",
 	};
+	let fontsize=40;
 	if (day === today.getDay() - 1) {
-		localstyle.backgroundColor = "red";
+		localstyle.background = "linear-gradient(#6d6, green)";
+		localstyle.fontSize="50px"
+		fontsize=50;
 	}
 	return (
 		<div style={style.graphelemwrapper}>
-			<div style={localstyle} />
+			<div style={localstyle}>
+				<div
+					style={{
+						display: "flex",
+						position: "relative",
+						bottom: `${fontsize*1.8-20}px`,
+						justifyContent: "center",
+						width: "100%",
+					}}
+				>
+					{count}
+				</div>
+			</div>
 			<div style={style.graphday}>{days[day]}</div>
 		</div>
 	);
