@@ -1,95 +1,43 @@
+import type { Metadata } from "next";
 import Image from "next/image";
-import styles from "./page.module.css";
+import style from "./page.module.css";
+import SignUpButton from "./signup";
+import Link from "next/link";
+export const metadata: Metadata = {
+	title: "Githubsky",
+	description:
+		"前日のGithubのコミット数と直近一週間のヒートマップを自動でBlueskyに投稿するサービスです。",
+};
 
 export default function Home() {
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  );
+	return (
+		<>
+			<h1>Githubsky V0</h1>
+			<p>
+				前日のGithubのコミット数と直近一週間のヒートマップを自動でBlueskyに投稿するサービスです。
+			</p>
+			<h2>STEP1.Blueskyアカウントの連携</h2>
+			<p><Link href="https://bsky.app/settings/app-passwords" target="__blank" rel="noopener noreferrer">こちら</Link>からアプリパスワードを生成してください</p>
+			<label className={style.label}>
+				Blueskyのハンドル
+				<input type="text" id="bsky_handle" placeholder="example.bsky.social" />
+			</label>
+			<label className={style.label}>
+				Blueskyのアプリパスワード
+				<input type="text" id="bsky_password" placeholder="aaaa-bbbb-cccc-dddd"/>
+			</label>
+			<SignUpButton accounttype="bluesky" value="連携" />
+			<h2>STEP2.Githubアカウントの連携</h2>
+			<label className={style.label}>
+				Githubのユーザーネーム
+				<input type="text" id="github_name" />
+			</label>
+			<SignUpButton accounttype="github" value="連携" />
+			<h2>Q&A</h2>
+			<ul>
+				<li>登録解除したい<p><Link href="https://bsky.app/settings/app-passwords" target="__blank" rel="noopener noreferrer">こちら</Link>から、Githubskyに登録したアプリパスワードを削除してください。</p></li>
+				<li>自動投稿されなくなった<p>ハンドルを変えた、アプリパスワードを削除したなどの可能性があります。もう一度登録してください。</p></li>
+			</ul>
+		</>
+	);
 }
