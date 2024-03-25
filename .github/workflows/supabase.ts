@@ -11,6 +11,7 @@ export type UserData = {
 	github_name: string;
 	fail_count: number;
 	iv: string;
+	DID:string
 };
 let supabase: SupabaseClient | undefined;
 export const supabasesetting = (
