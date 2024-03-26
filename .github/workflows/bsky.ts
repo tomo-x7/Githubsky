@@ -4,11 +4,9 @@ import {
 	BskyAgent,
 	RichText,
 } from "@atproto/api";
-import type { week } from "./github";
 import { fail, success, writelog } from "./supabase";
 
 export const post = async (
-	bsky_handle: string,
 	bsky_password: string,
 	github_name: string,
 	commitcount: number | string,
@@ -40,7 +38,7 @@ export const post = async (
 		// });
 		success(id);
 	} catch (e) {
-		writelog(`${bsky_handle}の投稿時エラー\n${e}`);
+		writelog(`${DID}の投稿時エラー\n${e}`);
 		fail(id, fail_count);
 	}
 };

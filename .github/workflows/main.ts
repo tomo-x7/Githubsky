@@ -20,7 +20,6 @@ const main = async () => {
 			if (userdata.count !== undefined && userdata.count !== 0) {
 				//APIを叩いて画像取得
 				post(
-					userdata.bsky_handle,
 					userdata.bsky_password,
 					userdata.github_name,
 					userdata.count,

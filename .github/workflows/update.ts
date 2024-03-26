@@ -1,6 +1,0 @@
-
-const update = async () => {
-
-};
-
-update();

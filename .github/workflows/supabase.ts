@@ -6,7 +6,6 @@ import { decrypt } from "./mycrypto";
 export type UserData = {
 	id: number;
 	created_at: string;
-	bsky_handle: string;
 	bsky_password: string;
 	github_name: string;
 	fail_count: number;
