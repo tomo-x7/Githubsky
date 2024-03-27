@@ -1,3 +1,30 @@
-.label{
+.label {
     display: block;
+}
+
+.steps {
+    width: 400px;
+    min-height: 200px;
+    position: relative;
+}
+
+.error {
+    color: red
+}
+
+.button {
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+}
+
+.back {
+    left: 10px;
+}
+
+.next {
+    right: 10px;
+    background-color: #00f;
+    color:white;
+    font-weight: bolder;
 }
