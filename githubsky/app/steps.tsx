@@ -25,7 +25,12 @@ export const Steps = () => {
 			return this[name];
 		}
 		getlist() {
-			return { did: this.DID, bsky_password: this.bsky_password, github_name: this.github_name };
+			return {
+				DID: this.DID,
+				bsky_password: this.bsky_password,
+				github_name: this.github_name,
+				bsky_handle: this.bsky_handle,
+			};
 		}
 	}
 	const userdata = new userdataclass();
@@ -68,6 +73,13 @@ export const Steps = () => {
 		setsteps(stepelems.step3(userdata));
 	};
 	const finish = async () => {
+		fetch("/api/signup", {
+			method: "POST",
+			body: JSON.stringify(userdata.getlist()),
+			headers:{
+				'Content-Type': 'application/json'
+			}
+		});
 	};
 	const backtobsky = () => {
 		setsteps(stepelems.step1(userdata));
@@ -76,7 +88,7 @@ export const Steps = () => {
 		setsteps(stepelems.step2(userdata));
 	};
 	const stepelems = {
-		step1: (data:userdataclass) => {
+		step1: (data: userdataclass) => {
 			return (
 				<>
 					<h3>STEP1.Blueskyアカウントの連携</h3>
@@ -87,7 +99,7 @@ export const Steps = () => {
 							type="text"
 							id="bsky_handle"
 							placeholder="example.bsky.social"
-							defaultValue={data.getdata('bsky_handle')}
+							defaultValue={data.getdata("bsky_handle")}
 							required
 						/>
 					</label>
@@ -97,7 +109,7 @@ export const Steps = () => {
 							type="text"
 							id="bsky_password"
 							placeholder="aaaa-bbbb-cccc-dddd"
-							defaultValue={data.getdata('bsky_password')}
+							defaultValue={data.getdata("bsky_password")}
 							required
 						/>
 					</label>
@@ -105,25 +117,25 @@ export const Steps = () => {
 				</>
 			);
 		},
-		step2: (data:userdataclass) => {
+		step2: (data: userdataclass) => {
 			return (
 				<>
 					<h3>STEP2.Githubアカウントの連携</h3>
 					<label className={style.label}>
 						Githubのユーザーネーム
-						<input type="text" id="github_name" defaultValue={data.getdata('github_name')} required />
+						<input type="text" id="github_name" defaultValue={data.getdata("github_name")} required />
 					</label>
 					<input type="button" value="戻る" onClick={backtobsky} />
 					<input type="button" value="次へ" onClick={githubsignup} />
 				</>
 			);
 		},
-		step3: (data:userdataclass) => {
+		step3: (data: userdataclass) => {
 			return (
 				<>
 					<h3>STEP3.登録内容の確認</h3>
-					<div>Bluesky:{data.getdata('bsky_handle')}</div>
-                    <div>Github:{data.getdata('github_name')}</div>
+					<div>Bluesky:{data.getdata("bsky_handle")}</div>
+					<div>Github:{data.getdata("github_name")}</div>
 					<input type="button" value="戻る" onClick={backtogithub} />
 					<input type="button" value="登録" onClick={finish} />
 				</>

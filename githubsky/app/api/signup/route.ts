@@ -1,9 +1,13 @@
+import {  createClient } from "@supabase/supabase-js";
 import { type NextRequest, NextResponse } from "next/server";
 import crypto from 'node:crypto'
 
-export const POST=(rawreq:NextRequest)=>{
+const supabase=createClient(process.env.SUPABASE_URL??'',process.env.SUPABASE_SERVICE_ROLE_KEY??'')
+export const POST=async (rawreq:NextRequest)=>{
+    const req:{DID:string,bsky_handle?:string,bsky_password:string,github_name:string}=await rawreq.json()
+    const {encrypted:password,iv}=encrypt(req.bsky_password)||{encrypted:'',iv:''}
+    await supabase.from('userdata').insert({bsky_handle:req.bsky_handle,bsky_password:password,github_name:req.github_name,DID:req.DID,iv:iv})
     
-
 
     return NextResponse.json({},{status:200})
 }

@@ -31,11 +31,11 @@ export const post = async (
 			text: `今日はGitHubに${commitcount}回commitしました\n#Githubsky\nhttps://github.com/${github_name}`,
 		});
 		message.detectFacets(agent);
-		// await agent.post({
-		// 	text: message.text,
-		// 	facets:message.facets,
-		// 	createdAt: new Date().toISOString(),
-		// });
+		await agent.post({
+			text: message.text,
+			facets:message.facets,
+			createdAt: new Date().toISOString(),
+		});
 		success(id);
 	} catch (e) {
 		writelog(`${DID}の投稿時エラー\n${e}`);
