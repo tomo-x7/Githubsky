@@ -52,6 +52,7 @@ export const post = async (
 							size: data.blob.size,
 						},
 						title: "Githubsky",
+						description: '',
 					},
 				},
 			});
