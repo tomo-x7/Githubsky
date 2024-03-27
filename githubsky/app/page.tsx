@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import style from "./page.module.css";
-import SignUpButton from "./signup";
 import Link from "next/link";
-import { Steps } from "./steps";
+import { Loading, Steps } from "./steps";
 export const metadata: Metadata = {
 	title: "Githubsky",
 	description: "前日のGithubのコミット数と直近一週間のヒートマップを自動でBlueskyに投稿するサービスです。",
@@ -39,6 +38,14 @@ export default function Home() {
 					<p>{kotira}からアプリパスワードをひとつ削除してください</p>
 				</li>
 			</ul>
+			<hr />
+			<div>
+				Githubsky V0.1{" "}
+				<Link href="https://bsky.app/profile/tomo-x.bsky.social" target="__blank" rel="noopener noreferrer">
+					@tomo-x
+				</Link>
+			</div>
+			<Loading />
 		</>
 	);
 }

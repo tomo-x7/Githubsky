@@ -1,18 +1,14 @@
 "use client";
 import Link from "next/link";
 import style from "./page.module.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BskyAgent } from "@atproto/api";
 class userdataclass {
 	private DID?: string;
 	private bsky_handle?: string;
 	private bsky_password?: string;
 	private github_name?: string;
-	constructor() {
-		console.log("initial");
-	}
 	setdata(name: "DID" | "bsky_handle" | "bsky_password" | "github_name", value: string) {
-		console.log(`set ${name} ${value}`);
 		this[name] = value;
 		return this[name];
 	}
@@ -38,36 +34,88 @@ export const Steps = () => {
 			こちら
 		</Link>
 	);
-	const [error, seterror] = useState("error");
+	const loading = () => {
+		// biome-ignore lint/style/noNonNullAssertion: <explanation>
+		document.getElementById("loading")!.style.display = "flex";
+	};
+	const loadingfin = () => {
+		// biome-ignore lint/style/noNonNullAssertion: <explanation>
+		document.getElementById("loading")!.style.display = "none";
+	};
+	const seterror = (error: unknown) => {
+		try{
+		switch (typeof error) {
+			case "string":
+				seterrorlog(error);
+				break;
+			case "number":
+				seterrorlog(error.toString());
+				break;
+			case "bigint":
+				seterrorlog(error.toString());
+				break;
+			case "boolean":
+				seterrorlog(error ? "true" : "false");
+				break;
+			case "symbol":
+				seterrorlog(error.toString());
+				break;
+			case "undefined":
+				seterrorlog("不明なエラー");
+				console.error(error);
+				break;
+			case "object":
+				seterrorlog(JSON.stringify(error));
+				break;
+			case "function":
+				seterrorlog("不明なエラー");
+				console.error(error);
+				break;
+		}
+	}catch(e){
+		seterrorlog('不明なエラー')
+		console.error(e)
+	}
+	};
+	const [error, seterrorlog] = useState("");
 	const bskysignup = async () => {
-		const bsky_handle = (document.getElementById("bsky_handle") as HTMLInputElement).value;
-		const bsky_password = (document.getElementById("bsky_password") as HTMLInputElement).value;
-		if (!(bsky_handle && bsky_password)) {
-			seterror("空欄の項目があります");
-			return;
-		}
-		const agent = new BskyAgent({
-			service: "https://bsky.social",
-		});
+		loading();
 		try {
-			if (
-				!(
-					bsky_handle === userdata.getdata("bsky_handle") &&
-					bsky_password === userdata.getdata("bsky_password")
-				)
-			) {
-				await agent.login({ identifier: bsky_handle, password: bsky_password });
-				userdata.setdata("DID", (await agent.resolveHandle({ handle: bsky_handle })).data.did);
-				userdata.setdata("bsky_password", bsky_password);
+			const bsky_handle = (document.getElementById("bsky_handle") as HTMLInputElement).value;
+			const bsky_password = (document.getElementById("bsky_password") as HTMLInputElement).value;
+			if (!(bsky_handle && bsky_password)) {
+				loadingfin();
+				seterror("空欄の項目があります");
+				return;
 			}
+			const agent = new BskyAgent({
+				service: "https://bsky.social",
+			});
+			try {
+				if (
+					!(
+						bsky_handle === userdata.getdata("bsky_handle") &&
+						bsky_password === userdata.getdata("bsky_password")
+					)
+				) {
+					await agent.login({ identifier: bsky_handle, password: bsky_password });
+					userdata.setdata("DID", (await agent.resolveHandle({ handle: bsky_handle })).data.did);
+					userdata.setdata("bsky_password", bsky_password);
+				}
+			} catch (e) {
+				loadingfin();
+				seterror("認証に失敗しました。");
+				return;
+			}
+			seterror("");
+			setsteps(stepelems.step2(userdata));
 		} catch (e) {
-			seterror("認証に失敗しました。");
-			return;
+			loadingfin();
+			seterror(e);
 		}
-		seterror("");
-		setsteps(stepelems.step2(userdata));
 	};
 	const githubsignup = async () => {
+		loading();
 		const github_name = (document.getElementById("github_name") as HTMLInputElement).value;
 		if (!github_name) return;
 		const message = await fetch(`https://api.github.com/users/${github_name}`)
@@ -76,6 +124,7 @@ export const Steps = () => {
 				return data.message;
 			});
 		if (message) {
+			loadingfin();
 			seterror("ユーザーが見つかりません");
 			return;
 		}
@@ -84,18 +133,28 @@ export const Steps = () => {
 		setsteps(stepelems.step3(userdata));
 	};
 	const finish = async () => {
-		fetch("/api/signup", {
+		loading();
+		await fetch("/api/signup", {
 			method: "POST",
 			body: JSON.stringify(userdata.getlist()),
 			headers: {
 				"Content-Type": "application/json",
 			},
-		});
+		})
+			.then(() => {
+				loadingfin();
+			})
+			.catch((e) => {
+				seterror(e);
+				loadingfin;
+			});
 	};
 	const backtobsky = () => {
+		seterror("");
 		setsteps(stepelems.step1(userdata));
 	};
 	const backtogithub = () => {
+		seterror("");
 		setsteps(stepelems.step2(userdata));
 	};
 	const stepelems = {
@@ -108,6 +167,7 @@ export const Steps = () => {
 						Blueskyのハンドル
 						<input
 							type="text"
+							autoComplete="username"
 							id="bsky_handle"
 							placeholder="example.bsky.social"
 							defaultValue={data.getdata("bsky_handle")}
@@ -117,7 +177,7 @@ export const Steps = () => {
 					<label className={style.label}>
 						Blueskyのアプリパスワード
 						<input
-							type="text"
+							type="password"
 							id="bsky_password"
 							placeholder="aaaa-bbbb-cccc-dddd"
 							defaultValue={data.getdata("bsky_password")}
@@ -137,7 +197,13 @@ export const Steps = () => {
 					<h3>STEP2.Githubアカウントの連携</h3>
 					<label className={style.label}>
 						Githubのユーザーネーム
-						<input type="text" id="github_name" defaultValue={data.getdata("github_name")} required />
+						<input
+							type="text"
+							autoComplete="username"
+							id="github_name"
+							defaultValue={data.getdata("github_name")}
+							required
+						/>
 					</label>
 					<div className={style.error}>{error}</div>
 					<div className={style.button}>
@@ -171,4 +237,12 @@ export const Steps = () => {
 		</>
 	);
 	//return <div className={style.steps}>{steps}</div>;
+};
+
+export const Loading = () => {
+	return (
+		<div className={style.loader_wrapper} style={{ display: "none" }} id="loading">
+			<div className={style.loader}>Loading...</div>
+		</div>
+	);
 };
