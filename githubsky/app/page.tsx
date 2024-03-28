@@ -21,7 +21,8 @@ export default function Home() {
 		<>
 			<h1>Githubsky V0</h1>
 			<p>前日のGithubのコミット数と直近一週間のヒートマップを自動でBlueskyに投稿するサービスです。</p>
-			<h2>登録はこちら</h2>
+			<p>数日中にサービス開始できると思います。お楽しみに！</p>
+			{/* <h2>登録はこちら</h2>
 			<Steps />
 			<h2>Q&A</h2>
 			<ul>
@@ -37,7 +38,7 @@ export default function Home() {
 					二重投稿される
 					<p>{kotira}からアプリパスワードをひとつ削除してください</p>
 				</li>
-			</ul>
+			</ul> */}
 			<hr />
 			<div>
 				Githubsky V0.1{" "}
