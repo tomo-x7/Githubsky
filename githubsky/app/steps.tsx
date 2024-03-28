@@ -43,39 +43,39 @@ export const Steps = () => {
 		document.getElementById("loading")!.style.display = "none";
 	};
 	const seterror = (error: unknown) => {
-		try{
-		switch (typeof error) {
-			case "string":
-				seterrorlog(error);
-				break;
-			case "number":
-				seterrorlog(error.toString());
-				break;
-			case "bigint":
-				seterrorlog(error.toString());
-				break;
-			case "boolean":
-				seterrorlog(error ? "true" : "false");
-				break;
-			case "symbol":
-				seterrorlog(error.toString());
-				break;
-			case "undefined":
-				seterrorlog("不明なエラー");
-				console.error(error);
-				break;
-			case "object":
-				seterrorlog(JSON.stringify(error));
-				break;
-			case "function":
-				seterrorlog("不明なエラー");
-				console.error(error);
-				break;
+		try {
+			switch (typeof error) {
+				case "string":
+					seterrorlog(error);
+					break;
+				case "number":
+					seterrorlog(error.toString());
+					break;
+				case "bigint":
+					seterrorlog(error.toString());
+					break;
+				case "boolean":
+					seterrorlog(error ? "true" : "false");
+					break;
+				case "symbol":
+					seterrorlog(error.toString());
+					break;
+				case "undefined":
+					seterrorlog("不明なエラー");
+					console.error(error);
+					break;
+				case "object":
+					seterrorlog(JSON.stringify(error));
+					break;
+				case "function":
+					seterrorlog("不明なエラー");
+					console.error(error);
+					break;
+			}
+		} catch (e) {
+			seterrorlog("不明なエラー");
+			console.error(e);
 		}
-	}catch(e){
-		seterrorlog('不明なエラー')
-		console.error(e)
-	}
 	};
 	const [error, seterrorlog] = useState("");
 	const bskysignup = async () => {
@@ -99,6 +99,7 @@ export const Steps = () => {
 					)
 				) {
 					await agent.login({ identifier: bsky_handle, password: bsky_password });
+					userdata.setdata("bsky_handle", bsky_handle);
 					userdata.setdata("DID", (await agent.resolveHandle({ handle: bsky_handle })).data.did);
 					userdata.setdata("bsky_password", bsky_password);
 				}
@@ -108,6 +109,7 @@ export const Steps = () => {
 				return;
 			}
 			seterror("");
+			loadingfin();
 			setsteps(stepelems.step2(userdata));
 		} catch (e) {
 			loadingfin();
@@ -130,6 +132,7 @@ export const Steps = () => {
 		}
 		userdata.setdata("github_name", github_name);
 		seterror("");
+		loadingfin();
 		setsteps(stepelems.step3(userdata));
 	};
 	const finish = async () => {
@@ -141,8 +144,14 @@ export const Steps = () => {
 				"Content-Type": "application/json",
 			},
 		})
-			.then(() => {
-				loadingfin();
+			.then((data) => {
+				if (data.ok) {
+					loadingfin();
+					setsteps(stepelems.step4);
+				} else {
+					loadingfin();
+					seterror(data.statusText);
+				}
 			})
 			.catch((e) => {
 				seterror(e);
@@ -167,6 +176,7 @@ export const Steps = () => {
 						Blueskyのハンドル
 						<input
 							type="text"
+							name="bsky_handle"
 							autoComplete="username"
 							id="bsky_handle"
 							placeholder="example.bsky.social"
@@ -178,6 +188,7 @@ export const Steps = () => {
 						Blueskyのアプリパスワード
 						<input
 							type="password"
+							name="bsky_password"
 							id="bsky_password"
 							placeholder="aaaa-bbbb-cccc-dddd"
 							defaultValue={data.getdata("bsky_password")}
@@ -199,7 +210,8 @@ export const Steps = () => {
 						Githubのユーザーネーム
 						<input
 							type="text"
-							autoComplete="username"
+							name="github_name"
+							autoComplete="on"
 							id="github_name"
 							defaultValue={data.getdata("github_name")}
 							required
@@ -217,8 +229,14 @@ export const Steps = () => {
 			return (
 				<>
 					<h3>STEP3.登録内容の確認</h3>
-					<div>Bluesky:{data.getdata("bsky_handle")}</div>
-					<div>Github:{data.getdata("github_name")}</div>
+					<div>
+						<span className={style.confirm_label}>Bluesky:</span>
+						<span>{data.getdata("bsky_handle")}</span>
+					</div>
+					<div>
+						<span className={style.confirm_label}>Github:</span>
+						<span>{data.getdata("github_name")}</span>
+					</div>
 					<div className={style.error}>{error}</div>
 					<div className={style.button}>
 						<input type="button" value="戻る" className={style.back} onClick={backtogithub} />
@@ -227,6 +245,16 @@ export const Steps = () => {
 				</>
 			);
 		},
+		step4: (
+			<>
+				<h3>STEP4.完了</h3>
+				<p>
+					ご利用いただきありがとうございます。
+					<br />
+					登録が完了しました。
+				</p>
+			</>
+		),
 	};
 	const [steps, setsteps] = useState(stepelems.step1(userdata));
 	return (
@@ -234,9 +262,10 @@ export const Steps = () => {
 			<div className={style.steps}>{stepelems.step1(userdata)}</div>
 			<div className={style.steps}>{stepelems.step2(userdata)}</div>
 			<div className={style.steps}>{stepelems.step3(userdata)}</div>
+			<div className={style.steps}>{stepelems.step4}</div>
 		</>
 	);
-	//return <div className={style.steps}>{steps}</div>;
+	return <div className={style.steps}>{steps}</div>;
 };
 
 export const Loading = () => {

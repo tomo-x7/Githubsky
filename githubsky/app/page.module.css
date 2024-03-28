@@ -31,6 +31,12 @@
     border-style: solid;
 
 }
+.button input:focus-visible {
+    outline-color: black;
+    outline-width: 1px;
+    outline-style: solid;
+    border-color: black;
+}
 
 .back {
     left: 10px;
@@ -44,7 +50,10 @@
     color: white;
     font-weight: bolder;
 }
-
+.confirm_label{
+    display: inline-block;
+    width: 80px;
+}
 .loader_wrapper{
     display: flex;
     justify-content: center;
