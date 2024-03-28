@@ -1,7 +1,15 @@
 import { requestToBodyStream } from "next/dist/server/body-streams";
 import type React from "react";
 import type { ReactElement } from "react";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 
+dayjs.locale("ja");
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault('Asia/Tokyo');
+const today=dayjs()
 type week = {
 	0: number;
 	1: number;
@@ -34,10 +42,9 @@ export const elem = (params: params) => {
 					</div>
 					<div style={{ display: "flex" }}>
 						直近一週間のコミット数:
-						<div style={style.count}>
-							{lastweekarray.reduce((sum, element) => sum + element, 0)}
-						</div>
+						<div style={style.count}>{lastweekarray.reduce((sum, element) => sum + element, 0)}</div>
 					</div>
+					<div style={{display:"flex"}}>{today.format()}</div>
 				</div>
 				<div style={{ display: "flex", flexDirection: "row" }}>
 					<div style={style.graphscale}>
@@ -140,12 +147,7 @@ const style: { [key: string]: React.CSSProperties } = {
 		textAlign: "right",
 	},
 };
-const graphelem = (
-	day: number /*曜日、0が日曜日*/,
-	count: number,
-): ReactElement => {
-	const today = new Date();
-	today.setHours(today.getHours() - 9);
+const graphelem = (day: number /*曜日、0が日曜日*/, count: number): ReactElement => {
 
 	const days = ["日", "月", "火", "水", "木", "金", "土"];
 	const localstyle: React.CSSProperties = {
@@ -160,11 +162,11 @@ const graphelem = (
 		color: "green",
 		fontSize: "35px",
 	};
-	let fontsize=40;
-	if (day === today.getDay() - 1) {
+	let fontsize = 40;
+	if (day === today.day() -1) {
 		localstyle.background = "linear-gradient(#6d6, green)";
-		localstyle.fontSize="50px"
-		fontsize=50;
+		localstyle.fontSize = "50px";
+		fontsize = 50;
 	}
 	return (
 		<div style={style.graphelemwrapper}>
@@ -173,7 +175,7 @@ const graphelem = (
 					style={{
 						display: "flex",
 						position: "relative",
-						bottom: `${fontsize*1.8-20}px`,
+						bottom: `${fontsize * 1.8 - 20}px`,
 						justifyContent: "center",
 						width: "100%",
 					}}
