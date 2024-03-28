@@ -9,7 +9,7 @@ dayjs.locale("ja");
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.tz.setDefault('Asia/Tokyo');
-const today=dayjs()
+const today=dayjs().tz()
 type week = {
 	0: number;
 	1: number;
