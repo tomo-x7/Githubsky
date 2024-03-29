@@ -1,4 +1,5 @@
-import * as github from './github'
+import * as github from "./github";
 
-
-console.log(github.getUsersGithubData('tomo-x7'))
+github.getUsersGithubData("tomo-x7").then((data) => {
+	console.log(data);
+});
