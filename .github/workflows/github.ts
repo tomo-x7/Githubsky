@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
+import 'dayjs/locale/ja'
 dayjs.locale("ja");
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -40,13 +41,13 @@ export const getUsersGithubData = async (username: string): Promise<{ count: num
 	const yesterday = dayjs().tz().subtract(1, "d").hour(0).minute(0).second(0);
 	const today = dayjs().tz().hour(0).minute(0).second(0);
 	console.log(dayjs().tz().format());
-	console.log(dayjs.tz(alldata[0].created_at,'Europe/London'))
 	console.log(lastgetday.format());
-	console.log(yesterday.format());
+	console.log(`${yesterday.format()}\n`);
 	const pushdata = alldata
 		.map((data) => {
-			const day = dayjs.tz(data.created_at,'Europe/London');
+			const day = dayjs(data.created_at).tz('Europe/London',false);
 			if (data.type === "PushEvent" && day > lastgetday && day < today) {
+				console.log(day.format())
 				lastweek[day.get("day")] += data.payload.commits.length;
 				if (day > yesterday) {
 					commitcount += data.payload.commits.length;
