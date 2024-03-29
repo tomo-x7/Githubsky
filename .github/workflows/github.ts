@@ -35,11 +35,14 @@ export const getUsersGithubData = async (username: string): Promise<{ count: num
 			break;
 		}
 	}
-
+	console.log(alldata)
 	const lastweek: week = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
 	let commitcount = 0;
 	const yesterday = dayjs().subtract(1,'D')
 	const filterday=dayjs().subtract(3,'D')
+	console.log(lastgetday.format())
+	console.log(yesterday.format())
+	console.log(filterday.format())
 	const pushdata = alldata
 		.map((data) => {
 			const day = dayjs(data.created_at);
@@ -52,5 +55,6 @@ export const getUsersGithubData = async (username: string): Promise<{ count: num
 			}
 		})
 		.filter((item) => item !== undefined);
+		console.log(pushdata)
 	return { count: commitcount, lastweek: lastweek };
 };
