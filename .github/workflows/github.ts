@@ -40,11 +40,12 @@ export const getUsersGithubData = async (username: string): Promise<{ count: num
 	const yesterday = dayjs().tz().subtract(1, "d").hour(0).minute(0).second(0);
 	const today = dayjs().tz().hour(0).minute(0).second(0);
 	console.log(dayjs().tz().format());
+	console.log(dayjs.tz(alldata[0].created_at,'Europe/London'))
 	console.log(lastgetday.format());
 	console.log(yesterday.format());
 	const pushdata = alldata
 		.map((data) => {
-			const day = dayjs(data.created_at);
+			const day = dayjs.tz(data.created_at,'Europe/London');
 			if (data.type === "PushEvent" && day > lastgetday && day < today) {
 				lastweek[day.get("day")] += data.payload.commits.length;
 				if (day > yesterday) {
