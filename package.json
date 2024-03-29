@@ -12,6 +12,7 @@
   "dependencies": {
     "@atproto/api": "^0.12.2",
     "@supabase/supabase-js": "^2.39.8",
+    "dayjs": "^1.11.10",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.4.2"
