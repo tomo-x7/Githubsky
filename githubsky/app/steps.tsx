@@ -150,7 +150,7 @@ export const Steps = () => {
 					setsteps(stepelems.step4);
 				} else {
 					loadingfin();
-					seterror(data.statusText);
+					seterror(data.statusText||`${data.status}のエラーが発生しました`);
 				}
 			})
 			.catch((e) => {
@@ -257,14 +257,15 @@ export const Steps = () => {
 		),
 	};
 	const [steps, setsteps] = useState(stepelems.step1(userdata));
-	return (
-		<>
-			<div className={style.steps}>{stepelems.step1(userdata)}</div>
-			<div className={style.steps}>{stepelems.step2(userdata)}</div>
-			<div className={style.steps}>{stepelems.step3(userdata)}</div>
-			<div className={style.steps}>{stepelems.step4}</div>
-		</>
-	);
+	// return (
+	// 	<>
+	// 		<div className={style.steps}>{stepelems.step1(userdata)}</div>
+	// 		<div className={style.steps}>{stepelems.step2(userdata)}</div>
+	// 		<div className={style.steps}>{stepelems.step3(userdata)}</div>
+	// 		<div className={style.steps}>{stepelems.step4}</div>
+	// 	</>
+	// );
+	// biome-ignore lint/correctness/noUnreachable: <explanation>
 	return <div className={style.steps}>{steps}</div>;
 };
 

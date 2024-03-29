@@ -21,7 +21,7 @@ export default function Home() {
 		<>
 			<h1>Githubsky V0</h1>
 			<p>前日のGithubのコミット数と直近一週間のコミット数のグラフを自動でBlueskyに投稿するサービスです。</p>
-			<h2>登録はこちら</h2>
+			<div className={style.touroku}><h2>登録はこちら</h2></div>
 			<Steps />
 			<h2>Q&A</h2>
 			<ul>
@@ -38,7 +38,7 @@ export default function Home() {
 					<p>{kotira}からアプリパスワードをひとつ削除してください</p>
 				</li>
 				<li>
-					設定を変更したい連携先など
+					設定を変更したい（連携先など）
 					<p>一回{kotira}からアプリパスワードを削除して、再登録してください</p>
 				</li>
 			</ul>
@@ -50,7 +50,7 @@ export default function Home() {
 				<Link href="https://bsky.app/profile/tomo-x.bsky.social" target="__blank" rel="noopener noreferrer">
 					@tomo-x
 				</Link><br />
-				<Link href="https://github.com/tomo-x7/githubsky" target="__blank" rel="noopener noreferrer">Githubリポジトリ</Link>
+				このサービスはオープンソースです。ソースコードは<Link href="https://github.com/tomo-x7/githubsky" target="__blank" rel="noopener noreferrer">こちら</Link>
 			</div>
 			<Loading />
 		</>

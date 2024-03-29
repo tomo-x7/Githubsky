@@ -1,16 +1,26 @@
-
 .label {
     display: block;
     margin: 5px;
 }
 
+.touroku {
+    width: fit-content;
+    background-color: white;
+    margin-left: 10px;
+    position: relative;
+    z-index: 2;
+}
+
 .steps {
     display: flex;
     flex-direction: column;
-    width: 400px;
-    min-height: 260px;
+    width: 430px;
+    min-height: 240px;
     position: relative;
     padding-bottom: 40px;
+    bottom: 40px;
+    border: solid 1px black;
+    padding:0px 10px;
 }
 
 .error {
@@ -31,6 +41,7 @@
     border-style: solid;
 
 }
+
 .button input:focus-visible {
     outline-color: black;
     outline-width: 1px;
@@ -39,32 +50,36 @@
 }
 
 .back {
-    left: 10px;
+    left: 20px;
     border-color: black;
 }
 
 .next {
-    right: 10px;
+    right: 20px;
     background-color: #00f;
     border-color: #00f;
     color: white;
     font-weight: bolder;
 }
-.confirm_label{
+
+.confirm_label {
     display: inline-block;
     width: 80px;
 }
-.loader_wrapper{
+
+.loader_wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
     position: fixed;
-    top:0;
+    top: 0;
     bottom: 0;
     right: 0;
     left: 0;
+    z-index: 999;
     background-color: #0008;
 }
+
 .loader {
     margin: 100px auto;
     font-size: 25px;
