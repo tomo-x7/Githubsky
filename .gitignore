@@ -1,4 +1,4 @@
 node_modules/
 testdata.json
 *.memo
-test.ts
+gitignore-*
