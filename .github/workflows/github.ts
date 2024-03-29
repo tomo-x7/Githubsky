@@ -6,7 +6,6 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.tz.setDefault("Asia/Tokyo");
 
-
 type apires = {
 	id: string;
 	type: string;
@@ -24,14 +23,13 @@ export type week = {
 	6: number;
 	[key: number]: number;
 };
-export const getUsersGithubData = async (username: string): Promise<{count:number,lastweek:week}> => {
+export const getUsersGithubData = async (username: string): Promise<{ count: number; lastweek: week }> => {
 	const alldata: Array<apires> = [];
-	const lastgetday = dayjs();
-	lastgetday.set('date',lastgetday.get('date')-7)
+	const lastgetday = dayjs().subtract(7,'D').hour(0).minute(0).second(0);
 	for (let i = 1; i < 100; i++) {
-		const data: Array<apires> = await fetch(
-			`https://api.github.com/users/${username}/events?page=${i}`,
-		).then((data) => data.json());
+		const data: Array<apires> = await fetch(`https://api.github.com/users/${username}/events?page=${i}`).then(
+			(data) => data.json(),
+		);
 		alldata.push(...data);
 		if (!(data[0] && lastgetday < dayjs(data[data.length - 1].created_at))) {
 			break;
@@ -40,19 +38,19 @@ export const getUsersGithubData = async (username: string): Promise<{count:numbe
 
 	const lastweek: week = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
 	let commitcount = 0;
-	const yesterday = dayjs();
-	yesterday.set('date',yesterday.get('date')-1)
+	const yesterday = dayjs().subtract(1,'D')
+	const filterday=dayjs().subtract(3,'D')
 	const pushdata = alldata
 		.map((data) => {
-			const day =dayjs(data.created_at);
+			const day = dayjs(data.created_at);
 			if (data.type === "PushEvent" && day > lastgetday) {
-				lastweek[day.get('day')] += data.payload.commits.length;
-				if (day > yesterday) {
+				lastweek[day.get("day")] += data.payload.commits.length;
+				if (day.get('day')===yesterday.get('day')&&day>filterday) {
 					commitcount += data.payload.commits.length;
 				}
 				return data;
 			}
 		})
 		.filter((item) => item !== undefined);
-	return {count:commitcount,lastweek:lastweek};
+	return { count: commitcount, lastweek: lastweek };
 };
