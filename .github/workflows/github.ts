@@ -25,7 +25,7 @@ export type week = {
 };
 export const getUsersGithubData = async (username: string): Promise<{ count: number; lastweek: week }> => {
 	const alldata: Array<apires> = [];
-	const lastgetday = dayjs().subtract(7, "d").hour(0).minute(0).second(0);
+	const lastgetday = dayjs().tz().subtract(7, "d").hour(0).minute(0).second(0);
 	for (let i = 1; i < 100; i++) {
 		const data: Array<apires> = await fetch(`https://api.github.com/users/${username}/events?page=${i}`).then(
 			(data) => data.json(),
@@ -35,12 +35,11 @@ export const getUsersGithubData = async (username: string): Promise<{ count: num
 			break;
 		}
 	}
-	console.log(alldata);
 	const lastweek: week = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
 	let commitcount = 0;
-	const yesterday = dayjs().subtract(1, "d").hour(0).minute(0).second(0);
-	const today = dayjs().hour(0).minute(0).second(0);
-	console.log(dayjs().format());
+	const yesterday = dayjs().tz().subtract(1, "d").hour(0).minute(0).second(0);
+	const today = dayjs().tz().hour(0).minute(0).second(0);
+	console.log(dayjs().tz().format());
 	console.log(lastgetday.format());
 	console.log(yesterday.format());
 	const pushdata = alldata
@@ -55,6 +54,5 @@ export const getUsersGithubData = async (username: string): Promise<{ count: num
 			}
 		})
 		.filter((item) => item !== undefined);
-	console.log(pushdata);
 	return { count: commitcount, lastweek: lastweek };
 };
