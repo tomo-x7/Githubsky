@@ -22,15 +22,23 @@ export const metadata: Metadata = {
 		images:"https://githubsky.vercel.app/card.png"
 	},
 };
-
+type props={
+	href:string|URL,
+	children?:React.ReactNode|string|undefined
+}
+const Mylink=({href, children}:props)=>{
+	return(
+		<Link href={href}  target="__blank" rel="noopener noreferrer">{children}</Link>
+	)
+}
 export default function Home() {
 	/**
 	 * アプリパスワード設定ページへのリンク
 	 */
 	const kotira = (
-		<Link href="https://bsky.app/settings/app-passwords" target="__blank" rel="noopener noreferrer">
+		<Mylink href="https://bsky.app/settings/app-passwords">
 			こちら
-		</Link>
+		</Mylink>
 	);
 	return (
 		<>
@@ -62,9 +70,10 @@ export default function Home() {
 				Githubsky V0.1
 				<br />
 				Created by{" "}
-				<Link href="https://bsky.app/profile/tomo-x.bsky.social" target="__blank" rel="noopener noreferrer">
+				<Mylink href="https://bsky.app/profile/tomo-x.bsky.social">
 					@tomo-x
-				</Link><br />
+				</Mylink><br />
+				<div>お問い合わせ先:<Mylink href="https://github.com/tomo-x7/githubsky">Github</Mylink>・<Mylink href="https://bsky.app/profile/tomo-x.bsky.social">Bluesky</Mylink>・<Mylink href="https://twitter.com/tomo_x_79">Twitter</Mylink></div>
 				このサービスはオープンソースです。ソースコードは<Link href="https://github.com/tomo-x7/githubsky" target="__blank" rel="noopener noreferrer">こちら</Link>
 			</div>
 			<Loading />
