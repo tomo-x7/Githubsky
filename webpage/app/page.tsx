@@ -6,6 +6,21 @@ import { Loading, Steps } from "./steps";
 export const metadata: Metadata = {
 	title: "Githubsky",
 	description: "前日のGithubのコミット数と直近一週間のヒートマップを自動でBlueskyに投稿するサービスです。",
+	icons:[
+		{url:"/favicon.svg",type:"image/svg+xml"}
+	],
+	openGraph:{
+		title:"Githubsky",
+		description:"前日のGithubのコミット数と直近一週間のヒートマップを自動でBlueskyに投稿するサービスです。",
+		type:"website",
+		images:"https://githubsky.vercel.app/ogp.png",
+	},
+	twitter:{
+		title:"Githubsky",
+		description:"前日のGithubのコミット数と直近一週間のヒートマップを自動でBlueskyに投稿するサービスです。",
+		card:"summary",
+		images:"https://githubsky.vercel.app/card.png"
+	},
 };
 
 export default function Home() {
