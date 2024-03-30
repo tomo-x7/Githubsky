@@ -42,7 +42,7 @@ export default function Home() {
 	);
 	return (
 		<>
-			<h1>Githubsky V0</h1>
+			<h1>Githubsky V1</h1>
 			<p>前日のGithubのコミット数と直近一週間のコミット数のグラフを自動でBlueskyに投稿するサービスです。</p>
 			<div className={style.touroku}><h2>登録はこちら</h2></div>
 			<Steps />
@@ -67,7 +67,7 @@ export default function Home() {
 			</ul>
 			<hr />
 			<div>
-				Githubsky V0.1
+				Githubsky V1.0
 				<br />
 				Created by{" "}
 				<Mylink href="https://bsky.app/profile/tomo-x.bsky.social">
