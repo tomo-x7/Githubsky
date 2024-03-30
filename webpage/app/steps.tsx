@@ -44,32 +44,52 @@ export const Steps = () => {
 	};
 	const seterror = (error: unknown) => {
 		try {
+			const errorelem = document.getElementById("error");
+			if (!errorelem) {
+				window.alert("深刻なエラーが発生した可能性があります");
+				return;
+			}
+			console.log(typeof error);
+			console.log(error);
 			switch (typeof error) {
 				case "string":
+					errorelem.innerText = error;
 					seterrorlog(error);
 					break;
 				case "number":
+					errorelem.innerText = error.toString();
 					seterrorlog(error.toString());
 					break;
 				case "bigint":
+					errorelem.innerText = error.toString();
 					seterrorlog(error.toString());
 					break;
 				case "boolean":
+					errorelem.innerText = error ? "true" : "false";
 					seterrorlog(error ? "true" : "false");
 					break;
 				case "symbol":
+					errorelem.innerText = error.toString();
 					seterrorlog(error.toString());
 					break;
 				case "undefined":
+					errorelem.innerText = "不明なエラー";
 					seterrorlog("不明なエラー");
 					console.error(error);
 					break;
 				case "object":
+					errorelem.innerText = JSON.stringify(error);
 					seterrorlog(JSON.stringify(error));
 					break;
 				case "function":
+					errorelem.innerText = "不明なエラー";
 					seterrorlog("不明なエラー");
 					console.error(error);
+					break;
+				default:
+					errorelem.innerText = "不明なエラー";
+					seterrorlog("不明なエラー");
+					console.log(error);
 					break;
 			}
 		} catch (e) {
@@ -150,7 +170,7 @@ export const Steps = () => {
 					setsteps(stepelems.step4);
 				} else {
 					loadingfin();
-					seterror(data.statusText||`${data.status}のエラーが発生しました`);
+					seterror(data.statusText || `${data.status}のエラーが発生しました`);
 				}
 			})
 			.catch((e) => {
@@ -195,7 +215,9 @@ export const Steps = () => {
 							required
 						/>
 					</label>
-					<div className={style.error}>{error}</div>
+					<div className={style.error} id="error">
+						{error}
+					</div>
 					<div className={style.button}>
 						<input type="button" value="次へ" className={style.next} onClick={bskysignup} />
 					</div>
@@ -217,7 +239,9 @@ export const Steps = () => {
 							required
 						/>
 					</label>
-					<div className={style.error}>{error}</div>
+					<div className={style.error} id="error">
+						{error}
+					</div>
 					<div className={style.button}>
 						<input type="button" value="戻る" className={style.back} onClick={backtobsky} />
 						<input type="button" value="次へ" className={style.next} onClick={githubsignup} />
@@ -237,7 +261,9 @@ export const Steps = () => {
 						<span className={style.confirm_label}>Github:</span>
 						<span>{data.getdata("github_name")}</span>
 					</div>
-					<div className={style.error}>{error}</div>
+					<div className={style.error} id="error">
+						{error}
+					</div>
 					<div className={style.button}>
 						<input type="button" value="戻る" className={style.back} onClick={backtogithub} />
 						<input type="button" value="登録" className={style.next} onClick={finish} />
@@ -257,15 +283,6 @@ export const Steps = () => {
 		),
 	};
 	const [steps, setsteps] = useState(stepelems.step1(userdata));
-	// return (
-	// 	<>
-	// 		<div className={style.steps}>{stepelems.step1(userdata)}</div>
-	// 		<div className={style.steps}>{stepelems.step2(userdata)}</div>
-	// 		<div className={style.steps}>{stepelems.step3(userdata)}</div>
-	// 		<div className={style.steps}>{stepelems.step4}</div>
-	// 	</>
-	// );
-	// biome-ignore lint/correctness/noUnreachable: <explanation>
 	return <div className={style.steps}>{steps}</div>;
 };
 
