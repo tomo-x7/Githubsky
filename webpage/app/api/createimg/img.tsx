@@ -9,7 +9,7 @@ dayjs.locale("ja");
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.tz.setDefault("Asia/Tokyo");
-const today = dayjs().tz();
+const yesterday=dayjs().tz().subtract(1,'d')
 type week = {
 	0: number;
 	1: number;
@@ -162,7 +162,7 @@ const graphelem = (day: number /*曜日、0が日曜日*/, count: number): React
 		fontSize: "35px",
 	};
 	let fontsize = 40;
-	if (day === today.day() - 1) {
+	if (day === yesterday.day()) {
 		localstyle.background = "linear-gradient(#6d6, green)";
 		localstyle.fontSize = "50px";
 		fontsize = 50;

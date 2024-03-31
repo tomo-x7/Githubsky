@@ -1,6 +1,11 @@
+html{
+    width: 98vw;
+}
 body {
     display: block;
-    margin: 8px;
+    margin: 0px;
+    padding: 8px;
+    width: 98vw;
 }
 
 h1 {

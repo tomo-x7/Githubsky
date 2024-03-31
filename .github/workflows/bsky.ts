@@ -24,7 +24,7 @@ export const post = async (
 		});
 
 		const message = new RichText({
-			text: `今日はGitHubに${commitcount}回commitしました\n#Githubsky\nhttps://github.com/${github_name}`,
+			text: `昨日はGitHubに${commitcount}回commitしました\n#Githubsky\nhttps://github.com/${github_name}`,
 		});
 		message.detectFacets(agent);
 
