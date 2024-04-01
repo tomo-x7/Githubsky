@@ -2,7 +2,16 @@
 import Link from "next/link";
 import style from "./page.module.css";
 import { useEffect, useState } from "react";
-import { BskyAgent } from "@atproto/api";
+import { BskyAgent, RichText } from "@atproto/api";
+
+let ogpimg:Uint8Array
+fetch("https://githubsky.vercel.app/ogp.png")
+.then((data) => data.arrayBuffer())
+.then((buff)=>new Uint8Array(buff))
+.then((u8array)=>{
+	ogpimg=u8array
+})
+
 class userdataclass {
 	private DID?: string;
 	private bsky_handle?: string;
@@ -46,7 +55,7 @@ export const Steps = () => {
 		try {
 			const errorelem = document.getElementById("error");
 			if (!errorelem) {
-				window.alert("深刻なエラーが発生した可能性があります");
+				window.alert(`深刻なエラーが発生した可能性があります\n${error}`);
 				return;
 			}
 			console.log(typeof error);
@@ -98,6 +107,9 @@ export const Steps = () => {
 		}
 	};
 	const [error, seterrorlog] = useState("");
+	const agent = new BskyAgent({
+		service: "https://bsky.social",
+	});
 	const bskysignup = async () => {
 		loading();
 		try {
@@ -108,9 +120,6 @@ export const Steps = () => {
 				seterror("空欄の項目があります");
 				return;
 			}
-			const agent = new BskyAgent({
-				service: "https://bsky.social",
-			});
 			try {
 				if (
 					!(
@@ -177,6 +186,40 @@ export const Steps = () => {
 				seterror(e);
 				loadingfin;
 			});
+		try {
+			const { data } = await agent.uploadBlob(ogpimg, {
+				// 画像の形式を指定 ('image/jpeg' 等の MIME タイプ)
+				encoding: "image/png",
+			});
+			const message = new RichText({
+				text: "Githubskyに登録しました。これから毎日0時ごろに自動投稿を行います。\n#Githubsky",
+			});
+			message.detectFacets(agent);
+			await agent.post({
+				text: message.text,
+				facets: message.facets,
+				createdAt: new Date().toISOString(),
+				embed: {
+					$type: "app.bsky.embed.external",
+					external: {
+						uri: "https://githubsky.vercel.app/",
+						thumb: {
+							$type: "blob",
+							ref: {
+								$link: data.blob.ref.toString(),
+							},
+							mimeType: "image/png",
+							size: data.blob.size,
+						},
+						title: "Githubsky",
+						description:
+							"前日のGithubのコミット数と直近一週間のヒートマップを自動でBlueskyに投稿するサービスです。",
+					},
+				},
+			});
+		} catch (e) {
+			seterror(e);
+		}
 	};
 	const backtobsky = () => {
 		seterror("");
@@ -261,6 +304,7 @@ export const Steps = () => {
 						<span className={style.confirm_label}>Github:</span>
 						<span>{data.getdata("github_name")}</span>
 					</div>
+					<div>※登録時に登録完了ポストが投稿されます</div>
 					<div className={style.error} id="error">
 						{error}
 					</div>
@@ -278,6 +322,8 @@ export const Steps = () => {
 					ご利用いただきありがとうございます。
 					<br />
 					登録が完了しました。
+					<br />
+					登録完了ポストが投稿されていることを確認してください。
 				</p>
 			</>
 		),
