@@ -1,0 +1,13 @@
+name: autodelete
+
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    name: post
+    runs-on: ubuntu-latest
+    steps:
+      # - name: ls
+      #   run: ls -l
+      - name: Checkout
+        uses: actions/checkout@v4
