@@ -43,7 +43,7 @@ export default function Home() {
 	return (
 		<>
 			<h1>Githubsky V1</h1>
-			<p>前日のGithubのコミット数と直近一週間のコミット数のグラフを自動でBlueskyに投稿するサービスです。</p>
+			<p>前日のGithubのコミット数と直近一週間のコミット数のグラフを自動でBlueskyに投稿するサービスです。<br />七回投稿に失敗すると自動的にデータを削除します。投稿されなくなった場合は再登録をお願いします。</p>
 			<div className={style.touroku}><h2>登録はこちら</h2></div>
 			<Steps />
 			<h2>Q&A</h2>
