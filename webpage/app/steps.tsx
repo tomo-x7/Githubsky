@@ -4,13 +4,13 @@ import style from "./page.module.css";
 import { useEffect, useState } from "react";
 import { BskyAgent, RichText } from "@atproto/api";
 
-let ogpimg:Uint8Array
+let ogpimg: Uint8Array;
 fetch("https://githubsky.vercel.app/ogp.png")
-.then((data) => data.arrayBuffer())
-.then((buff)=>new Uint8Array(buff))
-.then((u8array)=>{
-	ogpimg=u8array
-})
+	.then((data) => data.arrayBuffer())
+	.then((buff) => new Uint8Array(buff))
+	.then((u8array) => {
+		ogpimg = u8array;
+	});
 
 class userdataclass {
 	private DID?: string;
@@ -229,6 +229,13 @@ export const Steps = () => {
 		seterror("");
 		setsteps(stepelems.step2(userdata));
 	};
+	const showpass = (ev: React.FormEvent<HTMLInputElement>) => {
+		if (ev.currentTarget.checked) {
+			(document.getElementById("bsky_password") as HTMLInputElement).type = "text";
+		} else {
+			(document.getElementById("bsky_password") as HTMLInputElement).type = "password";
+		}
+	};
 	const stepelems = {
 		step1: (data: userdataclass) => {
 			return (
@@ -257,6 +264,10 @@ export const Steps = () => {
 							defaultValue={data.getdata("bsky_password")}
 							required
 						/>
+					</label>
+					<label style={{ display: "block", width: "fit-content", userSelect: "none" }}>
+						<input type="checkbox" onChange={showpass} id="showpass" />
+						パスワードを表示
 					</label>
 					<div className={style.error} id="error">
 						{error}
