@@ -9,7 +9,7 @@ dayjs.locale("ja");
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.tz.setDefault("Asia/Tokyo");
-const yesterday=dayjs().tz().subtract(1,'d')
+const yesterday = dayjs().tz().subtract(1, "d");
 type week = {
 	0: number;
 	1: number;
@@ -20,7 +20,7 @@ type week = {
 	6: number;
 };
 let graphmaxscale = 20;
-export type params = { count: number; lastweek: week };
+export type params = { count: number; lastweek: week; star?: number };
 export const elem = (params: params) => {
 	const lastweekarray = [
 		params.lastweek[0],
@@ -32,21 +32,33 @@ export const elem = (params: params) => {
 		params.lastweek[6],
 	];
 	const lastweekmax = Math.max(...lastweekarray);
-	graphmaxscale = Math.max(20, Math.ceil(lastweekmax / 8.8) * 10);
+	graphmaxscale = Math.max(20, Math.ceil(lastweekmax / 8.5) * 10);
 	return (
 		<>
 			<div style={style.wrapper}>
 				<div style={style.countwrapper}>
-					<div style={{ display: "flex" }}>
-						昨日のコミット数:<div style={style.count}>{params.count}</div>
+					<div style={{ display: "flex", flexDirection: "column", width: "450px" }}>
+						<div style={{ display: "flex" }}>
+							昨日のコミット数:<div style={style.count}>{params.count}</div>
+						</div>
+						<div style={{ display: "flex" }}>
+							直近一週間のコミット数:
+							<div style={style.count}>{lastweekarray.reduce((sum, element) => sum + element, 0)}</div>
+						</div>
 					</div>
-					<div style={{ display: "flex" }}>
-						直近一週間のコミット数:
-						<div style={style.count}>{lastweekarray.reduce((sum, element) => sum + element, 0)}</div>
+					<div
+						style={(() => {
+							if (params.star) {
+								return { display: "flex" };
+							}
+							return { display: "none" };
+						})()}
+					>
+						直近一週間で獲得したスター:
+						<div style={style.count}>{params.star}</div>
 					</div>
-					{/* <div style={{ display: "flex" }}>{today.format()}</div> */}
 				</div>
-				<div style={{ display: "flex", flexDirection: "row" }}>
+				<div style={{ display: "flex", flexDirection: "row",position:'absolute',bottom:'3px',right:'20px' }}>
 					<div style={style.graphscale}>
 						<div style={style.scale}>0</div>
 						<div style={style.scale}>{graphmaxscale / 2}</div>
@@ -101,7 +113,10 @@ const style: { [key: string]: React.CSSProperties } = {
 	countwrapper: {
 		display: "flex",
 		fontSize: "30px",
-		flexDirection: "column",
+		flexDirection: "row",
+		flexWrap: "wrap",
+		paddingLeft: "10px",
+		paddingTop: "5px",
 	},
 	count: {
 		display: "flex",
@@ -121,7 +136,7 @@ const style: { [key: string]: React.CSSProperties } = {
 		width: "98vw",
 		bottom: "230px",
 		borderTop: "1px solid black",
-		zIndex: "-1000",
+		zIndex: -1000,
 	},
 	border3: {
 		display: "flex",
@@ -130,7 +145,7 @@ const style: { [key: string]: React.CSSProperties } = {
 		bottom: "30px",
 		left: "0px",
 		borderLeft: "1px solid black",
-		zIndex: "-1000",
+		zIndex: -1000,
 	},
 	graphscale: {
 		display: "flex",
