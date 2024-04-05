@@ -38,6 +38,7 @@ export const post = async (
 			await agent.post({
 				text: message.text,
 				facets: message.facets,
+				langs:["ja-JP"],
 				createdAt: new Date().toISOString(),
 				embed: {
 					$type: "app.bsky.embed.external",
