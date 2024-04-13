@@ -199,6 +199,7 @@ export const Steps = () => {
 				text: message.text,
 				facets: message.facets,
 				createdAt: new Date().toISOString(),
+				langs: ["ja"],
 				embed: {
 					$type: "app.bsky.embed.external",
 					external: {
