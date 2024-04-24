@@ -12,7 +12,11 @@ const main = async () => {
 		try {
 			const userdata: UserData & { count?: number; lastweek?: week ;star?:number} = userslist[i];
 			Object.assign(userdata, await getUsersGithubData(userdata.github_name));
-			if (userdata.count !== undefined && userdata.lastweek !== undefined) {
+			let sum=0;
+			for(const key in userdata.lastweek){
+				sum+=userdata.lastweek[key]
+			}
+			if (userdata.count !== undefined && userdata.lastweek !== undefined && sum!==0) {
 				//APIを叩いて画像取得
 				const imgblob = await getimg(userdata.count, userdata.lastweek,userdata.star);
 				post(
