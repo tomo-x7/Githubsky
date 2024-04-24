@@ -34,7 +34,7 @@ const main = async () => {
 						imgblob || undefined,
 					);
 				} else {
-					await writelog(`${userdata.DID}:何かおかしい\n${userdata.count}\n${userdata.lastweek}`);
+					console.log(`no commit ${userdata.id}`)
 				}
 			} else {
 				await writelog(`${userdata.DID}:何かおかしい\n${userdata.count}\n${userdata.lastweek}`);
