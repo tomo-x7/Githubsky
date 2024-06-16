@@ -36,14 +36,17 @@ export type week = {
 };
 export const getUsersGithubData = async (
 	username: string,
+	Github_token?: string,
 ): Promise<{ count: number; lastweek: week; star: number | undefined }> => {
 	const alldata: Array<apires> = [];
 	const stardata: Array<starapires> = [];
 	const lastgetday = dayjs().tz().subtract(7, "d").hour(0).minute(0).second(0);
+	const fetchoption: RequestInit = Github_token ? { headers: [["Authorization", `Bearer ${Github_token}`]] } : {};
 	for (let i = 1; i < 100; i++) {
-		const data: Array<apires> = await fetch(`https://api.github.com/users/${username}/events?page=${i}`).then(
-			(data) => data.json(),
-		);
+		const data: Array<apires> = await fetch(
+			`https://api.github.com/users/${username}/events?page=${i}`,
+			fetchoption,
+		).then((data) => data.json());
 		alldata.push(...data);
 		if (!(data[0] && lastgetday < dayjs(data[data.length - 1].created_at))) {
 			break;
@@ -52,6 +55,7 @@ export const getUsersGithubData = async (
 	for (let i = 1; i < 100; i++) {
 		const data: Array<starapires> = await fetch(
 			`https://api.github.com/users/${username}/received_events?page=${i}`,
+			fetchoption,
 		).then((data) => data.json());
 		stardata.push(...data);
 		if (!(data[0] && lastgetday < dayjs(data[data.length - 1].created_at))) {
