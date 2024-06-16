@@ -11,7 +11,7 @@ const main = async () => {
 	for (const i in userslist) {
 		try {
 			const userdata: UserData & { count?: number; lastweek?: week; star?: number } = userslist[i];
-			Object.assign(userdata, await getUsersGithubData(userdata.github_name));
+			Object.assign(userdata, await getUsersGithubData(userdata.github_name,userdata.Github_token));
 			if (userdata.count !== undefined && userdata.lastweek !== undefined) {
 				const sum =
 					userdata.lastweek[0] +
