@@ -17,11 +17,12 @@ class userdataclass {
 	private bsky_handle?: string;
 	private bsky_password?: string;
 	private github_name?: string;
-	setdata(name: "DID" | "bsky_handle" | "bsky_password" | "github_name", value: string) {
+	private Github_token?: string;
+	setdata(name: "DID" | "bsky_handle" | "bsky_password" | "github_name" | "Github_token", value: string) {
 		this[name] = value;
 		return this[name];
 	}
-	getdata(name: "DID" | "bsky_handle" | "bsky_password" | "github_name") {
+	getdata(name: "DID" | "bsky_handle" | "bsky_password" | "github_name" | "Github_token") {
 		return this[name];
 	}
 	getlist() {
@@ -30,6 +31,7 @@ class userdataclass {
 			bsky_password: this.bsky_password,
 			github_name: this.github_name,
 			bsky_handle: this.bsky_handle,
+			Github_token: this.Github_token,
 		};
 	}
 }
@@ -148,6 +150,7 @@ export const Steps = () => {
 	const githubsignup = async () => {
 		loading();
 		const github_name = (document.getElementById("github_name") as HTMLInputElement).value;
+		const Github_token:string|undefined=(document.getElementById("github_name") as HTMLInputElement).value;
 		if (!github_name) return;
 		const message = await fetch(`https://api.github.com/users/${github_name}`)
 			.then((data) => data.json())
@@ -160,6 +163,7 @@ export const Steps = () => {
 			return;
 		}
 		userdata.setdata("github_name", github_name);
+		userdata.setdata("Github_token",Github_token)
 		seterror("");
 		loadingfin();
 		setsteps(stepelems.step3(userdata));
@@ -294,6 +298,18 @@ export const Steps = () => {
 							required
 						/>
 					</label>
+					<label className={style.label}>
+						GithubのPersonal access token(オプション)
+						<input
+							type="text"
+							name="github_token"
+							autoComplete="on"
+							id="github_token"
+						/>
+					</label>
+					<div>
+						tokenを設定することで、プライベートリポジトリのコミット数も取得することが可能になります。<a href="https://github.com/settings/tokens/" target="_blank" rel="noopener noreferrer">https://github.com/settings/tokens/</a>から、Expirationは"no Exporatotion"にしてrepoにチェックを入れて生成してください
+					</div>
 					<div className={style.error} id="error">
 						{error}
 					</div>
