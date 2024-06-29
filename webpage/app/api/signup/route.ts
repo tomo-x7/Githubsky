@@ -10,6 +10,7 @@ export const POST = async (rawreq: NextRequest) => {
 		bsky_password: string;
 		github_name: string;
 		Github_token?: string;
+		bsky_pds?: string;
 	} = await rawreq.json();
 	const { encrypted: password, iv } = encrypt(req.bsky_password) || { encrypted: "", iv: "" };
 	await supabase
@@ -21,6 +22,7 @@ export const POST = async (rawreq: NextRequest) => {
 			DID: req.DID,
 			iv: iv,
 			Github_token: req.Github_token,
+			PDS: req.bsky_pds,
 		})
 		.eq("DID", req.DID)
 		.then((data) => {

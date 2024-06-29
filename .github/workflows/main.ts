@@ -11,7 +11,7 @@ const main = async () => {
 	for (const i in userslist) {
 		try {
 			const userdata: UserData & { count?: number; lastweek?: week; star?: number } = userslist[i];
-			Object.assign(userdata, await getUsersGithubData(userdata.github_name,userdata.Github_token));
+			Object.assign(userdata, await getUsersGithubData(userdata.github_name, userdata.Github_token));
 			if (userdata.count !== undefined && userdata.lastweek !== undefined) {
 				const sum =
 					userdata.lastweek[0] +
@@ -32,9 +32,10 @@ const main = async () => {
 						userdata.fail_count,
 						userdata.DID,
 						imgblob || undefined,
+						userdata.PDS,
 					);
 				} else {
-					console.log(`no commit ${userdata.id}`)
+					console.log(`no commit ${userdata.id}`);
 				}
 			} else {
 				await writelog(`${userdata.DID}:何かおかしい\n${userdata.count}\n${userdata.lastweek}`);

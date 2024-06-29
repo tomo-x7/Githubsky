@@ -8,14 +8,12 @@ export const post = async (
 	id: number,
 	fail_count: number,
 	DID: string,
-	imgblob?: Blob,
+	imgblob: Blob|undefined,
+	PDS: string|undefined,
 ) => {
 	try {
 		const agent = new BskyAgent({
-			service: "https://bsky.social",
-			persistSession: (evt: AtpSessionEvent, sess?: AtpSessionData) => {
-				// store the session-data for reuse
-			},
+			service: PDS ?? "https://bsky.social",
 		});
 
 		await agent.login({
@@ -38,7 +36,7 @@ export const post = async (
 			await agent.post({
 				text: message.text,
 				facets: message.facets,
-				langs:["ja"],
+				langs: ["ja"],
 				createdAt: new Date().toISOString(),
 				embed: {
 					$type: "app.bsky.embed.external",
@@ -53,12 +51,12 @@ export const post = async (
 							size: data.blob.size,
 						},
 						title: "Githubsky",
-						description: '',
+						description: "",
 					},
 				},
 			});
 		} else {
-			writelog(`${DID}の画像取得エラー`)
+			writelog(`${DID}の画像取得エラー`);
 		}
 		success(id);
 	} catch (e) {

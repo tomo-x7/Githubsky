@@ -11,7 +11,8 @@ export type UserData = {
 	fail_count: number;
 	iv: string;
 	DID: string;
-	Github_token?:string
+	Github_token?: string;
+	PDS?: string;
 };
 let supabase: SupabaseClient | undefined;
 export const supabasesetting = (supabase_url: string, supabase_token: string) => {
@@ -67,8 +68,8 @@ export const deleteuser = async (id: number) => {
 	await supabase
 		.from("deleted")
 		.insert({
-			old_id:olddata.id,
-			created_at:olddata.created_at,
+			old_id: olddata.id,
+			created_at: olddata.created_at,
 			bsky_handle: olddata.bsky_handle,
 			bsky_password: olddata.bsky_password,
 			github_name: olddata.github_name,
