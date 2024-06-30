@@ -14,7 +14,7 @@ export const POST = async (rawreq: NextRequest) => {
 	} = await rawreq.json();
 	const { encrypted: password, iv } = encrypt(req.bsky_password) || { encrypted: "", iv: "" };
 	await supabase
-		.from("test")
+		.from("userdata")
 		.upsert({
 			bsky_handle: req.bsky_handle,
 			bsky_password: password,
