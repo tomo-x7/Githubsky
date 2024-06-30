@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import style from "./page.module.css";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BskyAgent, RichText } from "@atproto/api";
 
 let ogpimg: Uint8Array;
@@ -17,11 +17,13 @@ class userdataclass {
 	private bsky_handle?: string;
 	private bsky_password?: string;
 	private github_name?: string;
-	setdata(name: "DID" | "bsky_handle" | "bsky_password" | "github_name", value: string) {
+	private Github_token?: string;
+	setdata(name: "DID" | "bsky_handle" | "bsky_password" | "github_name" | "Github_token", value: string | undefined) {
+		if (!value) return;
 		this[name] = value;
 		return this[name];
 	}
-	getdata(name: "DID" | "bsky_handle" | "bsky_password" | "github_name") {
+	getdata(name: "DID" | "bsky_handle" | "bsky_password" | "github_name" | "Github_token") {
 		return this[name];
 	}
 	getlist() {
@@ -30,6 +32,7 @@ class userdataclass {
 			bsky_password: this.bsky_password,
 			github_name: this.github_name,
 			bsky_handle: this.bsky_handle,
+			Github_token: this.Github_token,
 		};
 	}
 }
@@ -51,6 +54,10 @@ export const Steps = () => {
 		// biome-ignore lint/style/noNonNullAssertion: <explanation>
 		document.getElementById("loading")!.style.display = "none";
 	};
+	const [bsky_handle, setbsky_handle] = useState<string>("");
+	const [bsky_password, setbsky_password] = useState<string>("");
+	const [github_name, setgithub_name] = useState<string>("");
+	const [github_token, setgithub_token] = useState<string>("");
 	const seterror = (error: unknown) => {
 		try {
 			const errorelem = document.getElementById("error");
@@ -113,20 +120,14 @@ export const Steps = () => {
 	const bskysignup = async () => {
 		loading();
 		try {
-			const bsky_handle = (document.getElementById("bsky_handle") as HTMLInputElement).value;
-			const bsky_password = (document.getElementById("bsky_password") as HTMLInputElement).value;
 			if (!(bsky_handle && bsky_password)) {
 				loadingfin();
+				console.log(bsky_handle);
 				seterror("空欄の項目があります");
 				return;
 			}
 			try {
-				if (
-					!(
-						bsky_handle === userdata.getdata("bsky_handle") &&
-						bsky_password === userdata.getdata("bsky_password")
-					)
-				) {
+				if (!(bsky_handle === userdata.getdata("bsky_handle") && bsky_password === userdata.getdata("bsky_password"))) {
 					await agent.login({ identifier: bsky_handle, password: bsky_password });
 					userdata.setdata("bsky_handle", bsky_handle);
 					userdata.setdata("DID", (await agent.resolveHandle({ handle: bsky_handle })).data.did);
@@ -147,8 +148,10 @@ export const Steps = () => {
 	};
 	const githubsignup = async () => {
 		loading();
-		const github_name = (document.getElementById("github_name") as HTMLInputElement).value;
-		if (!github_name) return;
+		if (!github_name) {
+			loadingfin();
+			return;
+		}
 		const message = await fetch(`https://api.github.com/users/${github_name}`)
 			.then((data) => data.json())
 			.then((data) => {
@@ -160,6 +163,7 @@ export const Steps = () => {
 			return;
 		}
 		userdata.setdata("github_name", github_name);
+		userdata.setdata("Github_token", github_token);
 		seterror("");
 		loadingfin();
 		setsteps(stepelems.step3(userdata));
@@ -213,8 +217,7 @@ export const Steps = () => {
 							size: data.blob.size,
 						},
 						title: "Githubsky",
-						description:
-							"前日のGithubのコミット数と直近一週間のヒートマップを自動でBlueskyに投稿するサービスです。",
+						description: "前日のGithubのコミット数と直近一週間のヒートマップを自動でBlueskyに投稿するサービスです。",
 					},
 				},
 			});
@@ -251,8 +254,15 @@ export const Steps = () => {
 							autoComplete="username"
 							id="bsky_handle"
 							placeholder="example.bsky.social"
-							defaultValue={data.getdata("bsky_handle")}
-							required
+							value={bsky_handle}
+							onChange={(ev) => {
+								console.log(ev.target.value);
+								setbsky_handle(ev.target.value);
+							}}
+							onBlur={(ev) => {
+								console.log(ev.target.value);
+								setbsky_handle(ev.target.value);
+							}}
 						/>
 					</label>
 					<label className={style.label}>
@@ -262,8 +272,13 @@ export const Steps = () => {
 							name="bsky_password"
 							id="bsky_password"
 							placeholder="aaaa-bbbb-cccc-dddd"
-							defaultValue={data.getdata("bsky_password")}
-							required
+							value={bsky_password}
+							onChange={(ev) => {
+								setbsky_password(ev.target.value);
+							}}
+							onBlur={(ev) => {
+								setbsky_password(ev.target.value);
+							}}
 						/>
 					</label>
 					<label style={{ display: "block", width: "fit-content", userSelect: "none" }}>
@@ -290,10 +305,40 @@ export const Steps = () => {
 							name="github_name"
 							autoComplete="on"
 							id="github_name"
-							defaultValue={data.getdata("github_name")}
+							value={github_name}
+							onChange={(ev) => {
+								setgithub_name(ev.target.value);
+							}}
+							onBlur={(ev) => {
+								setgithub_name(ev.target.value);
+							}}
 							required
 						/>
 					</label>
+					<label className={style.label}>
+						GithubのPersonal access token(オプション)
+						<input
+							type="text"
+							name="github_token"
+							autoComplete="new-token"
+							id="github_token"
+							value={github_token}
+							onChange={(ev) => {
+								setgithub_token(ev.target.value);
+							}}
+							onBlur={(ev) => {
+								setgithub_token(ev.target.value);
+							}}
+						/>
+					</label>
+					<div>
+						tokenを設定することで、プライベートリポジトリのコミット数も取得することが可能になります。
+						<a href="https://github.com/settings/tokens/" target="_blank" rel="noopener noreferrer">
+							https://github.com/settings/tokens/
+						</a>
+						から、classicの方を選び、Expirationは{'"no Exporatotion"'}、Select scopesは{'"repo"'}
+						にチェックを入れて生成してください
+					</div>
 					<div className={style.error} id="error">
 						{error}
 					</div>
