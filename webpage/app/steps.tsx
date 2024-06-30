@@ -127,12 +127,7 @@ export const Steps = () => {
 				return;
 			}
 			try {
-				if (
-					!(
-						bsky_handle === userdata.getdata("bsky_handle") &&
-						bsky_password === userdata.getdata("bsky_password")
-					)
-				) {
+				if (!(bsky_handle === userdata.getdata("bsky_handle") && bsky_password === userdata.getdata("bsky_password"))) {
 					await agent.login({ identifier: bsky_handle, password: bsky_password });
 					userdata.setdata("bsky_handle", bsky_handle);
 					userdata.setdata("DID", (await agent.resolveHandle({ handle: bsky_handle })).data.did);
@@ -222,8 +217,7 @@ export const Steps = () => {
 							size: data.blob.size,
 						},
 						title: "Githubsky",
-						description:
-							"前日のGithubのコミット数と直近一週間のヒートマップを自動でBlueskyに投稿するサービスです。",
+						description: "前日のGithubのコミット数と直近一週間のヒートマップを自動でBlueskyに投稿するサービスです。",
 					},
 				},
 			});
@@ -342,8 +336,8 @@ export const Steps = () => {
 						<a href="https://github.com/settings/tokens/" target="_blank" rel="noopener noreferrer">
 							https://github.com/settings/tokens/
 						</a>
-						から、classicの方を選び、Expirationは"no Exporatotion"、Select
-						scopesは"repo"にチェックを入れて生成してください
+						から、classicの方を選び、Expirationは{'"no Exporatotion"'}、Select scopesは{'"repo"'}
+						にチェックを入れて生成してください
 					</div>
 					<div className={style.error} id="error">
 						{error}

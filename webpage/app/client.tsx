@@ -281,7 +281,7 @@ function Step1({ next, userdata, refs, agent, loading, loadingfin }: Omit<params
 				<a href="https://github.com/settings/tokens/" target="_blank" rel="noopener noreferrer">
 					https://github.com/settings/tokens/
 				</a>
-				から、classicの方を選び、Expirationは"no Exporatotion"、Select scopesは"repo"にチェックを入れて生成してください
+				から、classicの方を選び、Expirationは{'"no Exporatotion"'}、Select scopesは{'"repo"'}にチェックを入れて生成してください
 			</div>
 			<div className={style.error} id="error">
 				{error}
