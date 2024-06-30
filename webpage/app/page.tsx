@@ -26,7 +26,7 @@ fetch("https://githubsky.vercel.app/ogp.png")
 export default function Page() {
 	return (
 		<>
-			<h1>Githubsky V1</h1>
+			<h1>Githubsky V1.1</h1>
 			<p>
 				前日のGithubのコミット数と直近一週間のコミット数のグラフを自動でBlueskyに投稿するサービスです。
 				<br />
@@ -64,7 +64,7 @@ export default function Page() {
 			</ul>
 			<hr />
 			<div>
-				Githubsky V1.0
+				Githubsky V1.1
 				<br />
 				Created by <Mylink href="https://bsky.app/profile/tomo-x.bsky.social">@tomo-x</Mylink>
 				<br />
