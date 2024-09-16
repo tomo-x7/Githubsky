@@ -8,18 +8,19 @@ export const POST = async (rawreq: NextRequest) => {
 	const { encrypted: password, iv } = encrypt(req.bsky_password) || { encrypted: "", iv: "" };
 	await supabase
 		.from("userdata")
-		.insert({
+		.upsert({
 			bsky_handle: req.bsky_handle,
 			bsky_password: password,
 			github_name: req.github_name,
 			DID: req.DID,
 			iv: iv,
 		})
-        .then((data)=>{
-            if(Math.floor(data.status/100)!==2){
-                return NextResponse.json({},{status:400})
-            }
-        })
+		.eq("DID", req.DID)
+		.then((data) => {
+			if (Math.floor(data.status / 100) !== 2) {
+				return NextResponse.json({}, { status: 400 });
+			}
+		});
 
 	return NextResponse.json({}, { status: 200 });
 };
