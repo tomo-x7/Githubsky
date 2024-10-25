@@ -4,6 +4,6 @@
         "formatWithErrors": true,
         "indentStyle":"tab",
         "indentWidth": 4,
-        "lineWidth":130
+        "lineWidth":110
       }
 }
