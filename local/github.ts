@@ -19,10 +19,10 @@ const date = (day = 0) => {
 	return date;
 };
 
-export const getUsersGithubData = async (
-	username: string,
-	Github_token?: string,
-): Promise<{ count: number; lastweek: week; star: number | undefined }> => {
+export const getUsersGithubData = async ({
+	github_name,
+	Github_token,
+}: { github_name: string; Github_token?: string | null }) => {
 	const lastweekdata: Array<apires> = [];
 	const stardata: Array<starapires> = [];
 	const lastgetday = date(-7);
@@ -30,7 +30,7 @@ export const getUsersGithubData = async (
 	//データを取得
 	for (let i = 1; i < 100; i++) {
 		const data: Array<apires> = await fetch(
-			`https://api.github.com/users/${username}/events?page=${i}`,
+			`https://api.github.com/users/${github_name}/events?page=${i}`,
 			fetchoption,
 		).then((data) => data.json());
 		lastweekdata.push(...data);
@@ -40,7 +40,7 @@ export const getUsersGithubData = async (
 	}
 	for (let i = 1; i < 100; i++) {
 		const data: Array<starapires> = await fetch(
-			`https://api.github.com/users/${username}/received_events?page=${i}`,
+			`https://api.github.com/users/${github_name}/received_events?page=${i}`,
 			fetchoption,
 		).then((data) => data.json());
 		stardata.push(...data);
@@ -64,7 +64,7 @@ export const getUsersGithubData = async (
 			}
 		}
 	}
-	const reponame = new RegExp(`^${username}/`, "i");
+	const reponame = new RegExp(`^${github_name}/`, "i");
 	for (const data of stardata) {
 		const day = new Date(data.created_at);
 		if (data.type === "WatchEvent" && day > lastgetday && day < today) {
