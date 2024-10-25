@@ -2,3 +2,4 @@ node_modules/
 testdata.json
 *.memo
 gitignore-*
+.env

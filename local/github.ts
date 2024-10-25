@@ -1,11 +1,9 @@
 type apires = {
-	id: string;
 	type: string;
 	created_at: string;
 	payload: { commits: Array<unknown> };
 };
 type starapires = {
-	id: string;
 	type: "WatchEvent" | string;
 	created_at: string;
 	repo: {
@@ -17,7 +15,7 @@ export type week = [number, number, number, number, number, number, number];
 const date = (day = 0) => {
 	const date = new Date();
 	date.setDate(date.getDate() + day);
-	date.setHours(0, 0, 0,0);
+	date.setHours(0, 0, 0, 0);
 	return date;
 };
 
@@ -28,9 +26,7 @@ export const getUsersGithubData = async (
 	const lastweekdata: Array<apires> = [];
 	const stardata: Array<starapires> = [];
 	const lastgetday = date(-7);
-	const fetchoption: RequestInit = Github_token
-		? { headers: [["Authorization", `Bearer ${Github_token}`]] }
-		: {};
+	const fetchoption: RequestInit = Github_token ? { headers: [["Authorization", `Bearer ${Github_token}`]] } : {};
 	//データを取得
 	for (let i = 1; i < 100; i++) {
 		const data: Array<apires> = await fetch(
@@ -60,7 +56,7 @@ export const getUsersGithubData = async (
 	const today = date(0);
 	for (const data of lastweekdata) {
 		const day = new Date(data.created_at);
-        console.log(`${day.toLocaleString()}:${data.payload.commits?.length}`)
+		console.log(`${day.toLocaleString()}:${data.payload.commits?.length}`);
 		if (data.type === "PushEvent" && lastgetday < day && day < today) {
 			lastweek[day.getDay()] += data.payload.commits.length;
 			if (yesterday < day) {

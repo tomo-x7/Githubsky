@@ -1,9 +1,21 @@
 {
-    "$schema": "https://biomejs.dev/schemas/1.6.3/schema.json",
-    "formatter": {
-        "formatWithErrors": true,
-        "indentStyle":"tab",
-        "indentWidth": 4,
-        "lineWidth":110
-      }
+	"$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+	"files": {
+		"ignore": ["tsconfig.*", "**/node_modules/**"],
+		"include": ["*.*"]
+	},
+	"formatter": {
+		"enabled": true,
+		"indentStyle": "tab",
+		"indentWidth": 4,
+		"lineWidth": 120,
+		"formatWithErrors": true
+	},
+	"linter": {
+		"rules": {
+			"a11y": { "useKeyWithClickEvents": "off" },
+			"style": { "noUselessElse": "off" },
+			"correctness": { "noUnusedImports": "info" }
+		}
+	}
 }
