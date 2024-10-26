@@ -19,6 +19,7 @@ jobs:
     steps:
       - name: Clone repository
         uses: actions/checkout@v4
+      - run: corepuck enable
       - name: ls
         run: ls
       - name: Install Deno
@@ -29,7 +30,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
-      - uses: pnpm/action-setup@v2.2.2
+          cache: 'pnpm'
       - name: Install step
         run: "pnpm i"
 
