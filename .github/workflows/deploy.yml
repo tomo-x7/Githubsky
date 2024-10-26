@@ -27,7 +27,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
-
+      - uses: pnpm/action-setup@v2.2.2
       - name: Install step
         run: "cd apiserver && pnpm i"
 
