@@ -29,20 +29,19 @@ export const getUsersGithubData = async ({
 	const fetchoption: RequestInit = Github_token ? { headers: [["Authorization", `Bearer ${Github_token}`]] } : {};
 	//データを取得
 	for (let i = 1; i < 100; i++) {
-		const data: Array<apires> = await fetch(
-			`https://api.github.com/users/${github_name}/events?page=${i}`,
-			fetchoption,
-		).then((data) => data.json());
+		const data = await fetch(`https://api.github.com/users/${github_name}/events?page=${i}`, fetchoption).then(
+			(data) => data.json() as Promise<apires[]>,
+		);
 		lastweekdata.push(...data);
 		if (!(data[0] && lastgetday < new Date(data[data.length - 1].created_at))) {
 			break;
 		}
 	}
 	for (let i = 1; i < 100; i++) {
-		const data: Array<starapires> = await fetch(
+		const data = await fetch(
 			`https://api.github.com/users/${github_name}/received_events?page=${i}`,
 			fetchoption,
-		).then((data) => data.json());
+		).then((data) => data.json() as Promise<starapires[]>);
 		stardata.push(...data);
 		if (!(data[0] && lastgetday < new Date(data[data.length - 1].created_at))) {
 			break;

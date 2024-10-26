@@ -1,4 +1,4 @@
-export class redisStore {
+export class RedisStore {
 	private REDIS_URL: string;
 	private REDIS_TOKEN: string;
 	private prefix: string;

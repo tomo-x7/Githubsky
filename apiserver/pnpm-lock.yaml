@@ -26,6 +26,9 @@ importers:
       hono:
         specifier: ^4.6.7
         version: 4.6.7
+      typescript:
+        specifier: ^5.6.3
+        version: 5.6.3
     devDependencies:
       '@biomejs/biome':
         specifier: ^1.9.4
@@ -603,6 +606,11 @@ packages:
   tsx@4.19.1:
     resolution: {integrity: sha512-0flMz1lh74BR4wOvBjuh9olbnwqCPc35OOlfyzHba0Dc+QNUeWX/Gq2YTbnwcWPO3BMd8fkzRVrHcsR+a7z7rA==}
     engines: {node: '>=18.0.0'}
+    hasBin: true
+
+  typescript@5.6.3:
+    resolution: {integrity: sha512-hjcS1mhfuyi4WW8IWtjP7brDrG2cuDZukyrYrSauoXGNgx0S7zceP07adYkJycEr56BOUTNPzbInooiN3fn1qw==}
+    engines: {node: '>=14.17'}
     hasBin: true
 
   uint8arrays@3.0.0:
@@ -1229,6 +1237,8 @@ snapshots:
       get-tsconfig: 4.8.1
     optionalDependencies:
       fsevents: 2.3.3
+
+  typescript@5.6.3: {}
 
   uint8arrays@3.0.0:
     dependencies:
