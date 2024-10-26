@@ -19,7 +19,7 @@ jobs:
     steps:
       - name: Clone repository
         uses: actions/checkout@v4
-      - run: corepuck enable
+      - run: corepack enable
       - name: ls
         run: ls
       - name: Install Deno
