@@ -43,6 +43,6 @@ jobs:
         with:
           project: "githubsky"
           entrypoint: "dist/index.js"
-          root: "dist/"
+          root: "apiserver/"
           
           
