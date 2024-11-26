@@ -19,7 +19,7 @@ export const client = new NodeOAuthClient({
 		application_type: "web",
 		token_endpoint_auth_method: "private_key_jwt",
 		dpop_bound_access_tokens: true,
-		jwks_uri: "https://githubsky.vercel.app/api/jwks.json",
+		jwks_uri: "https://githubsky.vercel.app/api/jwks",
 		token_endpoint_auth_signing_alg: "ES256",
 	},
 	// Used to authenticate the client to the token endpoint. Will be used to
