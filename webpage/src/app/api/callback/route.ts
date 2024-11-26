@@ -3,7 +3,7 @@ import crypto from "node:crypto";
 import { Agent } from "@atproto/api";
 import { NextRequest, NextResponse } from "next/server";
 
-export default async function GET(req: NextRequest) {
+export async function GET(req: NextRequest) {
 	const params = new URL(req.url).searchParams;
 	try {
 		const { session, state } = await client.callback(params);
