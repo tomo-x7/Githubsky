@@ -14,7 +14,7 @@
 	"linter": {
 		"rules": {
 			"a11y": { "useKeyWithClickEvents": "off" },
-			"style": { "noUselessElse": "off" },
+			"style": { "noUselessElse": "off","useImportType":"info" },
 			"correctness": { "noUnusedImports": "info" }
 		}
 	}
