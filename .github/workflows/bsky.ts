@@ -1,4 +1,4 @@
-import { type AtpSessionData, type AtpSessionEvent, BskyAgent, RichText } from "@atproto/api";
+import { BskyAgent, RichText } from "@atproto/api";
 import { fail, success, writelog } from "./supabase";
 
 export const post = async (
@@ -8,8 +8,8 @@ export const post = async (
 	id: number,
 	fail_count: number,
 	DID: string,
-	imgblob: Blob|undefined,
-	PDS: string|undefined,
+	imgblob: Blob | undefined,
+	PDS: string | undefined,
 ) => {
 	try {
 		const agent = new BskyAgent({

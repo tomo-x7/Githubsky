@@ -18,11 +18,11 @@ const date = (day = 0) => {
 	date.setHours(0, 0, 0, 0);
 	return date;
 };
-export type GithubData={count:number,lastweek:week,star:number,github_name:string}
+export type GithubData = { count: number; lastweek: week; star: number; github_name: string };
 export const getUsersGithubData = async ({
 	github_name,
 	Github_token,
-}: { github_name: string; Github_token?: string | null }):Promise<GithubData> => {
+}: { github_name: string; Github_token?: string | null }): Promise<GithubData> => {
 	const lastweekdata: Array<apires> = [];
 	const stardata: Array<starapires> = [];
 	const lastgetday = date(-7);
@@ -73,5 +73,5 @@ export const getUsersGithubData = async ({
 			}
 		}
 	}
-	return { count: commitcount, lastweek: lastweek, star: star,github_name };
+	return { count: commitcount, lastweek: lastweek, star: star, github_name };
 };

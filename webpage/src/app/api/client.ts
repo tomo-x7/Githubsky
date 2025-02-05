@@ -1,5 +1,5 @@
-import { NodeOAuthClient, type NodeSavedSession, type NodeSavedState } from "@atproto/oauth-client-node";
 import { JoseKey } from "@atproto/jwk-jose";
+import { NodeOAuthClient, type NodeSavedSession, type NodeSavedState } from "@atproto/oauth-client-node";
 
 export const client = new NodeOAuthClient({
 	// This object will be used to build the payload of the /client-metadata.json
@@ -49,13 +49,16 @@ export const client = new NodeOAuthClient({
 });
 /**@param ex 期限切れになるまでの秒数 */
 async function setredis(key: string, value: object | string, ex?: number) {
-	const res = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/set/${key}${typeof ex === "number" ? `?ex=${ex}` : ""}`, {
-		method: "POST",
-		body: typeof value === "object" ? JSON.stringify(value) : value,
-		headers: {
-			Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`,
+	const res = await fetch(
+		`${process.env.UPSTASH_REDIS_REST_URL}/set/${key}${typeof ex === "number" ? `?ex=${ex}` : ""}`,
+		{
+			method: "POST",
+			body: typeof value === "object" ? JSON.stringify(value) : value,
+			headers: {
+				Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`,
+			},
 		},
-	});
+	);
 }
 async function getredis(key: string, parse = true) {
 	const res = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/${key}`, {

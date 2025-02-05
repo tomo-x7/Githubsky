@@ -1,31 +1,30 @@
-import { NodeOAuthClient } from "@atproto/oauth-client-node";
+import { Agent, RichText } from "@atproto/api";
 import { JoseKey } from "@atproto/jwk-jose";
+import { NodeOAuthClient } from "@atproto/oauth-client-node";
+import type { GithubData } from "./github";
 import { redisStore } from "./redisStore";
-import { Agent,RichText } from "@atproto/api";
-import { GithubData } from "./github";
-import { supabase } from "./supabase";
+import type { supabase } from "./supabase";
 const client = await NodeOAuthClient.fromClientId({
 	clientId: "https://schedulesky.vercel.app/api/client-metadata.json",
 	keyset: await Promise.all([
-		JoseKey.fromImportable(process.env.PRIVATE_KEY_1 ?? ""),
-		JoseKey.fromImportable(process.env.PRIVATE_KEY_2 ?? ""),
-		JoseKey.fromImportable(process.env.PRIVATE_KEY_3 ?? ""),
+		JoseKey.fromImportable(process.env.PRIVATE_KEY1 ?? ""),
+		JoseKey.fromImportable(process.env.PRIVATE_KEY2 ?? ""),
+		JoseKey.fromImportable(process.env.PRIVATE_KEY3 ?? ""),
 	]),
 	sessionStore: new redisStore("session"),
 	stateStore: new redisStore("state", 3600),
 });
 
-export async function createPost({ did,data,supabase }: { did: string,data:GithubData,supabase:supabase }) {
+export async function createPost({ did, data, supabase }: { did: string; data: GithubData; supabase: supabase }) {
 	const session = await client.restore(did);
 	const agent = new Agent(session);
 	agent.post;
 	try {
-
 		const message = new RichText({
 			text: `昨日はGitHubに${data.count}回commitしました\n#Githubsky\nhttps://github.com/${data.github_name}`,
 		});
 		message.detectFacets(agent);
-		const imgblob:Blob=new Blob([])
+		const imgblob: Blob = new Blob([]);
 		if (imgblob) {
 			//画像の取得に成功した場合、画像付きでポスト
 			const dataArray: Uint8Array = new Uint8Array(await imgblob.arrayBuffer());
@@ -58,9 +57,9 @@ export async function createPost({ did,data,supabase }: { did: string,data:Githu
 		} else {
 			console.error(`${agent.did}の画像取得エラー`);
 		}
-		supabase.success({did:agent.assertDid});
+		supabase.success({ did: agent.assertDid });
 	} catch (e) {
 		console.error(`${agent.did}の投稿時エラー\n${e}`);
-		supabase.fail({did:agent.assertDid, fail_count:0});
+		supabase.fail({ did: agent.assertDid, fail_count: 0 });
 	}
 }

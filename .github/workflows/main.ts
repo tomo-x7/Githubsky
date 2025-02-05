@@ -1,8 +1,8 @@
+import { getimg } from "./api";
 import { post } from "./bsky";
-import { type UserData, getUsersList, supabasesetting, writelog } from "./supabase";
 import { getUsersGithubData, type week } from "./github";
 import { cryptosetting } from "./mycrypto";
-import { getimg } from "./api";
+import { type UserData, getUsersList, supabasesetting, writelog } from "./supabase";
 const main = async () => {
 	supabasesetting(process.argv[2], process.argv[3]);
 	cryptosetting(process.argv[4]);

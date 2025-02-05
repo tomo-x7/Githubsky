@@ -1,7 +1,7 @@
 {
 	"$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
 	"files": {
-		"ignore": ["tsconfig.*", "**/node_modules/**",".next/**"],
+		"ignore": ["**/node_modules/**", ".next/**"],
 		"include": ["*.*"]
 	},
 	"formatter": {
@@ -14,8 +14,9 @@
 	"linter": {
 		"rules": {
 			"a11y": { "useKeyWithClickEvents": "off" },
-			"style": { "noUselessElse": "off","useImportType":"info" },
+			"style": { "noUselessElse": "off", "useImportType": "info" },
 			"correctness": { "noUnusedImports": "info" }
 		}
-	}
+	},
+	"overrides": [{ "include": ["tsconfig.*"], "json": { "parser": { "allowComments": true } } }]
 }

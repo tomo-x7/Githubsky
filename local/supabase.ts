@@ -1,4 +1,4 @@
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { type SupabaseClient, createClient } from "@supabase/supabase-js";
 import type { Database } from "./supabasetype";
 export class supabase {
 	private client: SupabaseClient<Database>;
