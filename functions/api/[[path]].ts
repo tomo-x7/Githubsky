@@ -7,4 +7,4 @@ app.get('/api/', (c) => {
 })
 
 // export default app
-export const onRequest = app.fetch
+export const onRequest:PagesFunction = (c)=>app.fetch(c.request)
