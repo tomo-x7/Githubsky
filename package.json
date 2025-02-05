@@ -2,7 +2,12 @@
 	"name": "githubsky",
 	"version": "1.0.0",
 	"description": "",
-	"scripts": {},
+	"scripts": {
+		"common": "pnpm -F \"common\"",
+		"local": "pnpm -F \"local\"",
+		"web": "pnpm -F \"web\"",
+		"functions": "pnpm -F \"functions\""
+	},
 	"author": "",
 	"license": "MIT"
 }
