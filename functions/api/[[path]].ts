@@ -1,10 +1,14 @@
-import { Hono } from 'hono'
+import { Hono } from "hono";
+import { hc } from "hono/client";
 
-const app = new Hono()
+const app = new Hono().basePath("api/");
+const app2=new Hono()
 
-app.get('/api/', (c) => {
-  return c.text('Hello Hono!')
-})
+const app2schema=app2.get("/*",(c)=>c.text("app2"))
+const Schema=app.get("/", (c) => {
+	return c.text("Hello Hono!");
+}).route("/app2",app2)
 
-// export default app
-export const onRequest:PagesFunction = (c)=>app.fetch(c.request)
+export const onRequest: PagesFunction = (c) => app.fetch(c.request);
+
+const client=hc<typeof app2schema>("")

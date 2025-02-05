@@ -1,0 +1,65 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "start dev server",
+			"type": "shell",
+			"dependsOn": ["dev:vite", "dev:functions"],
+			"options": { "statusbar": { "hide": false, "running": { "color": "#0f0" } } }
+		},
+		{
+			"label": "stop dev server",
+			"type": "shell",
+			"dependsOn": ["killVite", "killFunctions"],
+			"options": { "statusbar": { "hide": false } }
+		},
+		{
+			"label": "dev:vite",
+			"icon": { "id": "browser", "color": "terminal.ansiGreen" },
+			"type": "shell",
+			"command": "pnpm web dev",
+			"hide": true,
+			"isBackground": true,
+			"presentation": {
+				"echo": false,
+				"panel": "new",
+				"showReuseMessage": false,
+				"clear": false,
+				"close": true,
+				"reveal": "silent"
+			}
+		},
+		{
+			"label": "dev:functions",
+			"icon": { "id": "server", "color": "terminal.ansiGreen" },
+			"type": "shell",
+			"command": "pnpm dev:fn",
+			"hide": true,
+			"isBackground": true,
+			"presentation": {
+				"echo": false,
+				"panel": "new",
+				"showReuseMessage": false,
+				"clear": false,
+				"close": true,
+				"reveal": "silent"
+			}
+		},
+		{ "label": "killVite", "type": "shell", "command": "echo ${input:killVite}", "hide": true },
+		{ "label": "killFunctions", "type": "shell", "command": "echo ${input:killFunctions}", "hide": true }
+	],
+	"inputs": [
+		{
+			"id": "killVite",
+			"type": "command",
+			"command": "workbench.action.tasks.terminate",
+			"args": "dev:vite"
+		},
+		{
+			"id": "killFunctions",
+			"type": "command",
+			"command": "workbench.action.tasks.terminate",
+			"args": "dev:functions"
+		}
+	]
+}

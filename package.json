@@ -6,8 +6,13 @@
 		"common": "pnpm -F \"common\"",
 		"local": "pnpm -F \"local\"",
 		"web": "pnpm -F \"web\"",
-		"functions": "pnpm -F \"functions\""
+		"functions": "pnpm -F \"functions\"",
+		"dev:fn": "wrangler pages dev web/"
 	},
 	"author": "",
-	"license": "MIT"
+	"license": "MIT",
+	"dependencies": {
+		"npm-run-all": "^4.1.5",
+		"wrangler": "^3.101.0"
+	}
 }

@@ -4,4 +4,7 @@ dist
 *.jwk
 *.pem
 keyset
-.vscode
+.vscode/**
+.wrangler
+
+!tasks.json
