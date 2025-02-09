@@ -37,11 +37,9 @@ const Schema = app
 			sameSite: "Lax",
 			maxAge: 60 * 60 /* 1時間 */,
 		});
-		return c.html(`<script>
-				localStorage.setItem("handle","${profile.handle}");
-				localStorage.setItem("icon","${profile.avatar}");
-				window.location="/";
-				</script>`);
+		return c.html(
+			`<script>localStorage.setItem("handle","${profile.handle}");localStorage.setItem("icon","${profile.avatar}");window.location="/";</script>`,
+		);
 	})
 	.get("/test", async (c) => {
 		const sessionId = getCookie(c, "session");
