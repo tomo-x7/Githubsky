@@ -1,0 +1,5 @@
+name = "githubsky"
+compatibility_flags = ["nodejs_compat"]
+
+[functions]
+directory = "./functions" # Functions のフォルダ
