@@ -2,7 +2,7 @@ import { Agent } from "@atproto/api";
 import { createClient, redis } from "@githubsky/common";
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
-import { setCookie, getCookie } from "hono/cookie";
+import { getCookie, setCookie } from "hono/cookie";
 import { z } from "zod";
 import { init } from "../../common/init";
 init();
@@ -50,7 +50,7 @@ const Schema = app
 		if (did == null || typeof did !== "string") return c.status(401);
 		try {
 			const agent = new Agent(await client.restore(did));
-			return c.json(agent.getPreferences())
+			return c.json(agent.getPreferences());
 		} catch (e) {
 			return c.status(401);
 		}
