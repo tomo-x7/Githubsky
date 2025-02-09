@@ -1,7 +1,7 @@
-import dotenv from "dotenv";
-import { supabase } from "./supabase";
-dotenv.config();
+import { Supabase } from "@githubsky/common";
+import { init } from "../common/init";
+init();
 
 async function main() {
-	const db = new supabase();
+	const db = new Supabase();
 }

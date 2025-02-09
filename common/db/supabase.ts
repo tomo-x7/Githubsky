@@ -1,6 +1,6 @@
 import { type SupabaseClient, createClient } from "@supabase/supabase-js";
 import type { Database } from "./supabasetype";
-export class supabase {
+export class Supabase {
 	private client: SupabaseClient<Database>;
 	private table: "userdata_v2" | "test";
 	constructor() {

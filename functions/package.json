@@ -1,11 +1,15 @@
 {
 	"name": "@githubsky/functions",
+	"private": true,
 	"scripts": {
 		"dev": "wrangler dev",
 		"deploy": "wrangler deploy --minify"
 	},
 	"dependencies": {
-		"hono": "^4.6.20"
+		"@githubsky/common": "workspace:^",
+		"@hono/zod-validator": "^0.4.2",
+		"hono": "^4.7.0",
+		"zod": "^3.24.1"
 	},
 	"devDependencies": {
 		"@cloudflare/workers-types": "^4.20250109.0",

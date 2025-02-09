@@ -1,21 +1,9 @@
 import { Agent, RichText } from "@atproto/api";
-import { JoseKey } from "@atproto/jwk-jose";
-import { NodeOAuthClient } from "@atproto/oauth-client-node";
+import { type Supabase, createClient } from "@githubsky/common";
 import type { GithubData } from "./github";
-import { redisStore } from "./redisStore";
-import type { supabase } from "./supabase";
-const client = await NodeOAuthClient.fromClientId({
-	clientId: "https://schedulesky.vercel.app/api/client-metadata.json",
-	keyset: await Promise.all([
-		JoseKey.fromImportable(process.env.PRIVATE_KEY1 ?? ""),
-		JoseKey.fromImportable(process.env.PRIVATE_KEY2 ?? ""),
-		JoseKey.fromImportable(process.env.PRIVATE_KEY3 ?? ""),
-	]),
-	sessionStore: new redisStore("session"),
-	stateStore: new redisStore("state", 3600),
-});
+const client = await createClient();
 
-export async function createPost({ did, data, supabase }: { did: string; data: GithubData; supabase: supabase }) {
+export async function createPost({ did, data, supabase }: { did: string; data: GithubData; supabase: Supabase }) {
 	const session = await client.restore(did);
 	const agent = new Agent(session);
 	agent.post;

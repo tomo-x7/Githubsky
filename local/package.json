@@ -1,20 +1,8 @@
 {
 	"name": "@githubsky/local",
-	"version": "1.0.0",
-	"description": "",
-	"main": "index.js",
-	"scripts": {
-		"lint": "biome lint --write",
-		"format": "biome format --write",
-		"generate": "supabase gen types --lang=typescript --project-id rxtjjnbocilskefknuac --schema public > supabasetype.ts"
-	},
-	"keywords": [],
-	"author": "",
-	"license": "ISC",
+	"scripts": {},
 	"devDependencies": {
-		"@biomejs/biome": "^1.9.4",
 		"@types/node": "^22.8.0",
-		"supabase": "^1.207.9",
 		"tsx": "^4.19.1",
 		"typescript": "^5.6.3"
 	},
@@ -22,8 +10,7 @@
 		"@atproto/api": "^0.13.12",
 		"@atproto/jwk-jose": "^0.1.2",
 		"@atproto/oauth-client-node": "^0.2.0",
-		"@supabase/supabase-js": "^2.45.6",
-		"dotenv": "^16.4.5"
+		"@githubsky/common": "workspace:^"
 	},
 	"type": "module"
 }
