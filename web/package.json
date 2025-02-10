@@ -13,7 +13,7 @@
 		"react-dom": "^19.0.0"
 	},
 	"devDependencies": {
-		"@githubsky/functions": "workspace:^",
+		"@cloudflare/workers-types": "^4.20250204.0",
 		"@types/react": "^19.0.8",
 		"@types/react-dom": "^19.0.3",
 		"@vitejs/plugin-react-swc": "^3.5.0",

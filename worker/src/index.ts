@@ -1,17 +1,21 @@
 import { Agent } from "@atproto/api";
-import { createClient, redis } from "@githubsky/common";
+import { createClient as createOAuthClient, redis } from "@githubsky/common";
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import { getCookie, setCookie } from "hono/cookie";
 import { z } from "zod";
 import { init } from "../../common/init";
+import { hc } from "hono/client";
 init();
 const app = new Hono().basePath("api/");
-const client = await createClient();
-
-const Schema = app
-	.get("/client-metadata.json", (c) => c.json(client.clientMetadata))
-	.get("/jwks.json", (c) => c.json(client.jwks))
+const client = await createOAuthClient();
+const schema = app
+	.get("/client-metadata.json", async (c) => {
+		return c.json(client.clientMetadata);
+	})
+	.get("/jwks.json", async (c) => {
+		return c.json(client.jwks);
+	})
 	.get("/login", zValidator("query", z.object({ handle: z.string() })), async (c) => {
 		try {
 			const { handle } = c.req.valid("query");
@@ -35,7 +39,7 @@ const Schema = app
 			httpOnly: true,
 			secure: true,
 			sameSite: "Lax",
-			maxAge: 60 * 60 /* 1時間 */,
+			maxAge: 60 * 60 /* 1?? */,
 		});
 		return c.html(
 			`<script>localStorage.setItem("handle","${profile.handle}");localStorage.setItem("icon","${profile.avatar}");window.location="/";</script>`,
@@ -54,5 +58,8 @@ const Schema = app
 		}
 	});
 
-export const onRequest: PagesFunction = (c) => app.fetch(c.request);
-export type ServerType = typeof Schema;
+export default app;
+
+export function createClient() {
+	return hc<typeof schema>("/api");
+}

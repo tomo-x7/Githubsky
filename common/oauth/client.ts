@@ -1,7 +1,7 @@
 import { JoseKey } from "@atproto/jwk-jose";
 import { NodeOAuthClient, type NodeSavedSession, type NodeSavedState } from "@atproto/oauth-client-node";
 import { Lock } from "@upstash/lock";
-import { Redis } from "@upstash/redis";
+import { Redis } from "@upstash/redis/cloudflare";
 
 const redisClient = new Redis({ url: process.env.UPSTASH_REDIS_REST_URL, token: process.env.UPSTASH_REDIS_REST_TOKEN });
 
@@ -59,7 +59,7 @@ export const createClient = async () =>
 			} finally {
 				await lock.release();
 			}
-		},
+		},fetch:(...params)=>fetch(...params)
 	});
 /**@param ex 期限切れになるまでの秒数 */
 async function setredis(key: string, value: object | string, ex?: number) {

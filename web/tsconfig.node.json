@@ -16,7 +16,8 @@
 		/* Linting */
 		"strict": true,
 		"noFallthroughCasesInSwitch": true,
-		"noUncheckedSideEffectImports": true
+		"noUncheckedSideEffectImports": true,
+		"types": ["@cloudflare/workers-types/2023-07-01"]
 	},
-	"include": ["vite.config.ts"]
+	"include": ["vite.config.ts", "functions"]
 }

@@ -4,8 +4,7 @@
 		"common": "pnpm -F \"common\"",
 		"local": "pnpm -F \"local\"",
 		"web": "pnpm -F \"web\"",
-		"functions": "pnpm -F \"functions\"",
-		"dev:fn": "wrangler pages dev web/"
+		"worker": "pnpm -F \"worker\""
 	},
 	"author": "",
 	"license": "MIT",
