@@ -22,6 +22,9 @@ if (typeof WeakRef === "undefined") {
 		configurable: true,
 	});
 	globalThis.WeakRef = WeakRefPolyfill as unknown as WeakRefConstructor;
+  global.WeakRef=WeakRefPolyfill as unknown as WeakRefConstructor
+  // biome-ignore lint/suspicious/noGlobalAssign: <explanation>
+  WeakRef=WeakRefPolyfill as unknown as WeakRefConstructor
 }
 
 const app = new Hono().basePath("api/");
