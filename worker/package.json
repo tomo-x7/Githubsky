@@ -2,16 +2,22 @@
 	"name": "worker",
 	"scripts": {
 		"dev": "wrangler dev",
-		"deploy": "wrangler deploy --minify"
+		"deploy": "wrangler deploy --minify",
+		"test": "tsx src/bsky-oauth/test.ts"
 	},
 	"dependencies": {
+		"@atproto-labs/handle-resolver": "^0.1.7",
+		"@atproto/identity": "^0.4.6",
 		"@githubsky/common": "workspace:^",
 		"@hono/zod-validator": "^0.4.2",
+		"@upstash/redis": "^1.34.4",
 		"hono": "^4.6.20",
 		"zod": "^3.24.1"
 	},
 	"devDependencies": {
 		"@cloudflare/workers-types": "^4.20250109.0",
+		"tsx": "^4.19.1",
 		"wrangler": "^3.101.0"
-	}
+	},
+	"type": "module"
 }

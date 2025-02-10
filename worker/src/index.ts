@@ -1,28 +1,28 @@
+import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import { hc } from "hono/client";
+import { z } from "zod";
+import { OAuthClient } from "./bsky-oauth";
+import { CustomError } from "./util";
 
 const app = new Hono().basePath("api/");
-// const client = await createOAuthClient();
-const schema = app.get("/", (c) => c.text("hello worker"));
-// .get("/client-metadata.json", async (c) => {
-// 	return c.json(client.clientMetadata);
-// })
-// .get("/jwks.json", async (c) => {
-// 	return c.json(client.jwks);
-// })
-// .get("/login", zValidator("query", z.object({ handle: z.string() })), async (c) => {
-// 	try {
-// 		const { handle } = c.req.valid("query");
-// 		const state = crypto.getRandomValues(new Uint16Array(1))[0].toString();
-// 		const ac = new AbortController();
-// 		c.req.raw.signal.addEventListener("abort", () => ac.abort());
-// 		const url = await client.authorize(handle, { signal: ac.signal, state });
-// 		return c.redirect(url);
-// 	} catch (e) {
-// 		console.error(e);
-// 		return c.text("server error", 500);
-// 	}
-// })
+const client = await OAuthClient.init();
+const schema = app
+	.get("/", (c) => c.text("hello worker"))
+	.get("/client-metadata.json", async (c) => {
+		return c.json(client.clientMetadata);
+	})
+	.get("/jwks.json", async (c) => {
+		return c.json(client.jwks);
+	})
+	.get("/login", zValidator("query", z.object({ handle: z.string() })), async (c) => {
+		const { handle } = c.req.valid("query");
+		const state = crypto.getRandomValues(new Uint16Array(1))[0].toString();
+		// const url = await client.authorize(handle, { signal: ac.signal, state });
+		// return c.redirect(url);
+		const r = await client.login(handle);
+		return c.json(r);
+	});
 // .get("/callback", async (c) => {
 // 	const { session, state } = await client.callback(new URLSearchParams(c.req.query()));
 // 	const agent = new Agent(session);
@@ -51,6 +51,19 @@ const schema = app.get("/", (c) => c.text("hello worker"));
 // 		return c.status(401);
 // 	}
 // });
+
+app.onError((err) => {
+	if (err instanceof CustomError) {
+		if (err.isClientError) {
+			return new Response(err.message, { status: 400 });
+		} else {
+			console.error(err.message);
+			return new Response(null, { status: 500 });
+		}
+	}
+	console.error(err);
+	return new Response(null, { status: 500 });
+});
 
 export default app;
 
