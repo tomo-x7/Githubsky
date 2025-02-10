@@ -1,0 +1,7 @@
+{
+	"$schema": "../node_modules/wrangler/config-schema.json",
+	"name": "githubsky-worker",
+	"main": "src/index.ts",
+	"compatibility_date": "2025-02-10",
+	"compatibility_flags": ["nodejs_compat"]
+}
