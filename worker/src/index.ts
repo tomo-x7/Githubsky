@@ -7,6 +7,7 @@ import { CustomError } from "./util";
 
 const app = new Hono().basePath("api/");
 const client = await OAuthClient.init();
+
 const schema = app
 	.get("/", (c) => c.text("hello worker"))
 	.get("/client-metadata.json", async (c) => {
