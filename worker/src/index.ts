@@ -7,6 +7,23 @@ import { z } from "zod";
 import { init } from "../../common/init";
 import { hc } from "hono/client";
 init();
+if (typeof WeakRef === "undefined") {
+	class WeakRefPolyfill<T> {
+		private value: T;
+		constructor(value: T) {
+			this.value = value;
+		}
+		deref() {
+			return this.value;
+		}
+	}
+	Object.defineProperty(WeakRefPolyfill.prototype, Symbol.toStringTag, {
+		value: "WeakRef",
+		configurable: true,
+	});
+	globalThis.WeakRef = WeakRefPolyfill as unknown as WeakRefConstructor;
+}
+
 const app = new Hono().basePath("api/");
 const client = await createOAuthClient();
 const schema = app
