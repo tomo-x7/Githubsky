@@ -1,12 +1,5 @@
-import { Agent } from "@atproto/api";
-import { createClient as createOAuthClient, redis } from "@githubsky/common";
-import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
-import { getCookie, setCookie } from "hono/cookie";
-import { z } from "zod";
-import { init } from "../../common/init";
 import { hc } from "hono/client";
-init();
 
 const app = new Hono().basePath("api/");
 // const client = await createOAuthClient();

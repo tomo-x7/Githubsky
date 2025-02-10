@@ -1,5 +1,6 @@
 import { Agent, RichText } from "@atproto/api";
-import { type Supabase, createClient } from "@githubsky/common";
+import type { Supabase } from "@githubsky/common";
+import { createClient } from "./client";
 import type { GithubData } from "./github";
 const client = await createClient();
 

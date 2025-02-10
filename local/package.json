@@ -10,7 +10,9 @@
 		"@atproto/api": "^0.13.12",
 		"@atproto/jwk-jose": "^0.1.2",
 		"@atproto/oauth-client-node": "^0.2.0",
-		"@githubsky/common": "workspace:^"
+		"@githubsky/common": "workspace:^",
+		"@upstash/lock": "^0.2.1",
+		"@upstash/redis": "^1.34.4"
 	},
 	"type": "module"
 }
