@@ -34,6 +34,7 @@ const schema = app
 		const state = crypto.getRandomValues(new Uint16Array(1))[0].toString();
 		// const url = await client.authorize(handle, { signal: ac.signal, state });
 		// return c.redirect(url);
+		console.log(handle)
 		const r = await c.get("client").login(handle);
 		return c.json(r);
 	});
