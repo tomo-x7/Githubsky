@@ -58,7 +58,7 @@ export class OAuthClient {
 		if (authServer==null) throw new ServerError("cannot get auth server");
 
 		//認可サーバーの情報を取得
-		const authServerMeta = await fetch(`${authServer}/.well-known/oauth-protected-resource`)
+		const authServerMeta = await fetch(`${authServer}/.well-known/oauth-authorization-server`)
 		.then((r) => r.json() as Promise<authServer>)
 		.catch((e) => {
 			throw new ServerError(String(e));
