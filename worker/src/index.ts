@@ -3,7 +3,7 @@ import { Hono } from "hono";
 import { hc } from "hono/client";
 import { z } from "zod";
 import { OAuthClient } from "./bsky-oauth";
-import { CustomError } from "./util";
+import { ClientError, CustomError } from "./util";
 
 export type secrets = {
 	[key in
@@ -68,7 +68,7 @@ const schema = app
 
 app.onError((err) => {
 	if (err instanceof CustomError) {
-		if (err.isClientError) {
+		if (err.isClientError||err instanceof ClientError) {
 			return new Response(err.message, { status: 400 });
 		} else {
 			console.error(err.message);
