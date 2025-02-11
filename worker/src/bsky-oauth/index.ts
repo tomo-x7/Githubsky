@@ -38,7 +38,7 @@ export class OAuthClient {
 		return { keys: [publicKey] };
 	}
 	async login(handle: string) {
-		const did = await this.handleResolver.resolve(handle).catch((e) => console.error(e));
+		const did = await this.handleResolver.resolve(handle);
 		if (did == null) throw new ClientError("cannot resolve handle");
 		const didDoc = await this.didResolver.resolve(did).catch((e) => console.error(e));
 		if (didDoc == null) throw new ClientError("cannot resolve did");

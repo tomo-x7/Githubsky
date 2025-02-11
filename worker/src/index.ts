@@ -3,7 +3,7 @@ import { Hono } from "hono";
 import { hc } from "hono/client";
 import { z } from "zod";
 import { OAuthClient } from "./bsky-oauth";
-import { ClientError, CustomError } from "./util";
+import { ClientError, CustomError, ServerError } from "./util";
 
 export type secrets = {
 	[key in
@@ -34,7 +34,7 @@ const schema = app
 		const state = crypto.getRandomValues(new Uint16Array(1))[0].toString();
 		// const url = await client.authorize(handle, { signal: ac.signal, state });
 		// return c.redirect(url);
-		console.log(handle)
+		console.log(handle);
 		const r = await c.get("client").login(handle);
 		return c.json(r);
 	});
@@ -68,13 +68,11 @@ const schema = app
 // });
 
 app.onError((err) => {
-	if (err instanceof CustomError) {
-		if (err.isClientError||err instanceof ClientError) {
-			return new Response(err.message, { status: 400 });
-		} else {
-			console.error(err.message);
-			return new Response(null, { status: 500 });
-		}
+	if (err instanceof ClientError) {
+		return new Response(err.message, { status: 400 });
+	} else if (err instanceof ServerError) {
+		console.error(err.message);
+		return new Response(null, { status: 500 });
 	}
 	console.error(err);
 	return new Response(null, { status: 500 });
