@@ -1,6 +1,7 @@
 import { AppViewHandleResolver } from "@atproto-labs/handle-resolver";
 import { DidResolver } from "@atproto/identity";
 import { clientMetadata } from "@githubsky/common";
+import type { secrets } from "..";
 import { ClientError, ServerError } from "../util";
 export class OAuthClient {
 	private privateKey: CryptoKey;
@@ -11,10 +12,10 @@ export class OAuthClient {
 		this.privateKey = privateKey;
 		this.privateJwk = jwk;
 	}
-	static async init() {
+	static async init(env: secrets) {
 		const privateKey = await crypto.subtle.importKey(
 			"jwk",
-			JSON.parse(process.env.PRIVATE_KEY ?? ""),
+			JSON.parse(env.PRIVATE_KEY ?? ""),
 			{ name: "ECDSA", namedCurve: "P-256" },
 			true,
 			["sign"],

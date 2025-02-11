@@ -5,23 +5,36 @@ import { z } from "zod";
 import { OAuthClient } from "./bsky-oauth";
 import { CustomError } from "./util";
 
-const app = new Hono().basePath("api/");
-const client = await OAuthClient.init();
+export type secrets = {
+	[key in
+		| "PRIVATE_KEY"
+		| "UPSTASH_REDIS_REST_URL"
+		| "UPSTASH_REDIS_REST_TOKEN"
+		| "SUPABASE_URL"
+		| "SUPABASE_KEY"
+		| "GITHUB_CLIENT_SECRET"]: string;
+};
+type Env = { Variables: { client: OAuthClient }; Bindings: secrets };
+const app = new Hono<Env>().basePath("api/");
+app.use(async (c, next) => {
+	c.set("client", await OAuthClient.init(c.env));
+	return await next();
+});
 
 const schema = app
 	.get("/", (c) => c.text("hello worker"))
 	.get("/client-metadata.json", async (c) => {
-		return c.json(client.clientMetadata);
+		return c.json(c.get("client").clientMetadata);
 	})
 	.get("/jwks.json", async (c) => {
-		return c.json(client.jwks);
+		return c.json(c.get("client").jwks);
 	})
 	.get("/login", zValidator("query", z.object({ handle: z.string() })), async (c) => {
 		const { handle } = c.req.valid("query");
 		const state = crypto.getRandomValues(new Uint16Array(1))[0].toString();
 		// const url = await client.authorize(handle, { signal: ac.signal, state });
 		// return c.redirect(url);
-		const r = await client.login(handle);
+		const r = await c.get("client").login(handle);
 		return c.json(r);
 	});
 // .get("/callback", async (c) => {
