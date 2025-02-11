@@ -1,13 +1,12 @@
-import { AppViewHandleResolver } from "@atproto-labs/handle-resolver";
-import { DidResolver } from "@atproto/identity";
+import { DidResolver, HandleResolver } from "atproto-browser-resolvers";
 import { clientMetadata } from "@githubsky/common";
 import type { secrets } from "..";
 import { ClientError, ServerError } from "../util";
 export class OAuthClient {
 	private privateKey: CryptoKey;
 	private privateJwk: JsonWebKey;
-	private handleResolver = new AppViewHandleResolver("https://public.api.bsky.app");
-	private didResolver = new DidResolver({});
+	private handleResolver = new HandleResolver("https://public.api.bsky.app");
+	private didResolver = new DidResolver();
 	private constructor(privateKey: CryptoKey, jwk: JsonWebKey) {
 		this.privateKey = privateKey;
 		this.privateJwk = jwk;

@@ -6,11 +6,10 @@
 		"test": "tsx src/bsky-oauth/test.ts"
 	},
 	"dependencies": {
-		"@atproto-labs/handle-resolver": "^0.1.7",
-		"@atproto/identity": "^0.4.6",
 		"@githubsky/common": "workspace:^",
 		"@hono/zod-validator": "^0.4.2",
 		"@upstash/redis": "^1.34.4",
+		"atproto-browser-resolvers": "^0.0.1",
 		"hono": "^4.6.20",
 		"zod": "^3.24.1"
 	},

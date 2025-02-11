@@ -120,12 +120,6 @@ importers:
 
   worker:
     dependencies:
-      '@atproto-labs/handle-resolver':
-        specifier: ^0.1.7
-        version: 0.1.7
-      '@atproto/identity':
-        specifier: ^0.4.6
-        version: 0.4.6
       '@githubsky/common':
         specifier: workspace:^
         version: link:../common
@@ -135,6 +129,9 @@ importers:
       '@upstash/redis':
         specifier: ^1.34.4
         version: 1.34.4
+      atproto-browser-resolvers:
+        specifier: ^0.0.1
+        version: 0.0.1
       hono:
         specifier: ^4.6.20
         version: 4.7.0
@@ -189,16 +186,8 @@ packages:
   '@atproto/common-web@0.4.0':
     resolution: {integrity: sha512-ZYL0P9myHybNgwh/hBY0HaBzqiLR1B5/ie5bJpLQAg0whRzNA28t8/nU2vh99tbsWcAF0LOD29M8++LyENJLNQ==}
 
-  '@atproto/crypto@0.4.4':
-    resolution: {integrity: sha512-Yq9+crJ7WQl7sxStVpHgie5Z51R05etaK9DLWYG/7bR5T4bhdcIgF6IfklLShtZwLYdVVj+K15s0BqW9a8PSDA==}
-    engines: {node: '>=18.7.0'}
-
   '@atproto/did@0.1.5':
     resolution: {integrity: sha512-8+1D08QdGE5TF0bB0vV8HLVrVZJeLNITpRTUVEoABNMRaUS7CoYSVb0+JNQDeJIVmqMjOL8dOjvCUDkp3gEaGQ==}
-
-  '@atproto/identity@0.4.6':
-    resolution: {integrity: sha512-fJq/cIp9MOgHxZfxuyki6mobk0QxRnbts53DstRixlvb5mOoxwttb9Gp6A8u9q49zBsfOmXNTHmP97I9iMHmTQ==}
-    engines: {node: '>=18.7.0'}
 
   '@atproto/jwk-jose@0.1.4':
     resolution: {integrity: sha512-JzLn1wUzuLfweznSECdTjSHTxQBEz7Q8oJ4XKjRNludqzyJW8etEH00l1WolLipFxoj1QCG9qy00JmlC59Y6Rw==}
@@ -883,14 +872,6 @@ packages:
   '@jridgewell/trace-mapping@0.3.9':
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
 
-  '@noble/curves@1.8.1':
-    resolution: {integrity: sha512-warwspo+UYUPep0Q+vtdVB4Ugn8GGQj8iyB3gnRWsztmUHTI3S1nhdiWNsPUGL0vud7JlRRk1XEu7Lq1KGTnMQ==}
-    engines: {node: ^14.21.3 || >=16}
-
-  '@noble/hashes@1.7.1':
-    resolution: {integrity: sha512-B8XBPsn4vT/KJAGqDzbwztd+6Yte3P4V7iafm24bxgDe/mlRuK6xmWPuCNrKt2vDafZ8MfJLlchDG/vYafQEjQ==}
-    engines: {node: ^14.21.3 || >=16}
-
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
@@ -1151,6 +1132,9 @@ packages:
 
   as-table@1.0.55:
     resolution: {integrity: sha512-xvsWESUJn0JN421Xb9MQw6AsMHRCUknCe0Wjlxvjud80mU4E6hQf1A6NzQKcYNmYw62MfzEtXc+badstZP3JpQ==}
+
+  atproto-browser-resolvers@0.0.1:
+    resolution: {integrity: sha512-o36MynykVm2Zg1eqojxCcVzOJFbKrqkkGChxhAyliu9iqfDRmCKskL8AuMMISOKxTT3MTuG5oRJ9N3+PCuNZIA==}
 
   await-lock@2.2.2:
     resolution: {integrity: sha512-aDczADvlvTGajTDjcjpJMqRkOF6Qdz3YbPZm/PyW6tKPkx2hlYBzxMhEywM/tU72HrVZjgl5VCdRuMlA7pZ8Gw==}
@@ -1759,20 +1743,9 @@ snapshots:
       uint8arrays: 3.0.0
       zod: 3.24.1
 
-  '@atproto/crypto@0.4.4':
-    dependencies:
-      '@noble/curves': 1.8.1
-      '@noble/hashes': 1.7.1
-      uint8arrays: 3.0.0
-
   '@atproto/did@0.1.5':
     dependencies:
       zod: 3.24.1
-
-  '@atproto/identity@0.4.6':
-    dependencies:
-      '@atproto/common-web': 0.4.0
-      '@atproto/crypto': 0.4.4
 
   '@atproto/jwk-jose@0.1.4':
     dependencies:
@@ -2189,12 +2162,6 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
 
-  '@noble/curves@1.8.1':
-    dependencies:
-      '@noble/hashes': 1.7.1
-
-  '@noble/hashes@1.7.1': {}
-
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
@@ -2405,6 +2372,8 @@ snapshots:
   as-table@1.0.55:
     dependencies:
       printable-characters: 1.0.42
+
+  atproto-browser-resolvers@0.0.1: {}
 
   await-lock@2.2.2: {}
 
