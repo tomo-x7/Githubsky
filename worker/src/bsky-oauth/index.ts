@@ -37,15 +37,32 @@ export class OAuthClient {
 		};
 		return { keys: [publicKey] };
 	}
-	async login(handle: string) {
-		const did = await this.handleResolver.resolve(handle);
+	async login(handleOrDid: string, state: string) {
+		//ハンドルからPDSの情報を取得
+		const did = handleOrDid.startsWith("did:") ? handleOrDid : await this.handleResolver.resolve(handleOrDid);
 		if (did == null) throw new ClientError("cannot resolve handle");
 		const didDoc = await this.didResolver.resolve(did).catch((e) => console.error(e));
 		if (didDoc == null) throw new ClientError("cannot resolve did");
-		const endPoint = didDoc.service?.filter(
+		const resourceServer = didDoc.service?.filter(
 			({ id, type }) => id === "#atproto_pds" && type === "AtprotoPersonalDataServer",
-		)[0].serviceEndpoint;
-		if (endPoint == null || typeof endPoint !== "string") throw new ClientError("cannot resolve didDoc");
-		return { endPoint };
+		)?.[0]?.serviceEndpoint;
+		if (resourceServer == null || typeof resourceServer !== "string") throw new ClientError("cannot parse didDoc");
+
+		//リソースサーバー(PDS)から認可サーバーの情報を取得
+		const resourceServerMeta = await fetch(`${resourceServer}/.well-known/oauth-protected-resource`)
+			.then((r) => r.json() as Promise<resourceServer>)
+			.catch((e) => {
+				throw new ServerError(String(e));
+			});
+		const authServer=resourceServerMeta.authorization_servers[0]
+		if (authServer==null) throw new ServerError("cannot get auth server");
+
+		//認可サーバーの情報を取得
+		const authServerMeta = await fetch(`${authServer}/.well-known/oauth-protected-resource`)
+		.then((r) => r.json() as Promise<authServer>)
+		.catch((e) => {
+			throw new ServerError(String(e));
+		});
+		return { endPoint: authServerMeta.pushed_authorization_request_endpoint };
 	}
 }
