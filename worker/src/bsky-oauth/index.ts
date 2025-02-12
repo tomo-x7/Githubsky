@@ -137,7 +137,7 @@ export class OAuthClient {
 		const clientAssertJwt = await createClientAssertJWT(
 			this.privateKey,
 			clientMetadata.client_id,
-			savedState.authServer,
+			savedState.tokenEndpoint,
 			this.privateJwk.kid,
 		);
 		const headers = new Headers({ "Content-Type": "application/x-www-form-urlencoded" });
