@@ -33,3 +33,11 @@ type authServer = {
 	dpop_signing_alg_values_supported: string[];
 	client_id_metadata_document_supported: boolean;
 };
+
+type DPoPKey = { key: CryptoKey; jwk: JsonWebKey };
+type SavedState = { iss?: string; dpopKey: JsonWebKey; verifier: Omit<pkce,"challenge">; nonce?: string,tokenEndpoint:string };
+type pkce = {
+	verifier: string;
+	challenge: string;
+	method: string;
+};

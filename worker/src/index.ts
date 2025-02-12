@@ -31,28 +31,27 @@ const schema = app
 	})
 	.get("/login", zValidator("query", z.object({ handle: z.string() })), async (c) => {
 		const { handle } = c.req.valid("query");
-		const state = crypto.getRandomValues(new Uint16Array(1))[0].toString();
-		// const url = await client.authorize(handle, { signal: ac.signal, state });
-		// return c.redirect(url);
-		const r = await c.get("client").login(handle);
-		return c.json(r);
-	});
-// .get("/callback", async (c) => {
-// 	const { session, state } = await client.callback(new URLSearchParams(c.req.query()));
-// 	const agent = new Agent(session);
-// 	const profile = (await agent.getProfile({ actor: agent.assertDid })).data;
-// 	const sessionID = Buffer.from(crypto.getRandomValues(new Uint32Array(10)).buffer).toString("base64url");
-// 	redis.setredis(`mysession_${sessionID}`, session.did, 3600);
-// 	setCookie(c, "session", sessionID, {
-// 		httpOnly: true,
-// 		secure: true,
-// 		sameSite: "Lax",
-// 		maxAge: 60 * 60 /* 1?? */,
-// 	});
-// 	return c.html(
-// 		`<script>localStorage.setItem("handle","${profile.handle}");localStorage.setItem("icon","${profile.avatar}");window.location="/";</script>`,
-// 	);
-// })
+		const url = await c.get("client").login(handle);
+		return c.redirect(url);
+	})
+.get("/callback", async (c) => {
+	c.req.query()
+	const res = await c.get("client").callback((c.req.query()));
+	return c.json(res)
+	// const agent = new Agent(session);
+	// const profile = (await agent.getProfile({ actor: agent.assertDid })).data;
+	// const sessionID = Buffer.from(crypto.getRandomValues(new Uint32Array(10)).buffer).toString("base64url");
+	// redis.setredis(`mysession_${sessionID}`, session.did, 3600);
+	// setCookie(c, "session", sessionID, {
+	// 	httpOnly: true,
+	// 	secure: true,
+	// 	sameSite: "Lax",
+	// 	maxAge: 60 * 60 /* 1?? */,
+	// });
+	// return c.html(
+	// 	`<script>localStorage.setItem("handle","${profile.handle}");localStorage.setItem("icon","${profile.avatar}");window.location="/";</script>`,
+	// );
+})
 // .get("/test", async (c) => {
 // 	const sessionId = getCookie(c, "session");
 // 	if (sessionId == null) return c.status(401);

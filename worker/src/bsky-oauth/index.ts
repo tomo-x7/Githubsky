@@ -1,4 +1,4 @@
-import { DidResolver, HandleResolver } from "atproto-browser-resolvers";
+import { DidResolver, HandleResolver } from "@tomo-x/resolvers";
 import { clientMetadata } from "@githubsky/common";
 import type { secrets } from "..";
 import { ClientError, ServerError } from "../util";
@@ -82,11 +82,6 @@ export class OAuthClient {
 			authServer,
 			this.privateJwk.kid,
 		);
-		await this.redis.set(
-			`state_${state}`,
-			JSON.stringify({ iss: authServerMeta.issuer, dpopKey: dpopKey.jwk, verifier: pkce.verifier }),
-			{ ex: 3600 },
-		);
 		const parHeader = new Headers({ "Content-Type": "application/x-www-form-urlencoded" });
 		const parBody = {
 			client_id: clientMetadata.client_id,
@@ -101,12 +96,44 @@ export class OAuthClient {
 			client_assertion_type: "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
 			client_assertion: clientAssertJwt,
 		};
-		const res = await DPoPFetch(PARUrl, dpopKey, {
-			method: "POST",
-			body: jsonToFormurlencoded(parBody),
-			headers: parHeader,
-		});
-		return (await res.json()) as object;
+		const { res, nonce }: { res: { request_uri: string }; nonce: string | null } = await DPoPFetch(
+			PARUrl,
+			dpopKey,
+			{
+				method: "POST",
+				body: jsonToFormurlencoded(parBody),
+				headers: parHeader,
+			},
+		).then(async ({ res, nonce }) => ({ res: await res.json(), nonce }));
+		//redisに保存
+		const stateData: SavedState = {
+			dpopKey: dpopKey.jwk,
+			verifier: pkce,
+			tokenEndpoint: authServerMeta.token_endpoint,
+		};
+		if (authServerMeta.authorization_response_iss_parameter_supported) stateData.iss = authServerMeta.issuer;
+		if (nonce != null) stateData.nonce = nonce;
+		await this.redis.set(`state_${state}`, JSON.stringify(stateData), { ex: 3600 });
+		//リダイレクトのURLを生成
+		const redirect_url = new URL(authServerMeta.authorization_endpoint);
+		redirect_url.searchParams.set("client_id", encodeURIComponent(clientMetadata.client_id));
+		redirect_url.searchParams.set("request_uri", encodeURIComponent(res.request_uri));
+		return redirect_url;
+	}
+	async callback({ iss, state, code, error }: Record<string, string | null>) {
+		const promises: Promise<unknown>[] = [];
+		//エラー返してきた場合そのまま流す
+		if (error != null) throw new ClientError(error);
+		//stateかcodeがない場合エラー
+		if (state == null || code == null) throw new ClientError("state or code missing");
+		const savedState: SavedState | null = await this.redis.get(`state_${state}`);
+		return savedState
+		// //保存したstateを削除、並列処理
+		// promises.push(this.redis.del(`state_${state}`));
+		// if (savedState == null) throw new ClientError("timeout");
+		// if (savedState.iss != null && savedState.iss !== iss) throw new ClientError("invalid issuer");
+		// const dpopKey
+		// DPoPFetch(savedState.tokenEndpoint,savedState.dpopKey)
 	}
 }
 
@@ -143,13 +170,13 @@ async function DPoPFetch(
 	const res1 = await fetch(url, { method, headers, body });
 	// console.log(`${res1.status} ${res1.statusText}`);
 	// console.log(Array.from(res1.headers.entries()));
-	if (res1.status !== 401 && res1.status !== 400) return res1;
+	if (res1.status !== 401 && res1.status !== 400) return { res: res1, nonce: null };
 	const nonce = res1.headers.get("DPoP-Nonce");
-	if (nonce == null) return res1;
+	if (nonce == null) return { res: res1, nonce: null };
 	// console.log("dpop fetch again with nonce");
 	const jwt2 = await createDPoPJWT(key, jwk, method, url, nonce);
 	headers.set("DPoP", jwt2);
-	return await fetch(url, { method, headers, body });
+	return { res: await fetch(url, { method, headers, body }), nonce };
 }
 async function createDPoPJWT(key: CryptoKey, jwk: JsonWebKey, mehtod: string, url: string, nonce?: string) {
 	const jti = crypto.randomUUID(); //random token string (unique per request)
@@ -169,7 +196,6 @@ async function generatePKCE() {
 	return { verifier, challenge, method };
 }
 
-type DPoPKey = { key: CryptoKey; jwk: JsonWebKey };
 async function generateDPoPKey(): Promise<DPoPKey> {
 	const keypair = (await crypto.subtle.generateKey({ name: "ECDSA", namedCurve: "P-256" }, true, [
 		"sign",
@@ -185,4 +211,8 @@ function jsonToFormurlencoded(data: Record<string, string | number | undefined>)
 		body.append(key, String(value));
 	}
 	return body;
+}
+
+async function restoreDPoPKey(jwk:JsonWebKey){
+	crypto.subtle.importKey
 }

@@ -126,12 +126,12 @@ importers:
       '@hono/zod-validator':
         specifier: ^0.4.2
         version: 0.4.2(hono@4.7.0)(zod@3.24.1)
+      '@tomo-x/resolvers':
+        specifier: ^0.0.2
+        version: 0.0.2
       '@upstash/redis':
         specifier: ^1.34.4
         version: 1.34.4
-      atproto-browser-resolvers:
-        specifier: ^0.0.2
-        version: 0.0.2
       hono:
         specifier: ^4.6.20
         version: 4.7.0
@@ -1068,6 +1068,9 @@ packages:
   '@swc/types@0.1.17':
     resolution: {integrity: sha512-V5gRru+aD8YVyCOMAjMpWR1Ui577DD5KSJsHP8RAxopAH22jFz6GZd/qxqjO6MJHQhcsjvjOFXyDhyLQUnMveQ==}
 
+  '@tomo-x/resolvers@0.0.2':
+    resolution: {integrity: sha512-os/Hv94kqLMK9vYycBxa9Pz8suJHGDdqurTrPxUZB93GmYGzW0NMCLgYTK/yPKNuMAlM5zkJCXCzmuBlY1dOxA==}
+
   '@types/estree@1.0.6':
     resolution: {integrity: sha512-AYnb1nQyY49te+VRAVgmzfcgjYS91mY5P0TKUDCLEM+gNnA+3T6rWITXRLYCpahpqSQbN5cE+gHpnPyXjHWxcw==}
 
@@ -1132,9 +1135,6 @@ packages:
 
   as-table@1.0.55:
     resolution: {integrity: sha512-xvsWESUJn0JN421Xb9MQw6AsMHRCUknCe0Wjlxvjud80mU4E6hQf1A6NzQKcYNmYw62MfzEtXc+badstZP3JpQ==}
-
-  atproto-browser-resolvers@0.0.2:
-    resolution: {integrity: sha512-sQbUk6Z9Yt8ZwHqlxboC0R5d6t/EC4sYB3LgCP4OZRbOwYnMqnS8KQs97qoNE2e9y7oaKXIObu4KrNkIdZj+8Q==}
 
   await-lock@2.2.2:
     resolution: {integrity: sha512-aDczADvlvTGajTDjcjpJMqRkOF6Qdz3YbPZm/PyW6tKPkx2hlYBzxMhEywM/tU72HrVZjgl5VCdRuMlA7pZ8Gw==}
@@ -2316,6 +2316,8 @@ snapshots:
     dependencies:
       '@swc/counter': 0.1.3
 
+  '@tomo-x/resolvers@0.0.2': {}
+
   '@types/estree@1.0.6': {}
 
   '@types/node@22.13.1':
@@ -2372,8 +2374,6 @@ snapshots:
   as-table@1.0.55:
     dependencies:
       printable-characters: 1.0.42
-
-  atproto-browser-resolvers@0.0.2: {}
 
   await-lock@2.2.2: {}
 
