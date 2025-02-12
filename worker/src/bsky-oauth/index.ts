@@ -116,8 +116,8 @@ export class OAuthClient {
 		await this.redis.set(`state_${state}`, JSON.stringify(stateData), { ex: 3600 });
 		//リダイレクトのURLを生成
 		const redirect_url = new URL(authServerMeta.authorization_endpoint);
-		redirect_url.searchParams.set("client_id", encodeURIComponent(clientMetadata.client_id));
-		redirect_url.searchParams.set("request_uri", encodeURIComponent(res.request_uri));
+		redirect_url.searchParams.set("client_id", clientMetadata.client_id);
+		redirect_url.searchParams.set("request_uri", res.request_uri);
 		return redirect_url;
 	}
 	async callback({ iss, state, code, error }: Record<string, string | null>) {
@@ -127,7 +127,7 @@ export class OAuthClient {
 		//stateかcodeがない場合エラー
 		if (state == null || code == null) throw new ClientError("state or code missing");
 		const savedState: SavedState | null = await this.redis.get(`state_${state}`);
-		return savedState
+		return savedState;
 		// //保存したstateを削除、並列処理
 		// promises.push(this.redis.del(`state_${state}`));
 		// if (savedState == null) throw new ClientError("timeout");
@@ -213,6 +213,6 @@ function jsonToFormurlencoded(data: Record<string, string | number | undefined>)
 	return body;
 }
 
-async function restoreDPoPKey(jwk:JsonWebKey){
-	crypto.subtle.importKey
+async function restoreDPoPKey(jwk: JsonWebKey) {
+	crypto.subtle.importKey;
 }
