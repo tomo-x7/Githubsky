@@ -140,7 +140,7 @@ export class OAuthClient {
 			savedState.authServer,
 			this.privateJwk.kid,
 		);
-		const headers = new Headers({ "Content-Type": "application/json" });
+		const headers = new Headers({ "Content-Type": "application/x-www-form-urlencoded" });
 		const body = {
 			grant_type: "authorization_code",
 			redirect_uri: clientMetadata.redirect_uris[0],
@@ -149,10 +149,11 @@ export class OAuthClient {
 			client_assertion_type: "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
 			client_assertion: clientAssertJwt,
 		};
+		console.log(body)
 		const res=await DPoPFetch(
 			savedState.tokenEndpoint,
 			dpopKey,
-			{ headers, body: JSON.stringify(body), method: "POST" },
+			{ headers, body: jsonToFormurlencoded(body), method: "POST" },
 			savedState.nonce,
 		);
 		return res.res.json()
