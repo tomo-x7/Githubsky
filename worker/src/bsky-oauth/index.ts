@@ -127,6 +127,7 @@ export class OAuthClient {
 		//stateかcodeがない場合エラー
 		if (state == null || code == null) throw new ClientError("state or code missing");
 		const savedState: SavedState | null = await this.redis.get(`state_${state}`);
+		console.log(typeof savedState)
 		return savedState;
 		// //保存したstateを削除、並列処理
 		// promises.push(this.redis.del(`state_${state}`));
