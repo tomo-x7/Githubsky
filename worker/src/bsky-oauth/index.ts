@@ -140,7 +140,7 @@ export class OAuthClient {
 			savedState.authServer,
 			this.privateJwk.kid,
 		);
-		const headers = new Headers({ "Content-Type": "application/x-www-form-urlencoded" });
+		const headers = new Headers({ "Content-Type": "application/json" });
 		const body = {
 			grant_type: "authorization_code",
 			redirect_uri: clientMetadata.redirect_uris[0],
@@ -152,7 +152,7 @@ export class OAuthClient {
 		const res=await DPoPFetch(
 			savedState.tokenEndpoint,
 			dpopKey,
-			{ headers, body: jsonToFormurlencoded(body), method: "POST" },
+			{ headers, body: JSON.stringify(body), method: "POST" },
 			savedState.nonce,
 		);
 		return res.res.json()
