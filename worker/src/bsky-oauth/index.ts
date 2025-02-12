@@ -155,7 +155,7 @@ export class OAuthClient {
 			{ headers, body: jsonToFormurlencoded(body), method: "POST" },
 			savedState.nonce,
 		);
-		return res
+		return res.res.json()
 	}
 }
 
