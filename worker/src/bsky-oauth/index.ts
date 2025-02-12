@@ -108,8 +108,9 @@ export class OAuthClient {
 		//redisに保存
 		const stateData: SavedState = {
 			dpopKey: dpopKey.jwk,
-			verifier: pkce,
+			verifier: pkce.verifier,
 			tokenEndpoint: authServerMeta.token_endpoint,
+			authServer,
 		};
 		if (authServerMeta.authorization_response_iss_parameter_supported) stateData.iss = authServerMeta.issuer;
 		if (nonce != null) stateData.nonce = nonce;
@@ -127,14 +128,34 @@ export class OAuthClient {
 		//stateかcodeがない場合エラー
 		if (state == null || code == null) throw new ClientError("state or code missing");
 		const savedState: SavedState | null = await this.redis.get(`state_${state}`);
-		console.log(typeof savedState)
-		return savedState;
-		// //保存したstateを削除、並列処理
-		// promises.push(this.redis.del(`state_${state}`));
-		// if (savedState == null) throw new ClientError("timeout");
-		// if (savedState.iss != null && savedState.iss !== iss) throw new ClientError("invalid issuer");
-		// const dpopKey
-		// DPoPFetch(savedState.tokenEndpoint,savedState.dpopKey)
+		//保存したstateを削除、並列処理
+		promises.push(this.redis.del(`state_${state}`));
+		if (savedState == null) throw new ClientError("timeout");
+		if (savedState.iss != null && savedState.iss !== iss) throw new ClientError("invalid issuer");
+		const dpopKey = await restoreDPoPKey(savedState.dpopKey);
+		//token交換
+		const clientAssertJwt = await createClientAssertJWT(
+			this.privateKey,
+			clientMetadata.client_id,
+			savedState.authServer,
+			this.privateJwk.kid,
+		);
+		const headers = new Headers({ "Content-Type": "application/x-www-form-urlencoded" });
+		const body = {
+			grant_type: "authorization_code",
+			redirect_uri: clientMetadata.redirect_uris[0],
+			code,
+			code_verifier: savedState.verifier,
+			client_assertion_type: "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+			client_assertion: clientAssertJwt,
+		};
+		const res=await DPoPFetch(
+			savedState.tokenEndpoint,
+			dpopKey,
+			{ headers, body: jsonToFormurlencoded(body), method: "POST" },
+			savedState.nonce,
+		);
+		return res
 	}
 }
 
@@ -163,10 +184,11 @@ async function createClientAssertJWT(key: CryptoKey, clientId: string, authzServ
 async function DPoPFetch(
 	url: string,
 	{ key, jwk }: DPoPKey,
-	{ method = "GET", headers: reqHeader, body }: { method?: "GET" | "POST"; headers?: HeadersInit; body: BodyInit },
+	{ method = "GET", headers: reqHeader, body }: { method?: "GET" | "POST"; headers?: HeadersInit; body?: BodyInit },
+	initNonce?: string,
 ) {
 	const headers = new Headers(reqHeader);
-	const jwt1 = await createDPoPJWT(key, jwk, method, url);
+	const jwt1 = await createDPoPJWT(key, jwk, method, url, initNonce);
 	headers.set("DPoP", jwt1);
 	const res1 = await fetch(url, { method, headers, body });
 	// console.log(`${res1.status} ${res1.statusText}`);
@@ -214,6 +236,7 @@ function jsonToFormurlencoded(data: Record<string, string | number | undefined>)
 	return body;
 }
 
-async function restoreDPoPKey(jwk: JsonWebKey) {
-	crypto.subtle.importKey;
+async function restoreDPoPKey(jwk: JsonWebKey): Promise<DPoPKey> {
+	const key = await crypto.subtle.importKey("jwk", jwk, { name: "ECDSA", namedCurve: "P-256" }, true, ["sign"]);
+	return { key, jwk };
 }

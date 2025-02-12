@@ -35,7 +35,14 @@ type authServer = {
 };
 
 type DPoPKey = { key: CryptoKey; jwk: JsonWebKey };
-type SavedState = { iss?: string; dpopKey: JsonWebKey; verifier: Omit<pkce,"challenge">; nonce?: string,tokenEndpoint:string };
+type SavedState = {
+	iss?: string;
+	dpopKey: JsonWebKey;
+	verifier: pkce["verifier"];
+	nonce?: string;
+	tokenEndpoint: string;
+	authServer:string
+};
 type pkce = {
 	verifier: string;
 	challenge: string;
