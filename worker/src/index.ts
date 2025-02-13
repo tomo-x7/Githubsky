@@ -52,13 +52,13 @@ const schema = app
 })
 .get("/test", async (c) => {
 	const sessionId = getCookie(c, "session");
-	if (sessionId == null) return c.status(401);
+	if (sessionId == null) return c.status(401).body(null);
 	const did = await c.get("client").redis.get(`mysession_${sessionId}`);
-	if (did == null || typeof did !== "string") return c.status(401);
+	if (did == null || typeof did !== "string") return c.status(401).body(null);
 	try {
 		return c.text("you are "+did);
 	} catch (e) {
-		return c.status(401);
+		return c.status(401).text("error");
 	}
 });
 
