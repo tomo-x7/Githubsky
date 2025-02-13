@@ -4,6 +4,7 @@ import { hc } from "hono/client";
 import { z } from "zod";
 import { OAuthClient } from "./bsky-oauth";
 import { ClientError, CustomError, ServerError } from "./util";
+import {getCookie,setCookie} from "hono/cookie"
 
 export type secrets = {
 	[key in
