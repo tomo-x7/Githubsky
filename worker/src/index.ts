@@ -1,4 +1,5 @@
 import { zValidator } from "@hono/zod-validator";
+import { Redis } from "@upstash/redis/cloudflare";
 import { Hono } from "hono";
 import { hc } from "hono/client";
 import { getCookie, setCookie } from "hono/cookie";
@@ -15,10 +16,12 @@ export type secrets = {
 		| "SUPABASE_KEY"
 		| "GITHUB_CLIENT_SECRET"]: string;
 };
-type Env = { Variables: { client: OAuthClient }; Bindings: secrets };
+type Env = { Variables: { client: OAuthClient; redis: Redis }; Bindings: secrets };
 const app = new Hono<Env>().basePath("api/");
 app.use(async (c, next) => {
-	c.set("client", await OAuthClient.init(c.env));
+	const redis = new Redis({ url: c.env.UPSTASH_REDIS_REST_URL, token: c.env.UPSTASH_REDIS_REST_TOKEN });
+	c.set("client", await OAuthClient.init(c.env, redis));
+	c.set("redis", redis);
 	return await next();
 });
 
@@ -39,7 +42,7 @@ const schema = app
 		c.req.query();
 		const did = await c.get("client").callback(c.req.query());
 		const sessionID = Buffer.from(crypto.getRandomValues(new Uint32Array(10)).buffer).toString("base64url");
-		await c.get("client").redis.set(`mysession_${sessionID}`, did, { ex: 3600 });
+		await c.get("redis").set(`mysession_${sessionID}`, did, { ex: 3600 });
 		setCookie(c, "session", sessionID, {
 			httpOnly: true,
 			secure: true,
@@ -51,7 +54,7 @@ const schema = app
 	.get("/test", async (c) => {
 		const sessionId = getCookie(c, "session");
 		if (sessionId == null) return c.text("Unauthorized", 401);
-		const did = await c.get("client").redis.get(`mysession_${sessionId}`);
+		const did = await c.get("redis").get(`mysession_${sessionId}`);
 		if (did == null || typeof did !== "string") return c.text("Unauthorized", 401);
 		try {
 			return c.text(`you are ${did}`);

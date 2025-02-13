@@ -1,6 +1,6 @@
 import { clientMetadata } from "@githubsky/common";
 import { DidResolver, HandleResolver } from "@tomo-x/resolvers";
-import { Redis } from "@upstash/redis/cloudflare";
+import type { Redis } from "@upstash/redis/cloudflare";
 import type { secrets } from "..";
 import { ClientError, ServerError } from "../util";
 
@@ -11,13 +11,13 @@ export class OAuthClient {
 	private privateJwk: JsonWebKeyWithKid;
 	private handleResolver = new HandleResolver("https://public.api.bsky.app");
 	private didResolver = new DidResolver();
-	public redis: Redis;
+	private redis: Redis;
 	private constructor(privateKey: CryptoKey, jwk: JsonWebKeyWithKid, redis: Redis) {
 		this.privateKey = privateKey;
 		this.privateJwk = jwk;
 		this.redis = redis;
 	}
-	static async init(env: secrets) {
+	static async init(env: secrets, redis: Redis) {
 		const privateKey = await crypto.subtle.importKey(
 			"jwk",
 			JSON.parse(env.PRIVATE_KEY ?? ""),
@@ -27,7 +27,6 @@ export class OAuthClient {
 		);
 		const privateJwk = await crypto.subtle.exportKey("jwk", privateKey);
 		if (privateJwk instanceof ArrayBuffer) throw new ServerError("cannot parse jwk");
-		const redis = new Redis({ url: env.UPSTASH_REDIS_REST_URL, token: env.UPSTASH_REDIS_REST_TOKEN });
 		return new OAuthClient(privateKey, { ...privateJwk, kid: "privateKey1" }, redis);
 	}
 	get clientMetadata() {
