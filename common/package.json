@@ -4,7 +4,7 @@
 	"type": "module",
 	"scripts": {
 		"parse": "node ./parse.js",
-		"generate": "supabase gen types --lang=typescript --project-id rxtjjnbocilskefknuac --schema public > supabasetype.ts"
+		"generate": "supabase gen types --lang=typescript --project-id rxtjjnbocilskefknuac --schema public > db/supabasetype.ts"
 	},
 	"devDependencies": {
 		"@atproto/oauth-client-node": "^0.2.0",

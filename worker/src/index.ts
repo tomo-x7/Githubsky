@@ -53,17 +53,19 @@ const schema = app
 		return c.redirect("/");
 	})
 	.get("/github_login", async (c) => {
-		const url = await github_login(c.get("redis"));
+		const did=await bskyAuth(c)
+		if(did==null)return c.text("bsky auth before",401)
+		const url = await github_login(c.get("redis"),did);
 		return c.redirect(url);
 	})
 	.get("/github_callback", async (c) => {
 		const res = await github_callback(c.req.query(), c.env, c.get("redis"));
-		return c.json(res);
+		return c.text(res);
 	})
 	.get("/status", async (c) => {
 		const did = await bskyAuth(c);
 		if (did == null) return c.json({ bsky: false, github: "none" });
-		const supabase = new Supabase();
+		const supabase = new Supabase(c.env);
 	});
 
 app.onError((err) => {

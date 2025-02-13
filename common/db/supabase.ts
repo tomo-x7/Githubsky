@@ -1,7 +1,7 @@
 import { type SupabaseClient, createClient } from "@supabase/supabase-js";
 import type { Database } from "./supabasetype";
 export class Supabase {
-	private client: SupabaseClient<Database>;
+	public client: SupabaseClient<Database>;
 	private table: "userdata_v2" | "test";
 	constructor(env:Record<string,string|undefined>=process.env) {
 		if (!env.SUPABASE_URL || !env.SUPABASE_KEY) {
@@ -23,7 +23,6 @@ export class Supabase {
 			console.error(error);
 			return;
 		}
-		await this.client.from("deleted_v2").insert(data);
 	}
 	async success({ did }: { did: string }) {
 		const { error } = await this.client.from(this.table).update({ fail_count: 0 }).eq("DID", did);
