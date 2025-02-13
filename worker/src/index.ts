@@ -52,13 +52,13 @@ const schema = app
 })
 .get("/test", async (c) => {
 	const sessionId = getCookie(c, "session");
-	if (sessionId == null) return c.status(401).body(null);
+	if (sessionId == null) return c.text("Unauthorized",401);
 	const did = await c.get("client").redis.get(`mysession_${sessionId}`);
-	if (did == null || typeof did !== "string") return c.status(401).body(null);
+	if (did == null || typeof did !== "string") return c.text("Unauthorized",401);
 	try {
 		return c.text("you are "+did);
 	} catch (e) {
-		return c.status(401).text("error");
+		return c.text("error",400);
 	}
 });
 
