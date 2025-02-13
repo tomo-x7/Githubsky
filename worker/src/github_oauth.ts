@@ -1,7 +1,7 @@
-import { Redis } from "@upstash/redis/cloudflare";
-import { secrets } from ".";
-import { ClientError, genRandom } from "./util";
 import { Supabase } from "@githubsky/common";
+import type { Redis } from "@upstash/redis/cloudflare";
+import type { secrets } from ".";
+import { ClientError, genRandom } from "./util";
 
 const CLIENT_ID = "Ov23liNFnDxcVwZVTD8r";
 const REDIRECT_URI = "https://githubsky.pages.dev/api/github_callback";

@@ -1,7 +1,6 @@
 import { JoseKey } from "@atproto/jwk-jose";
 import { NodeOAuthClient, type NodeSavedSession, type NodeSavedState } from "@atproto/oauth-client-node";
 import { clientMetadata } from "@githubsky/common";
-import { Lock } from "@upstash/lock";
 import { Redis } from "@upstash/redis";
 
 const redisClient = new Redis({ url: process.env.UPSTASH_REDIS_REST_URL, token: process.env.UPSTASH_REDIS_REST_TOKEN });
@@ -30,23 +29,24 @@ export const createClient = async () =>
 		},
 
 		// A lock to prevent concurrent access to the session store. Optional if only one instance is running.
-		requestLock: async (key, fn) => {
-			const lock = new Lock({ redis: redisClient, id: key });
-			const locked = await lock.acquire({ lease: 30000 });
-			try {
-				return await fn();
-			} finally {
-				await lock.release();
-			}
-		},
+		// requestLock: async (key, fn) => {
+		// 	const lock = new Lock({ redis: redisClient, id: key });
+		// 	const locked = await lock.acquire({ lease: 30000 });
+		// 	try {
+		// 		return await fn();
+		// 	} finally {
+		// 		await lock.release();
+		// 	}
+		// },
 	});
 /**@param ex 期限切れになるまでの秒数 */
 async function setredis(key: string, value: object | string, ex?: number) {
 	await redisClient.set(key, value, typeof ex === "number" ? { ex } : undefined);
 }
-async function getredis(key: string, parse = true) {
+async function getredis<T>(key: string) {
+	console.log(`get ${key}`);
 	const res = await redisClient.get(key);
-	return parse && typeof res === "string" ? JSON.parse(res) : res;
+	return res as T;
 }
 async function delredis(key: string) {
 	await redisClient.del(key);

@@ -57,4 +57,14 @@ type tokenSet = {
 	expires_in: number;
 	sub: string;
 };
-type savedSession = { tokenSet: tokenSet; dpopKey: JsonWebKey };
+type SavedTokenSet = {
+	aud: string;
+	iss: string;
+	sub: string;
+	scope: string;
+	refresh_token: string;
+	access_token: string;
+	token_type: string;
+	expires_at: string | undefined;
+};
+type savedSession = { tokenSet: SavedTokenSet; dpopKey: JsonWebKey };

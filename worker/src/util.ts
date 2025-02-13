@@ -20,4 +20,5 @@ export class ServerError extends Error implements CustomError {
 }
 
 export const b64Enc = (s: string) => btoa(s).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
-export const genRandom = (bytes: number) => b64Enc(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(bytes))));
+export const genRandom = (bytes: number) =>
+	b64Enc(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(bytes))));

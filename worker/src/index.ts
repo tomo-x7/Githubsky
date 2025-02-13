@@ -1,13 +1,13 @@
+import { Supabase } from "@githubsky/common";
 import { zValidator } from "@hono/zod-validator";
 import { Redis } from "@upstash/redis/cloudflare";
-import { Context, Hono } from "hono";
+import { type Context, Hono } from "hono";
 import { hc } from "hono/client";
 import { getCookie, setCookie } from "hono/cookie";
 import { z } from "zod";
 import { OAuthClient } from "./bsky-oauth";
-import { ClientError, ServerError } from "./util";
-import { Supabase } from "@githubsky/common";
 import { github_callback, github_login } from "./github_oauth";
+import { ClientError, ServerError } from "./util";
 
 export type secrets = {
 	[key in
@@ -53,9 +53,9 @@ const schema = app
 		return c.redirect("/");
 	})
 	.get("/github_login", async (c) => {
-		const did=await bskyAuth(c)
-		if(did==null)return c.text("bsky auth before",401)
-		const url = await github_login(c.get("redis"),did);
+		const did = await bskyAuth(c);
+		if (did == null) return c.text("bsky auth before", 401);
+		const url = await github_login(c.get("redis"), did);
 		return c.redirect(url);
 	})
 	.get("/github_callback", async (c) => {

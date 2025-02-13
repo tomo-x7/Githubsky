@@ -1,7 +1,7 @@
 {
 	"name": "@githubsky/local",
 	"scripts": {
-		"post":"tsx src/index.ts"
+		"post": "tsx src/index.ts"
 	},
 	"devDependencies": {
 		"@types/node": "^22.8.0",

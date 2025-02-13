@@ -45,21 +45,11 @@ export class OAuthClient {
 		//ハンドルからPDSの情報を取得
 		const did = handleOrDid.startsWith("did:") ? handleOrDid : await this.handleResolver.resolve(handleOrDid);
 		if (did == null) throw new ClientError("cannot resolve handle");
-		const didDoc = await this.didResolver.resolve(did).catch((e) => console.error(e));
-		if (didDoc == null) throw new ClientError("cannot resolve did");
-		const resourceServer = didDoc.service?.filter(
-			({ id, type }) => id === "#atproto_pds" && type === "AtprotoPersonalDataServer",
-		)?.[0]?.serviceEndpoint;
+		const resourceServer = await getPdsUrl(did);
 		if (resourceServer == null || typeof resourceServer !== "string") throw new ClientError("cannot parse didDoc");
 
 		//リソースサーバー(PDS)から認可サーバーの情報を取得
-		const resourceServerMeta = await fetch(`${resourceServer}/.well-known/oauth-protected-resource`)
-			.then((r) => r.json() as Promise<resourceServer>)
-			.catch((e) => {
-				throw new ServerError(String(e));
-			});
-		const authServer = resourceServerMeta.authorization_servers[0];
-		if (authServer == null) throw new ServerError("cannot get auth server");
+		const authServer = (await getAuthServer(resourceServer))[0];
 
 		//認可サーバーの情報を取得
 		const authServerMeta = await fetch(`${authServer}/.well-known/oauth-authorization-server`)
@@ -153,9 +143,10 @@ export class OAuthClient {
 			{ headers, body: jsonToFormurlencoded(body), method: "POST" },
 			savedState.nonce,
 		).then(({ res }) => res.json());
-		//TODO tokenSet.subを検証
+		//tokenSetを検証、パース
+		const parsedToken = await parseSaveTokenset(tokenSet, iss ?? savedState.iss ?? "");
 		//Redisに保存
-		const saveSession: savedSession = { tokenSet, dpopKey: parseSaveJwk(dpopKey.jwk) };
+		const saveSession: savedSession = { tokenSet: parsedToken, dpopKey: parseSaveJwk(dpopKey.jwk) };
 		promises.push(this.redis.set(`session_${tokenSet.sub}`, JSON.stringify(saveSession)));
 
 		await Promise.all(promises);
@@ -248,4 +239,43 @@ async function restoreDPoPKey(jwk: JsonWebKey): Promise<DPoPKey> {
 function parseSaveJwk(jwk: JsonWebKey) {
 	const { kty, use, crv, x, y, d } = jwk;
 	return { kty, use: use ?? "sig", crv, x, y, d };
+}
+
+async function parseSaveTokenset(tokenSet: tokenSet, issuer: string) {
+	const pdsUrl = await getPdsUrl(tokenSet.sub);
+	if (typeof pdsUrl !== "string") throw new ClientError("invalid token");
+	const authServers = await getAuthServer(pdsUrl);
+	if (!authServers.includes(issuer)) throw new ClientError("invalid token");
+	return {
+		aud: pdsUrl,
+		sub: tokenSet.sub,
+		iss: issuer,
+
+		scope: tokenSet.scope,
+		refresh_token: tokenSet.refresh_token,
+		access_token: tokenSet.access_token,
+		token_type: tokenSet.token_type,
+
+		expires_at:
+			typeof tokenSet.expires_in === "number"
+				? new Date(Date.now() + tokenSet.expires_in * 1000).toISOString()
+				: undefined,
+	};
+}
+async function getPdsUrl(did: string) {
+	const didDoc = await new DidResolver().resolve(did).catch((e) => console.error(e));
+	if (didDoc == null) throw new ClientError("cannot resolve did");
+	const pdsUrl = didDoc.service?.filter(
+		({ id, type }) => id === "#atproto_pds" && type === "AtprotoPersonalDataServer",
+	)?.[0]?.serviceEndpoint;
+	return pdsUrl;
+}
+
+async function getAuthServer(pds: string) {
+	const resourceServerMeta = await fetch(`${pds}/.well-known/oauth-protected-resource`)
+		.then((r) => r.json() as Promise<resourceServer>)
+		.catch((e) => {
+			throw new ServerError(String(e));
+		});
+	return resourceServerMeta.authorization_servers;
 }

@@ -3,7 +3,7 @@ import type { Database } from "./supabasetype";
 export class Supabase {
 	public client: SupabaseClient<Database>;
 	private table: "userdata_v2" | "test";
-	constructor(env:Record<string,string|undefined>=process.env) {
+	constructor(env: Record<string, string | undefined> = process.env) {
 		if (!env.SUPABASE_URL || !env.SUPABASE_KEY) {
 			throw new Error("環境変数を正しく設定してください");
 		}
