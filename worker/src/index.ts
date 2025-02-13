@@ -1,11 +1,13 @@
 import { zValidator } from "@hono/zod-validator";
 import { Redis } from "@upstash/redis/cloudflare";
-import { Hono } from "hono";
+import { Context, Hono } from "hono";
 import { hc } from "hono/client";
 import { getCookie, setCookie } from "hono/cookie";
 import { z } from "zod";
 import { OAuthClient } from "./bsky-oauth";
 import { ClientError, ServerError } from "./util";
+import { Supabase } from "@githubsky/common";
+import { github_callback, github_login } from "./github_oauth";
 
 export type secrets = {
 	[key in
@@ -39,7 +41,6 @@ const schema = app
 		return c.redirect(url);
 	})
 	.get("/callback", async (c) => {
-		c.req.query();
 		const did = await c.get("client").callback(c.req.query());
 		const sessionID = Buffer.from(crypto.getRandomValues(new Uint32Array(10)).buffer).toString("base64url");
 		await c.get("redis").set(`mysession_${sessionID}`, did, { ex: 3600 });
@@ -49,18 +50,20 @@ const schema = app
 			sameSite: "Lax",
 			maxAge: 60 * 60 /* 1?? */,
 		});
-		return c.text(`login success. you are ${did}`);
+		return c.redirect("/");
 	})
-	.get("/test", async (c) => {
-		const sessionId = getCookie(c, "session");
-		if (sessionId == null) return c.text("Unauthorized", 401);
-		const did = await c.get("redis").get(`mysession_${sessionId}`);
-		if (did == null || typeof did !== "string") return c.text("Unauthorized", 401);
-		try {
-			return c.text(`you are ${did}`);
-		} catch (e) {
-			return c.text("error", 400);
-		}
+	.get("/github_login", async (c) => {
+		const url = await github_login(c.get("redis"));
+		return c.redirect(url);
+	})
+	.get("/github_callback", async (c) => {
+		const res = github_callback(c.req.query(), c.env, c.get("redis"));
+		return c.json(res);
+	})
+	.get("/status", async (c) => {
+		const did = await bskyAuth(c);
+		if (did == null) return c.json({ bsky: false, github: "none" });
+		const supabase = new Supabase();
 	});
 
 app.onError((err) => {
@@ -78,4 +81,12 @@ export default app;
 
 export function createClient() {
 	return hc<typeof schema>("/api");
+}
+
+async function bskyAuth(c: Context<Env>): Promise<string | null> {
+	const sessionId = getCookie(c, "session");
+	if (sessionId == null) return null;
+	const did = await c.get("redis").get(`mysession_${sessionId}`);
+	if (did == null || typeof did !== "string") return null;
+	return did;
 }

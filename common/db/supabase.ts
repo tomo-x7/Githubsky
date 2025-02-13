@@ -3,12 +3,12 @@ import type { Database } from "./supabasetype";
 export class Supabase {
 	private client: SupabaseClient<Database>;
 	private table: "userdata_v2" | "test";
-	constructor() {
-		if (!process.env.SUPABASE_URL || !process.env.SUPABASE_KEY) {
+	constructor(env:Record<string,string|undefined>=process.env) {
+		if (!env.SUPABASE_URL || !env.SUPABASE_KEY) {
 			throw new Error("環境変数を正しく設定してください");
 		}
-		this.client = createClient<Database>(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
-		this.table = (process.env.SUPABASE_ENV ?? "test") as typeof this.table;
+		this.client = createClient<Database>(env.SUPABASE_URL, env.SUPABASE_KEY);
+		this.table = (env.SUPABASE_ENV ?? "test") as typeof this.table;
 	}
 	async getUsers() {
 		const { data, error } = await this.client.from(this.table).select();

@@ -2,10 +2,8 @@ import { clientMetadata } from "@githubsky/common";
 import { DidResolver, HandleResolver } from "@tomo-x/resolvers";
 import type { Redis } from "@upstash/redis/cloudflare";
 import type { secrets } from "..";
-import { ClientError, ServerError } from "../util";
+import { ClientError, ServerError, b64Enc, genRandom } from "../util";
 
-const b64Enc = (s: string) => btoa(s).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
-const genRandom = (bytes: number) => b64Enc(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(bytes))));
 export class OAuthClient {
 	private privateKey: CryptoKey;
 	private privateJwk: JsonWebKeyWithKid;
@@ -160,7 +158,7 @@ export class OAuthClient {
 		const saveSession: savedSession = { tokenSet, dpopKey: dpopKey.jwk };
 		promises.push(this.redis.set(`session_${tokenSet.sub}`, JSON.stringify(saveSession)));
 
-		Promise.all(promises);
+		await Promise.all(promises);
 		return tokenSet.sub;
 	}
 }
