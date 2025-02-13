@@ -150,14 +150,19 @@ export class OAuthClient {
 			client_assertion_type: "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
 			client_assertion: clientAssertJwt,
 		};
-		console.log(body)
-		const res=await DPoPFetch(
+		const tokenSet:tokenSet=await DPoPFetch(
 			savedState.tokenEndpoint,
 			dpopKey,
 			{ headers, body: jsonToFormurlencoded(body), method: "POST" },
 			savedState.nonce,
-		);
-		return res.res.json()
+		).then(({res})=>res.json())
+		//TODO tokenSet.subを検証
+		//Redisに保存
+		const saveSession:savedSession={tokenSet,dpopKey:dpopKey.jwk}
+		promises.push(this.redis.set("session_"+tokenSet.sub,JSON.stringify(saveSession)))
+
+		Promise.all(promises)
+		return tokenSet.sub
 	}
 }
 

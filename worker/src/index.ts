@@ -36,34 +36,30 @@ const schema = app
 	})
 .get("/callback", async (c) => {
 	c.req.query()
-	const res = await c.get("client").callback((c.req.query()));
-	return c.json(res)
-	// const agent = new Agent(session);
-	// const profile = (await agent.getProfile({ actor: agent.assertDid })).data;
-	// const sessionID = Buffer.from(crypto.getRandomValues(new Uint32Array(10)).buffer).toString("base64url");
-	// redis.setredis(`mysession_${sessionID}`, session.did, 3600);
-	// setCookie(c, "session", sessionID, {
-	// 	httpOnly: true,
-	// 	secure: true,
-	// 	sameSite: "Lax",
-	// 	maxAge: 60 * 60 /* 1?? */,
-	// });
-	// return c.html(
-	// 	`<script>localStorage.setItem("handle","${profile.handle}");localStorage.setItem("icon","${profile.avatar}");window.location="/";</script>`,
-	// );
+	const did = await c.get("client").callback((c.req.query()));
+	const sessionID = Buffer.from(crypto.getRandomValues(new Uint32Array(10)).buffer).toString("base64url");
+	redis.setredis(`mysession_${sessionID}`, did, 3600);
+	setCookie(c, "session", sessionID, {
+		httpOnly: true,
+		secure: true,
+		sameSite: "Lax",
+		maxAge: 60 * 60 /* 1?? */,
+	});
+	return c.text(
+		`login success. you are ${did}`,
+	);
 })
-// .get("/test", async (c) => {
-// 	const sessionId = getCookie(c, "session");
-// 	if (sessionId == null) return c.status(401);
-// 	const did = await redis.getredis(`mysession_${sessionId}`, false);
-// 	if (did == null || typeof did !== "string") return c.status(401);
-// 	try {
-// 		const agent = new Agent(await client.restore(did));
-// 		return c.json(agent.getPreferences());
-// 	} catch (e) {
-// 		return c.status(401);
-// 	}
-// });
+.get("/test", async (c) => {
+	const sessionId = getCookie(c, "session");
+	if (sessionId == null) return c.status(401);
+	const did = await redis.getredis(`mysession_${sessionId}`, false);
+	if (did == null || typeof did !== "string") return c.status(401);
+	try {
+		return c.text("you are "+did);
+	} catch (e) {
+		return c.status(401);
+	}
+});
 
 app.onError((err) => {
 	if (err instanceof ClientError) {
