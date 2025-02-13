@@ -57,7 +57,7 @@ const schema = app
 		return c.redirect(url);
 	})
 	.get("/github_callback", async (c) => {
-		const res = github_callback(c.req.query(), c.env, c.get("redis"));
+		const res = await github_callback(c.req.query(), c.env, c.get("redis"));
 		return c.json(res);
 	})
 	.get("/status", async (c) => {
