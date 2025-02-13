@@ -1,8 +1,8 @@
-import { DidResolver, HandleResolver } from "@tomo-x/resolvers";
 import { clientMetadata } from "@githubsky/common";
+import { DidResolver, HandleResolver } from "@tomo-x/resolvers";
+import { Redis } from "@upstash/redis/cloudflare";
 import type { secrets } from "..";
 import { ClientError, ServerError } from "../util";
-import { Redis } from "@upstash/redis/cloudflare";
 
 const b64Enc = (s: string) => btoa(s).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
 const genRandom = (bytes: number) => b64Enc(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(bytes))));
@@ -146,23 +146,23 @@ export class OAuthClient {
 			redirect_uri: clientMetadata.redirect_uris[0],
 			code,
 			code_verifier: savedState.verifier,
-			client_id:clientMetadata.client_id,
+			client_id: clientMetadata.client_id,
 			client_assertion_type: "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
 			client_assertion: clientAssertJwt,
 		};
-		const tokenSet:tokenSet=await DPoPFetch(
+		const tokenSet: tokenSet = await DPoPFetch(
 			savedState.tokenEndpoint,
 			dpopKey,
 			{ headers, body: jsonToFormurlencoded(body), method: "POST" },
 			savedState.nonce,
-		).then(({res})=>res.json())
+		).then(({ res }) => res.json());
 		//TODO tokenSet.subを検証
 		//Redisに保存
-		const saveSession:savedSession={tokenSet,dpopKey:dpopKey.jwk}
-		promises.push(this.redis.set("session_"+tokenSet.sub,JSON.stringify(saveSession)))
+		const saveSession: savedSession = { tokenSet, dpopKey: dpopKey.jwk };
+		promises.push(this.redis.set(`session_${tokenSet.sub}`, JSON.stringify(saveSession)));
 
-		Promise.all(promises)
-		return tokenSet.sub
+		Promise.all(promises);
+		return tokenSet.sub;
 	}
 }
 

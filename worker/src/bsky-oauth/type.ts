@@ -41,7 +41,7 @@ type SavedState = {
 	verifier: pkce["verifier"];
 	nonce?: string;
 	tokenEndpoint: string;
-	authServer: string
+	authServer: string;
 };
 type pkce = {
 	verifier: string;
@@ -49,5 +49,12 @@ type pkce = {
 	method: string;
 };
 
-type tokenSet = { "access_token": string, "token_type": "DPoP", "refresh_token": string, "scope": string, "expires_in": number, "sub": string }
-type savedSession={tokenSet:tokenSet,dpopKey:JsonWebKey}
+type tokenSet = {
+	access_token: string;
+	token_type: "DPoP";
+	refresh_token: string;
+	scope: string;
+	expires_in: number;
+	sub: string;
+};
+type savedSession = { tokenSet: tokenSet; dpopKey: JsonWebKey };

@@ -1,10 +1,10 @@
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import { hc } from "hono/client";
+import { getCookie, setCookie } from "hono/cookie";
 import { z } from "zod";
 import { OAuthClient } from "./bsky-oauth";
-import { ClientError, CustomError, ServerError } from "./util";
-import {getCookie,setCookie} from "hono/cookie"
+import { ClientError, ServerError } from "./util";
 
 export type secrets = {
 	[key in
@@ -35,32 +35,30 @@ const schema = app
 		const url = await c.get("client").login(handle);
 		return c.redirect(url);
 	})
-.get("/callback", async (c) => {
-	c.req.query()
-	const did = await c.get("client").callback((c.req.query()));
-	const sessionID = Buffer.from(crypto.getRandomValues(new Uint32Array(10)).buffer).toString("base64url");
-	await c.get("client").redis.set(`mysession_${sessionID}`, did, {ex:3600});
-	setCookie(c, "session", sessionID, {
-		httpOnly: true,
-		secure: true,
-		sameSite: "Lax",
-		maxAge: 60 * 60 /* 1?? */,
+	.get("/callback", async (c) => {
+		c.req.query();
+		const did = await c.get("client").callback(c.req.query());
+		const sessionID = Buffer.from(crypto.getRandomValues(new Uint32Array(10)).buffer).toString("base64url");
+		await c.get("client").redis.set(`mysession_${sessionID}`, did, { ex: 3600 });
+		setCookie(c, "session", sessionID, {
+			httpOnly: true,
+			secure: true,
+			sameSite: "Lax",
+			maxAge: 60 * 60 /* 1?? */,
+		});
+		return c.text(`login success. you are ${did}`);
+	})
+	.get("/test", async (c) => {
+		const sessionId = getCookie(c, "session");
+		if (sessionId == null) return c.text("Unauthorized", 401);
+		const did = await c.get("client").redis.get(`mysession_${sessionId}`);
+		if (did == null || typeof did !== "string") return c.text("Unauthorized", 401);
+		try {
+			return c.text(`you are ${did}`);
+		} catch (e) {
+			return c.text("error", 400);
+		}
 	});
-	return c.text(
-		`login success. you are ${did}`,
-	);
-})
-.get("/test", async (c) => {
-	const sessionId = getCookie(c, "session");
-	if (sessionId == null) return c.text("Unauthorized",401);
-	const did = await c.get("client").redis.get(`mysession_${sessionId}`);
-	if (did == null || typeof did !== "string") return c.text("Unauthorized",401);
-	try {
-		return c.text("you are "+did);
-	} catch (e) {
-		return c.text("error",400);
-	}
-});
 
 app.onError((err) => {
 	if (err instanceof ClientError) {
