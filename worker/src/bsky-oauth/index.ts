@@ -11,7 +11,7 @@ export class OAuthClient {
 	private privateJwk: JsonWebKeyWithKid;
 	private handleResolver = new HandleResolver("https://public.api.bsky.app");
 	private didResolver = new DidResolver();
-	private redis: Redis;
+	public redis: Redis;
 	private constructor(privateKey: CryptoKey, jwk: JsonWebKeyWithKid, redis: Redis) {
 		this.privateKey = privateKey;
 		this.privateJwk = jwk;

@@ -38,7 +38,7 @@ const schema = app
 	c.req.query()
 	const did = await c.get("client").callback((c.req.query()));
 	const sessionID = Buffer.from(crypto.getRandomValues(new Uint32Array(10)).buffer).toString("base64url");
-	redis.setredis(`mysession_${sessionID}`, did, 3600);
+	c.get("client").redis.setredis(`mysession_${sessionID}`, did, 3600);
 	setCookie(c, "session", sessionID, {
 		httpOnly: true,
 		secure: true,
@@ -52,7 +52,7 @@ const schema = app
 .get("/test", async (c) => {
 	const sessionId = getCookie(c, "session");
 	if (sessionId == null) return c.status(401);
-	const did = await redis.getredis(`mysession_${sessionId}`, false);
+	const did = await c.get("client").redis.getredis(`mysession_${sessionId}`, false);
 	if (did == null || typeof did !== "string") return c.status(401);
 	try {
 		return c.text("you are "+did);
