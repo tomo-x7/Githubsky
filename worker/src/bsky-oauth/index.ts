@@ -146,6 +146,7 @@ export class OAuthClient {
 			redirect_uri: clientMetadata.redirect_uris[0],
 			code,
 			code_verifier: savedState.verifier,
+			client_id:clientMetadata.client_id,
 			client_assertion_type: "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
 			client_assertion: clientAssertJwt,
 		};
