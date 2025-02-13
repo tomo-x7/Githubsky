@@ -2,9 +2,9 @@ import { Agent, RichText } from "@atproto/api";
 import type { Supabase } from "@githubsky/common";
 import { createClient } from "./client";
 import type { GithubData } from "./github";
-const client = await createClient();
+import { NodeOAuthClient } from "@atproto/oauth-client-node";
 
-export async function createPost({ did, data, supabase }: { did: string; data: GithubData; supabase: Supabase }) {
+export async function createPost({ did, data, supabase,client }: { did: string; data: GithubData; supabase: Supabase,client:NodeOAuthClient }) {
 	const session = await client.restore(did);
 	const agent = new Agent(session);
 	agent.post;

@@ -155,7 +155,7 @@ export class OAuthClient {
 		).then(({ res }) => res.json());
 		//TODO tokenSet.subを検証
 		//Redisに保存
-		const saveSession: savedSession = { tokenSet, dpopKey: dpopKey.jwk };
+		const saveSession: savedSession = { tokenSet, dpopKey: parseSaveJwk(dpopKey.jwk) };
 		promises.push(this.redis.set(`session_${tokenSet.sub}`, JSON.stringify(saveSession)));
 
 		await Promise.all(promises);
@@ -243,4 +243,9 @@ function jsonToFormurlencoded(data: Record<string, string | number | undefined>)
 async function restoreDPoPKey(jwk: JsonWebKey): Promise<DPoPKey> {
 	const key = await crypto.subtle.importKey("jwk", jwk, { name: "ECDSA", namedCurve: "P-256" }, true, ["sign"]);
 	return { key, jwk };
+}
+/**保存用のJWKに変換 */
+function parseSaveJwk(jwk: JsonWebKey) {
+	const { kty, use, crv, x, y, d } = jwk;
+	return { kty, use: use ?? "sig", crv, x, y, d };
 }
