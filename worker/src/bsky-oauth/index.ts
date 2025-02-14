@@ -268,7 +268,7 @@ async function getPdsUrl(did: string) {
 	const pdsUrl = didDoc.service?.filter(
 		({ id, type }) => id === "#atproto_pds" && type === "AtprotoPersonalDataServer",
 	)?.[0]?.serviceEndpoint;
-	return pdsUrl;
+	return typeof pdsUrl === "string" ? pdsUrl : null;
 }
 
 async function getAuthServer(pds: string) {
