@@ -7,12 +7,8 @@ export async function createPost({
 	/*data,*/ supabase,
 	client,
 }: { did: string /*data: GithubData;*/; supabase: Supabase; client: NodeOAuthClient }) {
-	let session: OAuthSession;
-	try {
-		session = await client.restore(did);
-	} catch {
-		session = await client.restore(did);
-	}
+	const session = await client.restore(did);
+	
 	const agent = new Agent(session);
 	// try {
 	// 	const message = new RichText({
