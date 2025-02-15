@@ -12,5 +12,14 @@
 	"dependencies": {
 		"@atproto/api": "^0.13.12",
 		"dotenv-cli": "^8.0.0"
+	},
+	"pnpm": {
+		"onlyBuiltDependencies": [
+			"@swc/core",
+			"canvas",
+			"esbuild",
+			"supabase",
+			"workerd"
+		]
 	}
 }

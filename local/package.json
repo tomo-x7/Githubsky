@@ -1,7 +1,7 @@
 {
 	"name": "@githubsky/local",
 	"scripts": {
-		"post": "tsx src/index.ts"
+		"post": "tsx src/index.ts","dev": "tsx --watch src/test.ts"
 	},
 	"devDependencies": {
 		"@types/node": "^22.8.0",
@@ -14,7 +14,10 @@
 		"@atproto/oauth-client-node": "^0.2.0",
 		"@githubsky/common": "workspace:^",
 		"@upstash/lock": "^0.2.1",
-		"@upstash/redis": "^1.34.4"
+		"@upstash/redis": "^1.34.4",
+		"canvas": "^3.1.0",
+		"chart.js": "^4.4.7",
+		"chartjs-plugin-datalabels": "^2.2.0"
 	},
 	"type": "module"
 }

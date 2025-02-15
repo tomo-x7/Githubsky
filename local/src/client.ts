@@ -40,11 +40,10 @@ export const createClient = async () =>
 		// },
 	});
 /**@param ex 期限切れになるまでの秒数 */
-async function setredis(key: string, value: object | string, ex?: number) {
+async function setredis<T>(key: string, value: T, ex?: number) {
 	await redisClient.set(key, value, typeof ex === "number" ? { ex } : undefined);
 }
 async function getredis<T>(key: string) {
-	console.log(`get ${key}`);
 	const res = await redisClient.get(key);
 	return res as T;
 }

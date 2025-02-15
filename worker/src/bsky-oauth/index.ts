@@ -146,7 +146,7 @@ export class OAuthClient {
 		//tokenSetを検証、パース
 		const parsedToken = await parseSaveTokenset(tokenSet, iss ?? savedState.iss ?? "");
 		//Redisに保存
-		const saveSession: savedSession = { tokenSet: parsedToken, dpopKey: parseSaveJwk(dpopKey.jwk) };
+		const saveSession: savedSession = { tokenSet: parsedToken, dpopJwk: parseSaveJwk(dpopKey.jwk) };
 		promises.push(this.redis.set(`session_${tokenSet.sub}`, JSON.stringify(saveSession)));
 
 		await Promise.all(promises);

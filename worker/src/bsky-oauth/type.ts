@@ -67,4 +67,4 @@ type SavedTokenSet = {
 	token_type: string;
 	expires_at: string | undefined;
 };
-type savedSession = { tokenSet: SavedTokenSet; dpopKey: JsonWebKey };
+type savedSession = { tokenSet: SavedTokenSet; dpopJwk: JsonWebKey };
