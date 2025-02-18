@@ -1,7 +1,7 @@
 import { Agent, RichText } from "@atproto/api";
-import type { NodeOAuthClient, OAuthSession } from "@atproto/oauth-client-node";
+import type { NodeOAuthClient } from "@atproto/oauth-client-node";
 import type { Supabase } from "@githubsky/common";
-import { GithubData } from "./github";
+import type { GithubData } from "./github";
 
 export async function createPost({
 	did,

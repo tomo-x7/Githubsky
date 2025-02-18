@@ -15,12 +15,6 @@
 		"dotenv-cli": "^8.0.0"
 	},
 	"pnpm": {
-		"onlyBuiltDependencies": [
-			"@swc/core",
-			"canvas",
-			"esbuild",
-			"supabase",
-			"workerd"
-		]
+		"onlyBuiltDependencies": ["@swc/core", "canvas", "esbuild", "supabase", "workerd"]
 	}
 }

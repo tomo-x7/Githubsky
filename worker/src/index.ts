@@ -7,16 +7,16 @@ import { getCookie, setCookie } from "hono/cookie";
 import { z } from "zod";
 import { OAuthClient } from "./bsky-oauth";
 import { github_callback, github_login } from "./github_oauth";
-import { ClientError, ServerError, statusReturn } from "./util";
+import { ClientError, ServerError, type statusReturn } from "./util";
 
 export type secrets = {
 	[key in
-	| "PRIVATE_KEY"
-	| "UPSTASH_REDIS_REST_URL"
-	| "UPSTASH_REDIS_REST_TOKEN"
-	| "SUPABASE_URL"
-	| "SUPABASE_KEY"
-	| "GITHUB_CLIENT_SECRET"]: string;
+		| "PRIVATE_KEY"
+		| "UPSTASH_REDIS_REST_URL"
+		| "UPSTASH_REDIS_REST_TOKEN"
+		| "SUPABASE_URL"
+		| "SUPABASE_KEY"
+		| "GITHUB_CLIENT_SECRET"]: string;
 };
 type Env = { Variables: { client: OAuthClient; redis: Redis }; Bindings: secrets };
 const app = new Hono<Env>().basePath("api/");
@@ -66,14 +66,15 @@ const schema = app
 		const did = await bskyAuth(c);
 		if (did == null) return c.json<statusReturn>({ bsky: false, github: "none" });
 		const supabase = new Supabase(c.env);
-		const { data, error } = await supabase.client.from("userdata_v2").select().eq("DID", did)
+		const { data, error } = await supabase.client.from("userdata_v2").select().eq("DID", did);
 		if (error != null) {
-			console.error(error)
-			throw new ServerError("nolog")
+			console.error(error);
+			throw new ServerError("nolog");
 		}
-		if (data[0] == null) return c.json<statusReturn>({ bsky: true, github: "none" })
-		if (data[0].Github_token == null) return c.json<statusReturn>({ bsky: true, github: "name", github_name: data[0].github_name })
-		return c.json<statusReturn>({ bsky: true, github: "oauth", github_name: data[0].github_name })
+		if (data[0] == null) return c.json<statusReturn>({ bsky: true, github: "none" });
+		if (data[0].Github_token == null)
+			return c.json<statusReturn>({ bsky: true, github: "name", github_name: data[0].github_name });
+		return c.json<statusReturn>({ bsky: true, github: "oauth", github_name: data[0].github_name });
 	});
 
 app.onError((err) => {

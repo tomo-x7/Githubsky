@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { client } from "./main";
+import type { client } from "./main";
 
 export function App({ client }: { client: client }) {
 	const [state, setState] = useState<"loading" | "logout" | "github-none" | "github-name" | "github-oauth" | "error">(
@@ -24,12 +24,12 @@ export function App({ client }: { client: client }) {
 				}
 				if (data.github === "name") {
 					setState("github-name");
-					setGithubName(data.github_name)
+					setGithubName(data.github_name);
 					return;
 				}
 				if (data.github === "oauth") {
 					setState("github-oauth");
-					setGithubName(data.github_name)
+					setGithubName(data.github_name);
 					return;
 				}
 				setState("error"); //never

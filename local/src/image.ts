@@ -83,7 +83,7 @@ export function createImg(data: GithubData): Buffer {
 		},
 	});
 
-	mctx.fillStyle ="white";
+	mctx.fillStyle = "white";
 	mctx.fillRect(0, 0, image.width, image.height);
 	mctx.fillStyle = "black";
 	mctx.font = "25px";
