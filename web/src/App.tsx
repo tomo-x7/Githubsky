@@ -7,7 +7,7 @@ export function App({ client }: { client: client }) {
 	);
 	const [githubName, setGithubName] = useState<string>();
 	useEffect(() => {
-		client.api.status
+		client.status
 			.$get()
 			.then((res) => res.json())
 			.catch((err) => {
