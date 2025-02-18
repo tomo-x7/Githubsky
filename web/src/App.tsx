@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 import type { client } from "./main";
+import { Box, CircularProgress, Container, Grid2 } from "@mui/material";
 
 export function App({ client }: { client: client }) {
 	const [state, setState] = useState<"loading" | "logout" | "github-none" | "github-name" | "github-oauth" | "error">(
 		"loading",
 	);
+	//@ts-ignore デバッグ用
+	// biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
+	useEffect(() => (globalThis.setState = setState), []);
 	const [githubName, setGithubName] = useState<string>();
 	useEffect(() => {
 		client.status
@@ -35,6 +39,13 @@ export function App({ client }: { client: client }) {
 				setState("error"); //never
 			});
 	}, [client]);
+	if (state === "loading")
+		return (
+			<Grid2 container justifyContent="center" alignItems="center" height="100%">
+				<CircularProgress size={100} />
+			</Grid2>
+		);
+	if (state === "error") return <>error</>;
 	return (
 		<>
 			state:{state}

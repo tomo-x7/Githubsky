@@ -62,6 +62,23 @@ const schema = app
 		const res = await github_callback(c.req.query(), c.env, c.get("redis"));
 		return c.text(res);
 	})
+	.post("github_name", zValidator("json", z.object({ name: z.string() })), async (c) => {
+		const { name } = c.req.valid("json");
+		const did = await bskyAuth(c);
+		if (did == null) return c.text("bsky auth before", 401);
+		const supabase = new Supabase(c.env);
+		const { data, error } = await supabase.client.from("userdata_v2").select().eq("DID", did);
+		if (error != null) {
+			console.error(error);
+			throw new ServerError("nolog");
+		}
+		if (data[0] == null) {
+			await supabase.client.from("userdata_v2").insert([{ DID: did, github_name: name, }]);
+			return c.json({ create:true });
+		} else {
+			return c.json({ create:false });
+		}
+	})
 	.get("/status", async (c) => {
 		const did = await bskyAuth(c);
 		if (did == null) return c.json<statusReturn>({ bsky: false, github: "none" });
