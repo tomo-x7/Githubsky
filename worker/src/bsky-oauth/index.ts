@@ -3,6 +3,7 @@ import { DidResolver, HandleResolver } from "@tomo-x/resolvers";
 import type { Redis } from "@upstash/redis/cloudflare";
 import type { secrets } from "..";
 import { ClientError, ServerError, b64Enc, genRandom } from "../util";
+import type {authServer,SavedState,tokenSet,savedSession,DPoPKey,resourceServer} from "./type"
 
 export class OAuthClient {
 	private privateKey: CryptoKey;

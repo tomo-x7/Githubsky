@@ -1,10 +1,10 @@
-type resourceServer = {
+export type resourceServer = {
 	resource: string;
 	authorization_servers: string[];
 	bearer_methods_supported: string[];
 	resource_documentation: string;
 };
-type authServer = {
+export type authServer = {
 	issuer: string;
 	scopes_supported: string[];
 	subject_types_supported: string[];
@@ -34,8 +34,8 @@ type authServer = {
 	client_id_metadata_document_supported: boolean;
 };
 
-type DPoPKey = { key: CryptoKey; jwk: JsonWebKey };
-type SavedState = {
+export type DPoPKey = { key: CryptoKey; jwk: JsonWebKey };
+export type SavedState = {
 	iss?: string;
 	dpopKey: JsonWebKey;
 	verifier: pkce["verifier"];
@@ -43,13 +43,13 @@ type SavedState = {
 	tokenEndpoint: string;
 	authServer: string;
 };
-type pkce = {
+export type pkce = {
 	verifier: string;
 	challenge: string;
 	method: string;
 };
 
-type tokenSet = {
+export type tokenSet = {
 	access_token: string;
 	token_type: "DPoP";
 	refresh_token: string;
@@ -57,7 +57,7 @@ type tokenSet = {
 	expires_in: number;
 	sub: string;
 };
-type SavedTokenSet = {
+export type SavedTokenSet = {
 	aud: string;
 	iss: string;
 	sub: string;
@@ -67,4 +67,4 @@ type SavedTokenSet = {
 	token_type: string;
 	expires_at: string | undefined;
 };
-type savedSession = { tokenSet: SavedTokenSet; dpopJwk: JsonWebKey };
+export type savedSession = { tokenSet: SavedTokenSet; dpopJwk: JsonWebKey };
