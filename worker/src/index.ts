@@ -90,9 +90,7 @@ app.onError((err) => {
 
 export default app;
 
-export function createClient() {
-	return hc<typeof schema>("/api");
-}
+export type schema = typeof schema;
 
 async function bskyAuth(c: Context<Env>): Promise<string | null> {
 	const sessionId = getCookie(c, "session");

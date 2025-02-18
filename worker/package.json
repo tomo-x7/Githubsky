@@ -5,7 +5,7 @@
 		"deploy": "wrangler deploy --minify",
 		"test": "tsx src/bsky-oauth/test.ts"
 	},
-	"main": "src/index.js",
+	"main": "src/client.js",
 	"dependencies": {
 		"@githubsky/common": "workspace:^",
 		"@hono/zod-validator": "^0.4.2",

@@ -1,4 +1,4 @@
-import { createClient } from "@githubsky/worker";
+import { createClient } from "../../worker/src/client";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./App.tsx";

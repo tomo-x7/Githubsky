@@ -79,9 +79,6 @@ importers:
 
   web:
     dependencies:
-      '@githubsky/worker':
-        specifier: workspace:^
-        version: link:../worker
       react:
         specifier: ^19.0.0
         version: 19.0.0
