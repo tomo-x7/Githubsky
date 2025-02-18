@@ -11,6 +11,7 @@
 	"license": "MIT",
 	"dependencies": {
 		"@atproto/api": "^0.13.12",
+		"@biomejs/biome": "^1.9.4",
 		"dotenv-cli": "^8.0.0"
 	},
 	"pnpm": {
