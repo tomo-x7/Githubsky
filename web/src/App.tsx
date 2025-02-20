@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { client } from "./main";
 import { Box, CircularProgress, Container, Grid2 } from "@mui/material";
+import { BskyLogin } from "./BskyLogin";
 
 export function App({ client }: { client: client }) {
 	const [state, setState] = useState<"loading" | "logout" | "github-none" | "github-name" | "github-oauth" | "error">(
@@ -46,6 +47,7 @@ export function App({ client }: { client: client }) {
 			</Grid2>
 		);
 	if (state === "error") return <>error</>;
+	if(state==="logout")return <BskyLogin client={client}/>
 	return (
 		<>
 			state:{state}
