@@ -1,6 +1,6 @@
 import type { ClientMetadata } from "@atproto/oauth-client-node";
 
-const SERVER_DOMAIN = "githubsky.pages.dev" as const;
+const SERVER_DOMAIN = "githubsky.tomo-x.win" as const;
 export const clientMetadata: ClientMetadata = {
 	// Must be a URL that will be exposing this metadata
 	client_id: `https://${SERVER_DOMAIN}/api/client-metadata.json`,

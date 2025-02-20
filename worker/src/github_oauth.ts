@@ -4,7 +4,7 @@ import type { secrets } from ".";
 import { ClientError, genRandom } from "./util";
 
 const CLIENT_ID = "Ov23liNFnDxcVwZVTD8r";
-const REDIRECT_URI = "https://githubsky.pages.dev/api/github_callback";
+const REDIRECT_URI = "https://githubsky.tomo-x.win/api/github_callback";
 export async function github_login(redis: Redis, did: string) {
 	const state = genRandom(16);
 	await redis.set(`gh_state_${state}`, did, { ex: 1200 });
