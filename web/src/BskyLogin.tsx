@@ -10,7 +10,7 @@ export function BskyLogin({ client }: { client: client }) {
 	const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => setHandle(e.target.value);
 	return (
 		<>
-			<Box sx={{height:"100%"}}>
+			<Box sx={{height:"100%",display:"flex",justifyContent:"center",alignItems:"center"}}>
 				<Paper sx={{ width: "fit-content", margin: "auto", padding: "1rem",height:"200px",display:"flex",flexDirection:"column",justifyContent:"space-between" }}>
 					<TextField
 						error={!isHandleValid}
