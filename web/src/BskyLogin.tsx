@@ -10,13 +10,13 @@ export function BskyLogin({ client }: { client: client }) {
 	const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => setHandle(e.target.value);
 	return (
 		<>
-			<Box>
+			<Box sx={{height:"100%"}}>
 				<Paper sx={{ width: "fit-content", margin: "auto", padding: "1rem",height:"200px",display:"flex",flexDirection:"column",justifyContent:"space-between" }}>
 					<TextField
 						error={!isHandleValid}
 						helperText={isHandleValid ? undefined : handle === "" ? "required" : "invalid value"}
 						variant="standard"
-						label="your Bluesky handle"
+						label="Bluesky handle"
 						placeholder="example.bsky.social"
 						onInput={handleInput}
 						slotProps={{
