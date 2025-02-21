@@ -11,7 +11,7 @@ export function BskyLogin({ client }: { client: client }) {
 	return (
 		<>
 			<Box sx={{height:"100%",display:"flex",justifyContent:"center",alignItems:"center"}}>
-				<Paper sx={{ width: "fit-content", margin: "auto", padding: "1rem",height:"200px",display:"flex",flexDirection:"column",justifyContent:"space-between" }}>
+				<Paper sx={{ width: "400px",maxWidth:"80vw", padding: "1rem",height:"200px",display:"flex",flexDirection:"column",justifyContent:"space-between" }}>
 					<TextField
 						error={!isHandleValid}
 						helperText={isHandleValid ? undefined : handle === "" ? "required" : "invalid value"}
