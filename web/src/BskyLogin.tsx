@@ -29,8 +29,8 @@ export function BskyLogin({ client }: { client: client }) {
 							},
 						}}
 					/>
-					<Box variant="contained" href={`/api/login?handle=${handle}`} sx={{display:"flex",justifyContent:"flex-end"}}>
-						<Button disabled={!isHandleValid}>Login</Button>
+					<Box sx={{display:"flex",justifyContent:"flex-end"}}>
+						<Button variant="contained" href={`/api/login?handle=${handle}`} disabled={!isHandleValid}>Login</Button>
 					</Box>
 				</Paper>
 			</Box>
