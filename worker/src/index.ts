@@ -62,7 +62,7 @@ const schema = app
 		const res = await github_callback(c.req.query(), c.env, c.get("redis"));
 		return c.text(res);
 	})
-	.post("github_name", zValidator("json", z.object({ name: z.string() })), async (c) => {
+	.post("/github_name", zValidator("json", z.object({ name: z.string() })), async (c) => {
 		const { name } = c.req.valid("json");
 		const did = await bskyAuth(c);
 		if (did == null) return c.text("bsky auth before", 401);

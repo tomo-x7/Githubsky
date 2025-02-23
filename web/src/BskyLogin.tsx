@@ -10,29 +10,27 @@ export function BskyLogin({ client }: { client: client }) {
 	const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => setHandle(e.target.value);
 	return (
 		<>
-			<Box sx={{height:"100%",display:"flex",justifyContent:"center",alignItems:"center"}}>
-				<Paper sx={{ width: "400px",maxWidth:"80vw", padding: "1rem",height:"200px",display:"flex",flexDirection:"column",justifyContent:"space-between" }}>
-					<TextField
-						error={!isHandleValid}
-						helperText={isHandleValid ? undefined : handle === "" ? "required" : "invalid value"}
-						variant="standard"
-						label="Bluesky handle"
-						placeholder="example.bsky.social"
-						onInput={handleInput}
-						slotProps={{
-							input: {
-								startAdornment: (
-									<InputAdornment position="start">
-										<AlternateEmail />
-									</InputAdornment>
-								),
-							},
-						}}
-					/>
-					<Box sx={{display:"flex",justifyContent:"flex-end"}}>
-						<Button variant="contained" href={`/api/login?handle=${handle}`} disabled={!isHandleValid}>Login</Button>
-					</Box>
-				</Paper>
+			<TextField
+				error={!isHandleValid}
+				helperText={isHandleValid ? undefined : handle === "" ? "required" : "invalid value"}
+				variant="standard"
+				label="Bluesky handle"
+				placeholder="example.bsky.social"
+				onInput={handleInput}
+				slotProps={{
+					input: {
+						startAdornment: (
+							<InputAdornment position="start">
+								<AlternateEmail />
+							</InputAdornment>
+						),
+					},
+				}}
+			/>
+			<Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+				<Button variant="contained" href={`/api/login?handle=${handle}`} disabled={!isHandleValid}>
+					Login
+				</Button>
 			</Box>
 		</>
 	);
