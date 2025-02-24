@@ -1,3 +1,3 @@
-export function Header(){
-    return <div>Githubsky V2</div>
+export function Header() {
+	return <div>Githubsky V2</div>;
 }

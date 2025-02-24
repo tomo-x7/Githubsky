@@ -2,7 +2,6 @@ import { Supabase } from "@githubsky/common";
 import { zValidator } from "@hono/zod-validator";
 import { Redis } from "@upstash/redis/cloudflare";
 import { type Context, Hono } from "hono";
-import { hc } from "hono/client";
 import { getCookie, setCookie } from "hono/cookie";
 import { z } from "zod";
 import { OAuthClient } from "./bsky-oauth";
@@ -35,10 +34,10 @@ const schema = app
 	.get("/jwks.json", async (c) => {
 		return c.json(c.get("client").jwks);
 	})
-	.get("/login", zValidator("query", z.object({ handle: z.string() })), async (c) => {
-		const { handle } = c.req.valid("query");
+	.post("/login", zValidator("json", z.object({ handle: z.string() })), async (c) => {
+		const { handle } = c.req.valid("json");
 		const url = await c.get("client").login(handle);
-		return c.redirect(url);
+		return c.text(url.toString());
 	})
 	.get("/callback", async (c) => {
 		const did = await c.get("client").callback(c.req.query());
@@ -52,14 +51,15 @@ const schema = app
 		});
 		return c.redirect("/");
 	})
-	.get("/github_login", async (c) => {
+	.post("/github_login", async (c) => {
 		const did = await bskyAuth(c);
 		if (did == null) return c.text("bsky auth before", 401);
 		const url = await github_login(c.get("redis"), did);
-		return c.redirect(url);
+		return c.text(url.toString());
 	})
 	.get("/github_callback", async (c) => {
 		const res = await github_callback(c.req.query(), c.env, c.get("redis"));
+		//TODO
 		return c.text(res);
 	})
 	.post("/github_name", zValidator("json", z.object({ name: z.string() })), async (c) => {
@@ -73,10 +73,10 @@ const schema = app
 			throw new ServerError("nolog");
 		}
 		if (data[0] == null) {
-			await supabase.client.from("userdata_v2").insert([{ DID: did, github_name: name, }]);
-			return c.json({ create:true });
+			await supabase.client.from("userdata_v2").insert([{ DID: did, github_name: name }]);
+			return c.json({ create: true });
 		} else {
-			return c.json({ create:false });
+			return c.json({ create: false });
 		}
 	})
 	.get("/status", async (c) => {
