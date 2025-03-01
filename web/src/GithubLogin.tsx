@@ -15,6 +15,8 @@ import { useState } from "react";
 import { createCallable } from "react-call";
 import { notify } from "./Notify";
 import type { client } from "./main";
+import { githubNameData, githubOAuthData } from "./App";
+import { DepInfo, NoAuthError } from "./util";
 
 export function GithubNone({ client, onSessionTimeout }: { client: client; onSessionTimeout: () => void }) {
 	const [name, setName] = useState("");
@@ -52,7 +54,7 @@ export function GithubNone({ client, onSessionTimeout }: { client: client; onSes
 	return (
 		<>
 			<Typography sx={{ mb: 3 }} variant="h5">
-				2.Githubと連携する
+				Githubと連携する
 			</Typography>
 			<Button onClick={handleOAuthLink} variant="contained">
 				{OAuthSending ? <CircularProgress size={24.5} /> : "OAuth連携"}
@@ -68,33 +70,14 @@ export function GithubNone({ client, onSessionTimeout }: { client: client; onSes
 			<Button disabled={name === ""} onClick={handleNameLink} variant="outlined">
 				{nameSending ? <CircularProgress size={24.5} /> : "名前で連携"}
 			</Button>
-			<DepInfo.Root />
 			<ConfirmName.Root />
 		</>
 	);
 }
 
-const DepInfo = createCallable(
-	({ call }) => (
-		<>
-			<Dialog
-				aria-describedby="alert-dialog-description"
-				aria-labelledby="alert-dialog-title"
-				onClose={() => call.end()}
-				open={!call.ended}
-			>
-				<DialogTitle id="alert-dialog-title">名前での連携は非推奨です</DialogTitle>
-				<DialogContent>
-					<DialogContentText id="alert-dialog-description">
-						OAuth連携をすることで、プライベートリポジトリへのコミット数も取得することができます。
-						コミット数とスター数以外の情報は公開されません。ぜひOAuth連携をご利用ください。
-					</DialogContentText>
-				</DialogContent>
-			</Dialog>
-		</>
-	),
-	500,
-);
+
+
+
 const ConfirmName = createCallable<void, boolean>(({ call }) => (
 	<>
 		<Dialog
@@ -122,4 +105,4 @@ const ConfirmName = createCallable<void, boolean>(({ call }) => (
 	</>
 ));
 
-class NoAuthError extends Error {}
+

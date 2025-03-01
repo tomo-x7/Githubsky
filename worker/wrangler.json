@@ -2,7 +2,8 @@
 	"$schema": "./node_modules/wrangler/config-schema.json",
 	"name": "githubsky-worker",
 	"main": "src/index.ts",
-	"compatibility_date": "2025-02-10",
+	"compatibility_date": "2025-01-29",
 	"compatibility_flags": ["nodejs_compat"],
-	"observability": { "logs": { "enabled": true } }
+	"observability": { "logs": { "enabled": true } },
+	"dev": { "inspector_port": 9229 }
 }

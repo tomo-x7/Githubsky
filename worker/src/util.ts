@@ -25,6 +25,10 @@ export const genRandom = (bytes: number) =>
 
 type githubNoneType = { github: "none" };
 type githubNameType = { github: "name"; github_name: string };
-type githubOAuthType = { github: "oauth"; github_name: string };
+type githubOAuthType = { github: "oauth"; github_name: string; avatar_url: string };
 type githubType = githubNoneType | githubNameType | githubOAuthType;
 export type statusReturn = { bsky: false; github: "none" } | ({ bsky: true } & githubType);
+
+type exitFailed = { success: false; error: string };
+type exitSUccessed = { success: true };
+export type exitReturn = exitFailed | exitSUccessed;

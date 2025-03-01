@@ -4,5 +4,5 @@ import { defineConfig } from "vite";
 // https://vite.dev/config/
 export default defineConfig({
 	plugins: [react()],
-	server: { allowedHosts: true },
+	server: { allowedHosts: true, proxy: { "/api": { target: "http://localhost:8787/", } } },
 });

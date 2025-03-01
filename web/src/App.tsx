@@ -2,6 +2,7 @@ import { CircularProgress, Grid2 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { BskyLogin } from "./BskyLogin";
 import { GithubNone } from "./GithubLogin";
+import { GithubName, GithubOAuth } from "./Linked";
 import type { client } from "./main";
 
 export function App({ client }: { client: client }) {
@@ -10,8 +11,8 @@ export function App({ client }: { client: client }) {
 	);
 	//@ts-ignore デバッグ用
 	// biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
-	useEffect(() => (globalThis.setState = setState), []);
-	const [githubName, setGithubName] = useState<string>();
+	useEffect(() => (globalThis.setState = (s) => setState(s)), []);
+	const [githubData, setGithubData] = useState<githubData>();
 	const onSessionTimeout = () => setState("logout");
 	useEffect(() => {
 		client.status
@@ -22,7 +23,7 @@ export function App({ client }: { client: client }) {
 				setState("error");
 			})
 			.then((data) => {
-				if (data == null) return;
+				if (data == null) return void setState("error");
 				if (data.bsky === false) {
 					return void setState("logout");
 				}
@@ -31,12 +32,12 @@ export function App({ client }: { client: client }) {
 				}
 				if (data.github === "name") {
 					setState("github-name");
-					setGithubName(data.github_name);
+					setGithubData(data);
 					return;
 				}
 				if (data.github === "oauth") {
 					setState("github-oauth");
-					setGithubName(data.github_name);
+					setGithubData(data);
 					return;
 				}
 				setState("error"); //never
@@ -51,11 +52,29 @@ export function App({ client }: { client: client }) {
 	if (state === "error") return <>error</>;
 	if (state === "logout") return <BskyLogin client={client} />;
 	if (state === "github-none") return <GithubNone client={client} onSessionTimeout={onSessionTimeout} />;
+	if (state === "github-name")
+		return <GithubName data={{ github: "name", github_name: "hogehoge" }} {...{ client, onSessionTimeout }} />;
+	if (state === "github-oauth")
+		return (
+			<GithubOAuth
+				data={{
+					github: "oauth",
+					github_name: "hogehoge",
+					avatar_url: "https://avatars.githubusercontent.com/u/158121497?v=4",
+				}}
+				{...{ client, onSessionTimeout }}
+			/>
+		);
+	console.log(state);
 	return (
 		<>
 			state:{state}
 			<br />
-			{githubName && `github:${githubName}`}
+			{githubData && `github:${githubData}`}
 		</>
 	);
 }
+
+export type githubNameData = { github: "name"; github_name: string };
+export type githubOAuthData = { github: "oauth"; github_name: string; avatar_url: string };
+export type githubData = githubNameData | githubOAuthData;

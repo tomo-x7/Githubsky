@@ -1,34 +1,33 @@
-import { Box, Paper } from "@mui/material";
+import { Container, Paper } from "@mui/material";
 import { App } from "./App";
-import { Footer } from "./Footer";
 import { Header } from "./Header";
 import { NotifyElem } from "./Notify";
+import { useState } from "react";
+import { DepInfo } from "./util";
 
 export function Page(props: Parameters<typeof App>[0]) {
 	return (
 		<>
 			<Header />
-			<Box height="90%">
-				<Box sx={{ height: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
-					<Paper
-						sx={{
-							width: "450px",
-							maxWidth: "80vw",
-							height: "300px",
-							padding: "1rem",
-							display: "flex",
-							flexDirection: "column",
-							justifyContent: "space-between",
-							px: 5,
-							py: 3,
-						}}
-					>
-						<App {...props} />
-					</Paper>
-				</Box>
-			</Box>
-			<Footer />
+			<Container fixed sx={{ position: "fixed", inset: 0, alignContent: "center", width: "fit-content" }}>
+				<Paper
+					sx={{
+						width: "450px",
+						maxWidth: "80vw",
+						height: "fit-content",
+						padding: "1rem",
+						display: "flex",
+						flexDirection: "column",
+						justifyContent: "space-between",
+						px: 5,
+						py: 3,
+					}}
+				>
+					<App {...props} />
+				</Paper>
+			</Container>
 			<NotifyElem.Root />
+			<DepInfo.Root />
 		</>
 	);
 }

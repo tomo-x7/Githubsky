@@ -2,11 +2,11 @@ import { Supabase } from "@githubsky/common";
 import { zValidator } from "@hono/zod-validator";
 import { Redis } from "@upstash/redis/cloudflare";
 import { type Context, Hono } from "hono";
-import { getCookie, setCookie } from "hono/cookie";
+import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 import { z } from "zod";
 import { OAuthClient } from "./bsky-oauth";
-import { github_callback, github_login } from "./github_oauth";
-import { ClientError, ServerError, type statusReturn } from "./util";
+import { github_callback, github_login, userResponse } from "./github_oauth";
+import { ClientError, exitReturn, ServerError, type statusReturn } from "./util";
 
 export type secrets = {
 	[key in
@@ -91,7 +91,19 @@ const schema = app
 		if (data[0] == null) return c.json<statusReturn>({ bsky: true, github: "none" });
 		if (data[0].Github_token == null)
 			return c.json<statusReturn>({ bsky: true, github: "name", github_name: data[0].github_name });
-		return c.json<statusReturn>({ bsky: true, github: "oauth", github_name: data[0].github_name });
+		const { login: github_name, avatar_url }: userResponse = await fetch("https://api.github.com/user", {
+			headers: { "User-Agent": "githubsky", Authorization: `Bearer ${data[0].Github_token}` },
+		}).then((r) => r.json());
+		return c.json<statusReturn>({ bsky: true, github: "oauth", github_name, avatar_url });
+	})
+	.delete("/exit", async (c) => {
+		const did = await bskyAuth(c);
+		if (did == null) return c.json<exitReturn>({ success: false, error: "bsky auth before" }, 401);
+		const supabase = new Supabase(c.env);
+		const res = await supabase.client.from("userdata_v2").delete().eq("DID", did);
+		if (res.error != null) return c.json<exitReturn>({ success: false, error: res.error.message }, 500);
+		delSession(c);
+		return c.json<exitReturn>({ success: true });
 	});
 
 app.onError((err) => {
@@ -115,4 +127,11 @@ async function bskyAuth(c: Context<Env>): Promise<string | null> {
 	const did = await c.get("redis").get(`mysession_${sessionId}`);
 	if (did == null || typeof did !== "string") return null;
 	return did;
+}
+
+async function delSession(c: Context<Env>) {
+	const sessionId = getCookie(c, "session");
+	if (sessionId == null) return;
+	await c.get("redis").del(`mysession_${sessionId}`);
+	deleteCookie(c, "session");
 }

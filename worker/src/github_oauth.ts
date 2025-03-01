@@ -28,11 +28,14 @@ export async function github_callback({ state, code }: Record<string, string | n
 		headers,
 		body: JSON.stringify(body),
 	}).then((r) => r.json());
-	const { login: github_name }: userResponse = await fetch("https://api.github.com/user", {
+	const { login: github_name,avatar_url }: userResponse = await fetch("https://api.github.com/user", {
 		headers: { "User-Agent": "githubsky", Authorization: `Bearer ${res.access_token}` },
 	}).then((r) => r.json());
 	const supabase = new Supabase(env);
-	await supabase.client.from("userdata_v2").upsert({ DID, github_name, Github_token: res.access_token });
+	await supabase.client
+		.from("userdata_v2")
+		.upsert({ DID, github_name, Github_token: res.access_token })
+		.eq("DID", DID);
 	return `logged in as ${github_name}`;
 }
 
@@ -41,6 +44,7 @@ type tokenResponse = {
 	scope: string;
 	token_type: string;
 };
-type userResponse = {
+export type userResponse = {
 	login: string;
+	avatar_url: string;
 };

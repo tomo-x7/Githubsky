@@ -23,7 +23,7 @@ export function BskyLogin({ client }: { client: client }) {
 	};
 	return (
 		<>
-			<Typography variant="h4">{sending ? <CircularProgress size={24.5} /> : "Blueskyでログインする"}</Typography>
+			<Typography variant="h4">Blueskyでログインする</Typography>
 			<TextField
 				error={!isHandleValid}
 				helperText={isHandleValid ? undefined : handle === "" ? "required" : "invalid value"}
@@ -40,10 +40,11 @@ export function BskyLogin({ client }: { client: client }) {
 					},
 				}}
 				variant="standard"
+				sx={{ my: 4 }}
 			/>
 			<Box sx={{ display: "flex", justifyContent: "flex-end" }}>
 				<Button disabled={!isHandleValid} onClick={handleLogin} variant="contained">
-					Login
+					{sending ? <CircularProgress size={24.5} /> : "Login"}
 				</Button>
 			</Box>
 		</>
