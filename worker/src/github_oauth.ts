@@ -28,7 +28,7 @@ export async function github_callback({ state, code }: Record<string, string | n
 		headers,
 		body: JSON.stringify(body),
 	}).then((r) => r.json());
-	const { login: github_name,avatar_url }: userResponse = await fetch("https://api.github.com/user", {
+	const { login: github_name, avatar_url }: userResponse = await fetch("https://api.github.com/user", {
 		headers: { "User-Agent": "githubsky", Authorization: `Bearer ${res.access_token}` },
 	}).then((r) => r.json());
 	const supabase = new Supabase(env);

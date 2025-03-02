@@ -9,9 +9,6 @@ export function App({ client }: { client: client }) {
 	const [state, setState] = useState<"loading" | "logout" | "github-none" | "github-name" | "github-oauth" | "error">(
 		"loading",
 	);
-	//@ts-ignore デバッグ用
-	// biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
-	useEffect(() => (globalThis.setState = (s) => setState(s)), []);
 	const [githubData, setGithubData] = useState<githubData>();
 	const onSessionTimeout = () => setState("logout");
 	useEffect(() => {

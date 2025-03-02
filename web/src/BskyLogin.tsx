@@ -1,8 +1,9 @@
 import { AlternateEmail } from "@mui/icons-material";
-import { Box, Button, CircularProgress, InputAdornment, TextField, Typography } from "@mui/material";
+import { Box, Button, InputAdornment, TextField, Typography } from "@mui/material";
 import { useMemo, useState } from "react";
 import { notify } from "./Notify";
 import type { client } from "./main";
+import { handleEnter } from "./util";
 
 const regex = /^(?!\-)[\-0-9A-Za-z]{1,63}(?<!\-)(?:\.(?!\-)[\-0-9A-Za-z]{1,63}(?<!\-))+$|^did:plc:[0-9a-z]{24}$/;
 export function BskyLogin({ client }: { client: client }) {
@@ -29,6 +30,7 @@ export function BskyLogin({ client }: { client: client }) {
 				helperText={isHandleValid ? undefined : handle === "" ? "required" : "invalid value"}
 				label="Bluesky handle"
 				onInput={handleInput}
+				onKeyDown={handleEnter(handleLogin)}
 				placeholder="example.bsky.social"
 				slotProps={{
 					input: {
@@ -43,8 +45,8 @@ export function BskyLogin({ client }: { client: client }) {
 				sx={{ my: 4 }}
 			/>
 			<Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-				<Button disabled={!isHandleValid} onClick={handleLogin} variant="contained">
-					{sending ? <CircularProgress size={24.5} /> : "Login"}
+				<Button disabled={!isHandleValid} onClick={handleLogin} variant="contained" loading={sending}>
+					Login
 				</Button>
 			</Box>
 		</>

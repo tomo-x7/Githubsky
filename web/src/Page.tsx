@@ -2,7 +2,6 @@ import { Container, Paper } from "@mui/material";
 import { App } from "./App";
 import { Header } from "./Header";
 import { NotifyElem } from "./Notify";
-import { useState } from "react";
 import { DepInfo } from "./util";
 
 export function Page(props: Parameters<typeof App>[0]) {

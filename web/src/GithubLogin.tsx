@@ -1,7 +1,6 @@
 import { InfoOutlined } from "@mui/icons-material";
 import {
 	Button,
-	CircularProgress,
 	Dialog,
 	DialogActions,
 	DialogContent,
@@ -15,7 +14,6 @@ import { useState } from "react";
 import { createCallable } from "react-call";
 import { notify } from "./Notify";
 import type { client } from "./main";
-import { githubNameData, githubOAuthData } from "./App";
 import { DepInfo, NoAuthError } from "./util";
 
 export function GithubNone({ client, onSessionTimeout }: { client: client; onSessionTimeout: () => void }) {
@@ -56,8 +54,8 @@ export function GithubNone({ client, onSessionTimeout }: { client: client; onSes
 			<Typography sx={{ mb: 3 }} variant="h5">
 				Githubと連携する
 			</Typography>
-			<Button onClick={handleOAuthLink} variant="contained">
-				{OAuthSending ? <CircularProgress size={24.5} /> : "OAuth連携"}
+			<Button onClick={handleOAuthLink} variant="contained" loading={OAuthSending}>
+				OAuth連携
 			</Button>
 			<Divider sx={{ mt: 3 }}>
 				または名前で連携
@@ -67,16 +65,13 @@ export function GithubNone({ client, onSessionTimeout }: { client: client; onSes
 				</Button>
 			</Divider>
 			<TextField label="Github username" onChange={handleInputName} sx={{ mb: 2 }} variant="standard" />
-			<Button disabled={name === ""} onClick={handleNameLink} variant="outlined">
-				{nameSending ? <CircularProgress size={24.5} /> : "名前で連携"}
+			<Button disabled={name === ""} onClick={handleNameLink} variant="outlined" loading={nameSending}>
+				名前で連携
 			</Button>
 			<ConfirmName.Root />
 		</>
 	);
 }
-
-
-
 
 const ConfirmName = createCallable<void, boolean>(({ call }) => (
 	<>
@@ -104,5 +99,3 @@ const ConfirmName = createCallable<void, boolean>(({ call }) => (
 		</Dialog>
 	</>
 ));
-
-

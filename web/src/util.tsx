@@ -1,4 +1,4 @@
-import { Dialog, DialogTitle, DialogContent, DialogContentText } from "@mui/material";
+import { Dialog, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import { createCallable } from "react-call";
 
 export class NoAuthError extends Error {}
@@ -24,3 +24,11 @@ export const DepInfo = createCallable(
 	),
 	500,
 );
+
+export function handleEnter<T = Element>(handler: (ev: React.KeyboardEvent<T>) => void) {
+	return (ev: React.KeyboardEvent<T>) => {
+		if (ev.key === "Enter" && !ev.altKey && !ev.ctrlKey && !ev.shiftKey && ev.key) {
+			handler(ev);
+		}
+	};
+}

@@ -1,4 +1,4 @@
-import { AppBar, Avatar, Button, Toolbar, Typography } from "@mui/material";
+import { AppBar, Button, Toolbar, Typography } from "@mui/material";
 import { About } from "./About";
 
 export function Header() {

@@ -1,11 +1,11 @@
-import { Button, CircularProgress, Dialog, DialogActions, DialogTitle, Typography } from "@mui/material";
+import { InfoOutlined } from "@mui/icons-material";
+import { Button, Dialog, DialogActions, DialogTitle, Typography } from "@mui/material";
 import { useState } from "react";
 import { createCallable } from "react-call";
-import { DepInfo, NoAuthError } from "./util";
+import type { githubNameData, githubOAuthData } from "./App";
 import { notify } from "./Notify";
 import type { client } from "./main";
-import { InfoOutlined } from "@mui/icons-material";
-import { githubNameData, githubOAuthData } from "./App";
+import { DepInfo, NoAuthError } from "./util";
 
 export function GithubName({
 	data,
@@ -30,31 +30,6 @@ export function GithubName({
 			notify("エラーが発生しました");
 		}
 	};
-	const handleExit = async () => {
-		await ConfirmExit.call();
-		setExitSending(true);
-		try {
-			const res = await client.exit.$delete().then(async (res) => {
-				const data = await res.json();
-				if (!data.success) {
-					if (res.status === 401) throw new NoAuthError();
-					return data.error;
-				}
-			});
-			if (res != null) {
-				notify(res);
-			} else {
-				location.href = "/";
-			}
-		} catch (e) {
-			setExitSending(false);
-			if (e instanceof NoAuthError) {
-				notify("セッションが切れました");
-				return onSessionTimeout();
-			}
-			notify("エラーが発生しました");
-		}
-	};
 
 	return (
 		<>
@@ -71,12 +46,10 @@ export function GithubName({
 					理由
 				</Button>
 			</Typography>
-			<Button onClick={handleOAuthLink} variant="contained">
-				{OAuthSending ? <CircularProgress size={24.5} /> : "OAuth連携に変更"}
+			<Button onClick={handleOAuthLink} variant="contained" loading={OAuthSending}>
+				OAuth連携に変更
 			</Button>
-			<Button onClick={handleExit} variant="outlined" color="error" sx={{ mt: 5 }}>
-				退会する
-			</Button>
+			<Exit {...{ client, onSessionTimeout }} />
 			<ConfirmExit.Root />
 		</>
 	);
@@ -95,11 +68,44 @@ export function GithubOAuth({
 	return (
 		<>
 			<Typography sx={{ mb: 1 }}>OAuthで連携済みです</Typography>
-			<Button onClick={handleExit} variant="outlined" color="error" sx={{ mt: 5 }}>
-				退会する
-			</Button>
+			<Exit {...{ client, onSessionTimeout }} />
 			<ConfirmExit.Root />
 		</>
+	);
+}
+
+function Exit({ onSessionTimeout, client }: { onSessionTimeout: () => void; client: client }) {
+	const [sending, setSending] = useState(false);
+	const handleExit = async () => {
+		const confirm = await ConfirmExit.call();
+		if (!confirm) return;
+		setSending(true);
+		try {
+			const res = await client.exit.$delete().then(async (res) => {
+				const data = await res.json();
+				if (!data.success) {
+					if (res.status === 401) throw new NoAuthError();
+					return data.error;
+				}
+			});
+			if (res != null) {
+				notify(res);
+			} else {
+				location.href = "/";
+			}
+		} catch (e) {
+			setSending(false);
+			if (e instanceof NoAuthError) {
+				notify("セッションが切れました");
+				return onSessionTimeout();
+			}
+			notify("エラーが発生しました");
+		}
+	};
+	return (
+		<Button onClick={handleExit} variant="outlined" color="error" sx={{ mt: 5 }} loading={sending}>
+			退会する
+		</Button>
 	);
 }
 

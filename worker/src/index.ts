@@ -5,8 +5,8 @@ import { type Context, Hono } from "hono";
 import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 import { z } from "zod";
 import { OAuthClient } from "./bsky-oauth";
-import { github_callback, github_login, userResponse } from "./github_oauth";
-import { ClientError, exitReturn, ServerError, type statusReturn } from "./util";
+import { github_callback, github_login, type userResponse } from "./github_oauth";
+import { ClientError, ServerError, type exitReturn, type statusReturn } from "./util";
 
 export type secrets = {
 	[key in
