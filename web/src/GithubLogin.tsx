@@ -16,7 +16,11 @@ import { notify } from "./Notify";
 import type { client } from "./main";
 import { DepInfo, NoAuthError } from "./util";
 
-export function GithubNone({ client, onSessionTimeout }: { client: client; onSessionTimeout: () => void }) {
+export function GithubNone({
+	client,
+	onSessionTimeout,
+	onFinish,
+}: { client: client; onSessionTimeout: () => void; onFinish: () => void }) {
 	const [name, setName] = useState("");
 	const [OAuthSending, setOAuthSending] = useState(false);
 	const [nameSending, setNameSending] = useState(false);
@@ -42,10 +46,19 @@ export function GithubNone({ client, onSessionTimeout }: { client: client; onSes
 		if (!ok) return;
 		setNameSending(true);
 		try {
-			const res = await client.github_name.$post({ json: { name } }).then((r) => r.json());
+			const res = await client.github_name
+				.$post({ json: { name } })
+				.then<{ create: boolean } | number>((r) => (r.ok ? r.json() : r.status));
+			if (typeof res === "number") throw res === 401 ? new NoAuthError() : new Error();
 			setNameSending(false);
+			onFinish();
 		} catch (e) {
 			setNameSending(false);
+			if (e instanceof NoAuthError) {
+				notify("セッションが切れました");
+				return onSessionTimeout();
+			}
+			notify("エラーが発生しました");
 		}
 	};
 
@@ -64,7 +77,13 @@ export function GithubNone({ client, onSessionTimeout }: { client: client; onSes
 					非推奨
 				</Button>
 			</Divider>
-			<TextField label="Github username" onChange={handleInputName} sx={{ mb: 2 }} variant="standard" />
+			<TextField
+				label="Github username"
+				onChange={handleInputName}
+				sx={{ mb: 2 }}
+				variant="standard"
+				autoComplete="section-github username"
+			/>
 			<Button disabled={name === ""} onClick={handleNameLink} variant="outlined" loading={nameSending}>
 				名前で連携
 			</Button>

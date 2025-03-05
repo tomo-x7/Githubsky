@@ -60,7 +60,7 @@ const schema = app
 	.get("/github_callback", async (c) => {
 		const res = await github_callback(c.req.query(), c.env, c.get("redis"));
 		//TODO
-		return c.text(res);
+		return c.redirect("/?callback=githuboauth");
 	})
 	.post("/github_name", zValidator("json", z.object({ name: z.string() })), async (c) => {
 		const { name } = c.req.valid("json");
@@ -102,7 +102,7 @@ const schema = app
 		const supabase = new Supabase(c.env);
 		const res = await supabase.client.from("userdata_v2").delete().eq("DID", did);
 		if (res.error != null) return c.json<exitReturn>({ success: false, error: res.error.message }, 500);
-		delSession(c);
+		await delSession(c);
 		return c.json<exitReturn>({ success: true });
 	});
 

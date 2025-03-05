@@ -7,13 +7,24 @@ import { notify } from "./Notify";
 import type { client } from "./main";
 import { DepInfo, NoAuthError } from "./util";
 
-export function GithubName({
+type props<T = githubNameData | githubOAuthData> = { data: T; onSessionTimeout: () => void; client: client };
+const isOAuth = (p: props): p is props<githubOAuthData> => p.data.github === "oauth";
+export function Linked(props: props<githubNameData> | props<githubOAuthData>) {
+	return (
+		<>
+			{isOAuth(props) ? <GithubOAuth /> : <GithubName {...props} />}
+			<Exit {...props} />
+			<ConfirmExit.Root />
+		</>
+	);
+}
+
+function GithubName({
 	data,
 	client,
 	onSessionTimeout,
 }: { data: githubNameData; client: client; onSessionTimeout: () => void }) {
 	const [OAuthSending, setOAuthSending] = useState(false);
-	const [exitSending, setExitSending] = useState(false);
 	const handleOAuthLink = async () => {
 		setOAuthSending(true);
 		try {
@@ -34,11 +45,10 @@ export function GithubName({
 	return (
 		<>
 			<Typography sx={{ mb: 1 }}>
-				あなたは今
+				名前で連携中です(ユーザー名:
 				<Typography component="span" sx={{ fontWeight: 700 }}>
 					{data.github_name}
-				</Typography>
-				で名前で連携しています
+				</Typography>)
 				<br />
 				名前での連携は非推奨です
 				<Button onClick={() => DepInfo.call()} variant="text">
@@ -49,29 +59,12 @@ export function GithubName({
 			<Button onClick={handleOAuthLink} variant="contained" loading={OAuthSending}>
 				OAuth連携に変更
 			</Button>
-			<Exit {...{ client, onSessionTimeout }} />
-			<ConfirmExit.Root />
 		</>
 	);
 }
 
-export function GithubOAuth({
-	data,
-	client,
-	onSessionTimeout,
-}: { data: githubOAuthData; client: client; onSessionTimeout: () => void }) {
-	const [OAuthSending, setOAuthSending] = useState(false);
-	const handleExit = async () => {
-		await ConfirmExit.call();
-	};
-
-	return (
-		<>
-			<Typography sx={{ mb: 1 }}>OAuthで連携済みです</Typography>
-			<Exit {...{ client, onSessionTimeout }} />
-			<ConfirmExit.Root />
-		</>
-	);
+function GithubOAuth() {
+	return <><Typography sx={{ mb: 1 }}>OAuthで連携済みです</Typography></>;
 }
 
 function Exit({ onSessionTimeout, client }: { onSessionTimeout: () => void; client: client }) {

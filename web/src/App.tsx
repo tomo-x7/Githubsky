@@ -2,16 +2,22 @@ import { CircularProgress, Grid2 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { BskyLogin } from "./BskyLogin";
 import { GithubNone } from "./GithubLogin";
-import { GithubName, GithubOAuth } from "./Linked";
+import { Linked } from "./Linked";
 import type { client } from "./main";
+import { Finish } from "./Finish";
 
 export function App({ client }: { client: client }) {
-	const [state, setState] = useState<"loading" | "logout" | "github-none" | "github-name" | "github-oauth" | "error">(
-		"loading",
-	);
+	const [state, setState] = useState<
+		"loading" | "logout" | "github-none" | "github-name" | "github-oauth" | "error" | "finish"
+	>("loading");
 	const [githubData, setGithubData] = useState<githubData>();
 	const onSessionTimeout = () => setState("logout");
+	const onFinish = () => setState("finish");
 	useEffect(() => {
+		if (location.search.includes("callback=githuboauth")) {
+			history.replaceState(null,"","/")
+			return setState("finish");
+		}
 		client.status
 			.$get()
 			.then((res) => res.json())
@@ -46,30 +52,15 @@ export function App({ client }: { client: client }) {
 				<CircularProgress size={100} />
 			</Grid2>
 		);
-	if (state === "error") return <>error</>;
 	if (state === "logout") return <BskyLogin client={client} />;
-	if (state === "github-none") return <GithubNone client={client} onSessionTimeout={onSessionTimeout} />;
-	if (state === "github-name")
-		return <GithubName data={{ github: "name", github_name: "hogehoge" }} {...{ client, onSessionTimeout }} />;
-	if (state === "github-oauth")
-		return (
-			<GithubOAuth
-				data={{
-					github: "oauth",
-					github_name: "hogehoge",
-					avatar_url: "https://avatars.githubusercontent.com/u/158121497?v=4",
-				}}
-				{...{ client, onSessionTimeout }}
-			/>
-		);
-	console.log(state);
-	return (
-		<>
-			state:{state}
-			<br />
-			{githubData && `github:${githubData}`}
-		</>
-	);
+	if (state === "github-none")
+		return <GithubNone client={client} onSessionTimeout={onSessionTimeout} onFinish={onFinish} />;
+	if (state === "github-name" && githubData?.github === "name")
+		return <Linked data={githubData} {...{ client, onSessionTimeout }} />;
+	if (state === "github-oauth" && githubData?.github === "oauth")
+		return <Linked data={githubData} {...{ client, onSessionTimeout }} />;
+	if (state === "finish") return <Finish />;
+	return <>error</>;
 }
 
 export type githubNameData = { github: "name"; github_name: string };

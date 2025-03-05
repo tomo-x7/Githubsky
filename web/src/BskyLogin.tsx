@@ -43,6 +43,7 @@ export function BskyLogin({ client }: { client: client }) {
 				}}
 				variant="standard"
 				sx={{ my: 4 }}
+				autoComplete="section-atproto username"
 			/>
 			<Box sx={{ display: "flex", justifyContent: "flex-end" }}>
 				<Button disabled={!isHandleValid} onClick={handleLogin} variant="contained" loading={sending}>
