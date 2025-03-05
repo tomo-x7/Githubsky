@@ -3,11 +3,17 @@ import { App } from "./App";
 import { Header } from "./Header";
 import { NotifyElem } from "./Notify";
 import { DepInfo } from "./util";
+import { useState } from "react";
+import { client } from "./main";
 
-export function Page(props: Parameters<typeof App>[0]) {
+export function Page({client}:{client:client}) {
+	const [profile, setProfile] = useState<{ bskyName: string | undefined; bskyAvatar: string | undefined }>({
+		bskyName: undefined,
+		bskyAvatar: undefined,
+	});
 	return (
 		<>
-			<Header />
+			<Header {...profile} />
 			<Container fixed sx={{ position: "fixed", inset: 0, alignContent: "center", width: "fit-content" }}>
 				<Paper
 					sx={{
@@ -22,7 +28,7 @@ export function Page(props: Parameters<typeof App>[0]) {
 						py: 3,
 					}}
 				>
-					<App {...props} />
+					<App {...{client,setProfile}} />
 				</Paper>
 			</Container>
 			<NotifyElem.Root />

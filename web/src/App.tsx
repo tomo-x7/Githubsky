@@ -6,7 +6,12 @@ import { Linked } from "./Linked";
 import type { client } from "./main";
 import { Finish } from "./Finish";
 
-export function App({ client }: { client: client }) {
+export function App({
+	client,setProfile
+}: {
+	client: client;
+	setProfile: (profile: { bskyName: string | undefined; bskyAvatar: string | undefined }) => void;
+}) {
 	const [state, setState] = useState<
 		"loading" | "logout" | "github-none" | "github-name" | "github-oauth" | "error" | "finish"
 	>("loading");
@@ -15,7 +20,7 @@ export function App({ client }: { client: client }) {
 	const onFinish = () => setState("finish");
 	useEffect(() => {
 		if (location.search.includes("callback=githuboauth")) {
-			history.replaceState(null,"","/")
+			history.replaceState(null, "", "/");
 			return setState("finish");
 		}
 		client.status
@@ -30,6 +35,7 @@ export function App({ client }: { client: client }) {
 				if (data.bsky === false) {
 					return void setState("logout");
 				}
+				setProfile(data)
 				if (data.github === "none") {
 					return void setState("github-none");
 				}
@@ -45,7 +51,7 @@ export function App({ client }: { client: client }) {
 				}
 				setState("error"); //never
 			});
-	}, [client]);
+	}, [client,setProfile]);
 	if (state === "loading")
 		return (
 			<Grid2 alignItems="center" container height="100%" justifyContent="center">

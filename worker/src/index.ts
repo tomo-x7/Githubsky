@@ -82,19 +82,24 @@ const schema = app
 	.get("/status", async (c) => {
 		const did = await bskyAuth(c);
 		if (did == null) return c.json<statusReturn>({ bsky: false, github: "none" });
+		const profile = await getBskyProfile(did);
+		if (profile == null) return c.json<statusReturn>({ bsky: false, github: "none" });
+		const bskyName = profile.displayName ?? profile.handle;
+		const bskyAvatar = profile.avatar;
+		const bsky = { bsky: true, bskyName, bskyAvatar } as const;
 		const supabase = new Supabase(c.env);
 		const { data, error } = await supabase.client.from("userdata_v2").select().eq("DID", did);
 		if (error != null) {
 			console.error(error);
 			throw new ServerError("nolog");
 		}
-		if (data[0] == null) return c.json<statusReturn>({ bsky: true, github: "none" });
+		if (data[0] == null) return c.json<statusReturn>({ ...bsky, github: "none" });
 		if (data[0].Github_token == null)
-			return c.json<statusReturn>({ bsky: true, github: "name", github_name: data[0].github_name });
+			return c.json<statusReturn>({ ...bsky, github: "name", github_name: data[0].github_name });
 		const { login: github_name, avatar_url }: userResponse = await fetch("https://api.github.com/user", {
 			headers: { "User-Agent": "githubsky", Authorization: `Bearer ${data[0].Github_token}` },
 		}).then((r) => r.json());
-		return c.json<statusReturn>({ bsky: true, github: "oauth", github_name, avatar_url });
+		return c.json<statusReturn>({ ...bsky, github: "oauth", github_name, avatar_url });
 	})
 	.delete("/exit", async (c) => {
 		const did = await bskyAuth(c);
@@ -134,4 +139,22 @@ async function delSession(c: Context<Env>) {
 	if (sessionId == null) return;
 	await c.get("redis").del(`mysession_${sessionId}`);
 	deleteCookie(c, "session");
+}
+
+type profile = {
+	did: string;
+	handle: string;
+	displayName: string | undefined;
+	avatar: string | undefined;
+};
+async function getBskyProfile(did: string) {
+	return await fetch(`https://public.api.bsky.app/xrpc/app.bsky.actor.getProfile?actor=${did}`)
+		.then((r) => {
+			if (!r.ok) throw new Error();
+			return r.json<profile>();
+		})
+		.catch((err) => {
+			console.error(err);
+			return null;
+		});
 }
