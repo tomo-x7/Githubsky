@@ -1,5 +1,15 @@
 import { InfoOutlined } from "@mui/icons-material";
-import { Button, Dialog, DialogActions, DialogTitle, Typography } from "@mui/material";
+import {
+	Avatar,
+	Button,
+	Dialog,
+	DialogActions,
+	DialogTitle,
+	ListItem,
+	ListItemAvatar,
+	ListItemText,
+	Typography,
+} from "@mui/material";
 import { useState } from "react";
 import { createCallable } from "react-call";
 import type { githubNameData, githubOAuthData } from "./App";
@@ -12,7 +22,7 @@ const isOAuth = (p: props): p is props<githubOAuthData> => p.data.github === "oa
 export function Linked(props: props<githubNameData> | props<githubOAuthData>) {
 	return (
 		<>
-			{isOAuth(props) ? <GithubOAuth /> : <GithubName {...props} />}
+			{isOAuth(props) ? <GithubOAuth {...props} /> : <GithubName {...props} />}
 			<Exit {...props} />
 			<ConfirmExit.Root />
 		</>
@@ -48,7 +58,8 @@ function GithubName({
 				名前で連携中です(ユーザー名:
 				<Typography component="span" sx={{ fontWeight: 700 }}>
 					{data.github_name}
-				</Typography>)
+				</Typography>
+				)
 				<br />
 				名前での連携は非推奨です
 				<Button onClick={() => DepInfo.call()} variant="text">
@@ -63,8 +74,18 @@ function GithubName({
 	);
 }
 
-function GithubOAuth() {
-	return <><Typography sx={{ mb: 1 }}>OAuthで連携済みです</Typography></>;
+function GithubOAuth({ data }: { data: githubOAuthData }) {
+	return (
+		<>
+			<Typography sx={{ mb: 1 }}>OAuthで連携済みです</Typography>
+			<ListItem disablePadding>
+				<ListItemAvatar>
+					<Avatar src={data.avatar_url} alt={data.github_name} />
+				</ListItemAvatar>
+				<ListItemText primary={data.github_name} />
+			</ListItem>
+		</>
+	);
 }
 
 function Exit({ onSessionTimeout, client }: { onSessionTimeout: () => void; client: client }) {
