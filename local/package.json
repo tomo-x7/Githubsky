@@ -14,9 +14,9 @@
 		"@atproto/jwk-jose": "^0.1.2",
 		"@atproto/oauth-client-node": "^0.2.0",
 		"@githubsky/common": "workspace:^",
+		"@napi-rs/canvas": "^0.1.68",
 		"@upstash/lock": "^0.2.1",
 		"@upstash/redis": "^1.34.4",
-		"canvas": "^3.1.0",
 		"chart.js": "^4.4.7",
 		"chartjs-plugin-datalabels": "^2.2.0"
 	},
