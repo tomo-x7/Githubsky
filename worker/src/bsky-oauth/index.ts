@@ -1,4 +1,4 @@
-import { clientMetadata } from "@githubsky/common";
+import { clientMetadata } from "../../../common";
 import { DidResolver, HandleResolver } from "@tomo-x/resolvers";
 import type { Redis } from "@upstash/redis/cloudflare";
 import type { secrets } from "..";

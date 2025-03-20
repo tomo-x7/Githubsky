@@ -1,4 +1,4 @@
-import { Supabase } from "@githubsky/common";
+import { Supabase } from "../../common";
 import { zValidator } from "@hono/zod-validator";
 import { Redis } from "@upstash/redis/cloudflare";
 import { type Context, Hono } from "hono";

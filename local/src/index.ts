@@ -1,4 +1,4 @@
-import { Supabase } from "@githubsky/common";
+import { Supabase } from "../../common";
 import { createClient } from "./client";
 import { getUsersGithubData } from "./github";
 import { createImg } from "./image";

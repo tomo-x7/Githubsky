@@ -1,4 +1,4 @@
-import { Supabase } from "@githubsky/common";
+import { Supabase } from "../../common";
 import type { Redis } from "@upstash/redis/cloudflare";
 import type { secrets } from ".";
 import { ClientError, genRandom } from "./util";
