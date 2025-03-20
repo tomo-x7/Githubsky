@@ -1,7 +1,10 @@
-import { createCanvas } from "@napi-rs/canvas";
+import { createCanvas,GlobalFonts } from "@napi-rs/canvas";
 import { Chart } from "chart.js/auto";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import type { GithubData } from "./github";
+import path from "node:path";
+
+GlobalFonts.registerFromPath(path.join(import.meta.dirname,"assets","NotoSansJP-Regular.ttf"),"NotoSansJP")
 
 const yesterday = new Date();
 yesterday.setDate(yesterday.getDate() - 1);
@@ -86,7 +89,7 @@ export function createImg(data: GithubData): Buffer {
 	mctx.fillStyle = "white";
 	mctx.fillRect(0, 0, image.width, image.height);
 	mctx.fillStyle = "black";
-	mctx.font = "25px";
+	mctx.font = "25px NotoSansJP";
 	mctx.textBaseline = "top";
 	const yestMet = mctx.measureText("昨日のコミット数:");
 	const weekMet = mctx.measureText("直近一週間のコミット数:");
