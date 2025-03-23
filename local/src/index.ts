@@ -5,6 +5,7 @@ import { createImg } from "./image";
 import { createPost } from "./bsky";
 
 async function main() {
+	console.log(`run at ${new Date().toLocaleString()}`)
 	const db = new Supabase();
 	const users = await db.getUsers();
 	const client = await createClient();
