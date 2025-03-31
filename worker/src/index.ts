@@ -151,7 +151,7 @@ async function getBskyProfile(did: string) {
 	return await fetch(`https://public.api.bsky.app/xrpc/app.bsky.actor.getProfile?actor=${did}`)
 		.then((r) => {
 			if (!r.ok) throw new Error();
-			return r.json<profile>();
+			return r.json() as Promise<profile>;
 		})
 		.catch((err) => {
 			console.error(err);
