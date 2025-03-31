@@ -1,12 +1,12 @@
 import { Container, Paper } from "@mui/material";
+import { useState } from "react";
 import { App } from "./App";
 import { Header } from "./Header";
 import { NotifyElem } from "./Notify";
+import type { client } from "./main";
 import { DepInfo } from "./util";
-import { useState } from "react";
-import { client } from "./main";
 
-export function Page({client}:{client:client}) {
+export function Page({ client }: { client: client }) {
 	const [profile, setProfile] = useState<{ bskyName: string | undefined; bskyAvatar: string | undefined }>({
 		bskyName: undefined,
 		bskyAvatar: undefined,
@@ -28,7 +28,7 @@ export function Page({client}:{client:client}) {
 						py: 3,
 					}}
 				>
-					<App {...{client,setProfile}} />
+					<App {...{ client, setProfile }} />
 				</Paper>
 			</Container>
 			<NotifyElem.Root />

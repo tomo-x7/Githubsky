@@ -1,7 +1,7 @@
-import { clientMetadata } from "../../../common";
 import { DidResolver, HandleResolver } from "@tomo-x/resolvers";
 import type { Redis } from "@upstash/redis/cloudflare";
 import type { secrets } from "..";
+import { clientMetadata } from "../../../common";
 import { ClientError, ServerError, b64Enc, genRandom } from "../util";
 import type { DPoPKey, SavedState, authServer, resourceServer, savedSession, tokenSet } from "./type";
 

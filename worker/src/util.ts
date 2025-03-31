@@ -27,7 +27,9 @@ type githubNoneType = { github: "none" };
 type githubNameType = { github: "name"; github_name: string };
 type githubOAuthType = { github: "oauth"; github_name: string; avatar_url: string };
 type githubType = githubNoneType | githubNameType | githubOAuthType;
-export type statusReturn = { bsky: false; github: "none" } | ({ bsky: true,bskyName:string,bskyAvatar:string|undefined } & githubType);
+export type statusReturn =
+	| { bsky: false; github: "none" }
+	| ({ bsky: true; bskyName: string; bskyAvatar: string | undefined } & githubType);
 
 type exitFailed = { success: false; error: string };
 type exitSUccessed = { success: true };

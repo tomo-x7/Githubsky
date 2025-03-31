@@ -1,13 +1,14 @@
 import { CircularProgress, Grid2 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { BskyLogin } from "./BskyLogin";
+import { Finish } from "./Finish";
 import { GithubNone } from "./GithubLogin";
 import { Linked } from "./Linked";
 import type { client } from "./main";
-import { Finish } from "./Finish";
 
 export function App({
-	client,setProfile
+	client,
+	setProfile,
 }: {
 	client: client;
 	setProfile: (profile: { bskyName: string | undefined; bskyAvatar: string | undefined }) => void;
@@ -35,7 +36,7 @@ export function App({
 				if (data.bsky === false) {
 					return void setState("logout");
 				}
-				setProfile(data)
+				setProfile(data);
 				if (data.github === "none") {
 					return void setState("github-none");
 				}
@@ -51,7 +52,7 @@ export function App({
 				}
 				setState("error"); //never
 			});
-	}, [client,setProfile]);
+	}, [client, setProfile]);
 	if (state === "loading")
 		return (
 			<Grid2 alignItems="center" container height="100%" justifyContent="center">

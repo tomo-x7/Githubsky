@@ -1,10 +1,10 @@
-import { createCanvas,GlobalFonts } from "@napi-rs/canvas";
+import path from "node:path";
+import { GlobalFonts, createCanvas } from "@napi-rs/canvas";
 import { Chart } from "chart.js/auto";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import type { GithubData } from "./github";
-import path from "node:path";
 
-GlobalFonts.registerFromPath(path.join(import.meta.dirname,"assets","NotoSansJP-Regular.ttf"),"NotoSansJP")
+GlobalFonts.registerFromPath(path.join(import.meta.dirname, "assets", "NotoSansJP-Regular.ttf"), "NotoSansJP");
 
 const yesterday = new Date();
 yesterday.setDate(yesterday.getDate() - 1);

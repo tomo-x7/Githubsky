@@ -1,6 +1,6 @@
-import { Supabase } from "../../common";
 import type { Redis } from "@upstash/redis/cloudflare";
 import type { secrets } from ".";
+import { Supabase } from "../../common";
 import { ClientError, genRandom } from "./util";
 
 const CLIENT_ID = "Ov23liNFnDxcVwZVTD8r";

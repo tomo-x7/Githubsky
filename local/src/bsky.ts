@@ -33,7 +33,7 @@ export async function createPost({
 			embed: {
 				$type: "app.bsky.embed.external",
 				external: {
-					uri: "https://githubsky.vercel.app/",
+					uri: "https://githubsky.tomo-x.win/",
 					thumb: {
 						$type: "blob",
 						ref: {
