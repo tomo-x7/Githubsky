@@ -12,6 +12,7 @@ yesterday.setDate(yesterday.getDate() - 1);
 Chart.register(ChartDataLabels);
 Chart.defaults.scales.linear.display = false;
 Chart.defaults.plugins.legend.display = false;
+Chart.defaults.font.family="NotoSansJP"
 
 export function createImg(data: GithubData): Buffer {
 	const lastweekarray: Array<number> = [
