@@ -18,6 +18,12 @@ export const About = createCallable(
 					>
 						@tomo-x.win
 					</a>
+					<br />
+					ソースコードを
+					<a href="https://github.com/tomo-x7/githubsky" target="_blank" rel="noopener noreferrer">
+						Github
+					</a>
+					で公開しています
 				</DialogContent>
 			</Dialog>
 		</>
