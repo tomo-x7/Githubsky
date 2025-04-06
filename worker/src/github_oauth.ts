@@ -11,7 +11,7 @@ export async function github_login(redis: Redis, did: string) {
 	const sp = new URLSearchParams();
 	sp.set("client_id", CLIENT_ID);
 	sp.set("redirect_uri", REDIRECT_URI);
-	// sp.set("scope","")
+	sp.set("scope","repo")
 	sp.set("state", state);
 	const url = new URL("https://github.com/login/oauth/authorize");
 	url.search = sp.toString();
