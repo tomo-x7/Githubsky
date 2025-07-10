@@ -25,7 +25,7 @@ importers:
         version: 2.48.1
     devDependencies:
       '@atproto/oauth-client-node':
-        specifier: ^0.2.0
+        specifier: 0.2.10
         version: 0.2.10
       '@types/node':
         specifier: ^22.13.1
@@ -46,7 +46,7 @@ importers:
         specifier: ^0.1.2
         version: 0.1.4
       '@atproto/oauth-client-node':
-        specifier: ^0.2.0
+        specifier: 0.2.10
         version: 0.2.10
       '@githubsky/common':
         specifier: workspace:^
