@@ -8,3 +8,8 @@ keyset
 .wrangler
 *.log
 !tasks.json
+
+# TypeScript build artifacts
+*.js
+*.d.ts
+tsconfig.tsbuildinfo
