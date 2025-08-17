@@ -7,7 +7,7 @@
 		"generate": "supabase gen types --lang=typescript --project-id rxtjjnbocilskefknuac --schema public > db/supabasetype.ts"
 	},
 	"devDependencies": {
-		"@atproto/oauth-client-node": "0.2.10",
+		"@atproto/oauth-client-node": "^0.3.4",
 		"@types/node": "^22.13.1",
 		"eckles": "^1.4.1",
 		"supabase": "^1.207.9"
